@@ -12,7 +12,7 @@
 		public function index(){
 			$data['main_view']['content']				= 'HomePage/homepage_view';
 
-			$this->load->view('homepage_view', $data);
+			$this->load->view('HomePage_view', $data);
 		}
 	}
 ?>

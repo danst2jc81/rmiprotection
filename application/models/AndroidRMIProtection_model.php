@@ -1,39 +1,89 @@
 <?php
-	class AndroidMitraUtama_model extends CI_Model {
+	class AndroidRMIProtection_model extends CI_Model {
 		var $table = "acct_account";
 		
-		public function AndroidMitraUtama_model(){
+		public function AndroidRMIProtection_model(){
 			parent::__construct();
 			$this->CI = get_instance();
 		}
 
-		public function getProductionResult($data){
-			$this->db->select('production_result.production_result_id, production_result.production_result_date, production_result.warehouse_id, invt_warehouse.warehouse_name, production_result.machine_id, core_machine.machine_name');
-			$this->db->from('production_result');
-			$this->db->join('production_result_item', 'production_result.production_result_id = production_result_item.production_result_id');
-			$this->db->join('invt_warehouse', 'production_result.warehouse_id = invt_warehouse.warehouse_id');
-			$this->db->join('core_machine', 'production_result.machine_id = core_machine.machine_id');
-			$this->db->where('production_result.production_result_date >=', $data['start_date']);
-			$this->db->where('production_result.production_result_date <=', $data['end_date']);
-			$this->db->where('production_result.data_state', 0);
-
-			if ($data['warehouse_check'] == 1){
-				$this->db->where('production_result.warehouse_id', $data['warehouse_id']);	
-			}
-
-			if ($data['machine_check'] == 1){
-				$this->db->where('production_result.machine_id', $data['machine_id']);	
-			}
-
-			if ($data['item_check'] == 1){
-				$this->db->where('production_result_item.item_id', $data['item_id']);	
-			}
-			
-			$this->db->order_by('production_result.production_result_id', 'DESC');
-			$this->db->distinct();
+		public function getRegistrationTenant($region_id, $branch_id, $vendor_id, $tenant_status){
+			$this->db->select('registration_tenant.tenant_id, registration_tenant.region_id, core_region.region_name, registration_tenant.branch_id, core_branch.branch_name, registration_tenant.province_id, core_province.province_name, registration_tenant.city_id, core_city.city_name, registration_tenant.tenant_name, registration_tenant.tenant_registration_date, registration_tenant.tenant_address, registration_tenant.tenant_mobile_phone, registration_tenant.tenant_nik, registration_tenant.tenant_profile_photo, registration_tenant.tenant_nik_photo, registration_tenant.tenant_status, registration_tenant.tenant_status_id, registration_tenant.tenant_status_on, registration_tenant.tenant_status_remark');
+			$this->db->from('registration_tenant');
+			$this->db->join('core_region', 'registration_tenant.region_id = core_region.region_id');
+			$this->db->join('core_branch', 'registration_tenant.branch_id = core_branch.branch_id');
+			$this->db->join('core_vendor', 'registration_tenant.vendor_id = core_vendor.vendor_id');
+			$this->db->join('core_province', 'registration_tenant.province_id = core_province.province_id');
+			$this->db->join('core_city', 'registration_tenant.city_id = core_city.city_id');
+			$this->db->where('registration_tenant.region_id', $region_id);
+			$this->db->where('registration_tenant.branch_id', $branch_id);
+			$this->db->where('registration_tenant.vendor_id', $vendor_id);
+			$this->db->where('registration_tenant.tenant_status', $tenant_status);
+			$this->db->order_by('registration_tenant.tenant_id', 'DESC');
 			$result = $this->db->get()->result_array();
 			return $result;
 		}
+
+		public function getCoreVehicle($vendor_id){
+			$this->db->select('core_vehicle.vehicle_id, core_vehicle.vehicle_police_number');
+			$this->db->from('core_vehicle');
+			$this->db->where('core_vehicle.data_state', 0);
+			$this->db->where('core_vehicle.vendor_id', $vendor_id);
+			$this->db->where('core_vehicle.vehicle_status', 0);
+			$result = $this->db->get()->result_array();
+			return $result;
+		}
+
+		public function insertTransVehicleRental($data){
+			if($this->db->insert('trans_vehicle_rental', $data)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+
+		public function getTransVehicleRental($vendor_id){
+			$this->db->select('trans_vehicle_rental.vehicle_rental_id, trans_vehicle_rental.vehicle_id, core_vehicle.vehicle_police_number, trans_vehicle_rental.tenant_id, registration_tenant.tenant_name, registration_tenant.tenant_address, registration_tenant.tenant_mobile_phone, registration_tenant.tenant_nik, trans_vehicle_rental.vehicle_rental_date, trans_vehicle_rental.vehicle_rental_return_date');
+			$this->db->from('trans_vehicle_rental');
+			$this->db->join('core_vehicle', 'trans_vehicle_rental.vehicle_id = core_vehicle.vehicle_id');
+			$this->db->join('registration_tenant', 'trans_vehicle_rental.tenant_id = registration_tenant.tenant_id');
+			$this->db->where('trans_vehicle_rental.vendor_id', $vendor_id);
+			$this->db->order_by('trans_vehicle_rental.vehicle_rental_id', 'DESC');
+			$result = $this->db->get()->result_array();
+			return $result;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		public function getProductionResultItem_Detail($production_result_id, $item_check, $item_id){
 			$this->db->select('production_result_item.item_category_id, invt_item_category.item_category_name, production_result_item.item_id, invt_item.item_name, production_result_item.quantity, production_result_item.item_unit_id, invt_item_unit.item_unit_name');
@@ -105,13 +155,7 @@
 			return $result;
 		}
 
-		public function insertProductionResult($data){
-			if($this->db->insert('production_result', $data)){
-				return true;
-			}else{
-				return false;
-			}
-		}
+		
 
 		public function getProductionResultID($created_id){
 			$this->db->select('production_result.production_result_id');

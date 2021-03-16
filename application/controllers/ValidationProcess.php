@@ -78,17 +78,17 @@
 			$this->form_validation->set_rules('username', 'Username', 'required');
 			
 			if($this->form_validation->run()==true){
-				$verify 	= $this->ValidationProcess_model->verifyData($data);
-				if(count($verify)>1){
+				$systemuser 	= $this->ValidationProcess_model->getSystemUser($data);
+				if(count($systemuser)>1){
 
-					$this->fungsi->set_log($verify['user_id'], $verify['username'],'1001','Application.ValidationProcess.verifikasi',$verify['username'],'Login System');
+					$this->fungsi->set_log($systemuser['user_id'], $systemuser['username'],'1001','Application.ValidationProcess.verifikasi',$systemuser['username'],'Login System');
 					
 					$this->session->set_userdata('auth', array(
-									'user_id'					=> $verify['user_id'],
-									'username'					=> $verify['username'],
-									'password'					=> $verify['password'],
-									'user_group_level'			=> $verify['user_group_id'],
-									'user_level'				=> $verify['user_level']
+									'user_id'					=> $systemuser['user_id'],
+									'username'					=> $systemuser['username'],
+									'password'					=> $systemuser['password'],
+									'user_group_level'			=> $systemuser['user_group_id'],
+									'user_level'				=> $systemuser['user_level']
 								)
 							);
 					redirect('MainPage');
@@ -134,31 +134,35 @@
 				'password' 	=> md5($this->input->post('password',true))
 			);
 
-			$data = array(
-				'username' 	=> "administrator",
-				'password' 	=> md5("123456")
-			);
-			
 			if (empty($data)){
 				$response['error'] 				= TRUE;
 				$response['error_msg_title'] 	= "No Data";
 				$response['error_msg'] 			= "Data Login is Empty";
 			} else {
 				if($response["error"] == FALSE){
-					$verify 	= $this->ValidationProcess_model->verifyData($data);
+					$systemuserlist 	= $this->ValidationProcess_model->getSystemUser($data);
 
-					if($verify == false){
+					if($systemuserlist == false){
 						$response['error'] 				= TRUE;
 						$response['error_msg_title'] 	= "No Data";
 						$response['error_msg'] 			= "Error Query Data";
 					}else{
-						if (empty($verify)){
+						if (empty($systemuserlist)){
 							$response['error'] 				= TRUE;
 							$response['error_msg_title'] 	= "No Data";
 							$response['error_msg'] 			= "Data Does Not Exist";
 						} else {
-							$systemuser[0]['user_id'] 		= $verify['user_id'];
-							$systemuser[0]['username'] 		= $verify['username'];
+							$corevendor = $this->ValidationProcess_model->getCoreVendor_Detail($systemuserlist['vendor_id']);
+
+							$systemuser[0]['user_id'] 			= $systemuserlist['user_id'];
+							$systemuser[0]['username'] 			= $systemuserlist['username'];
+							$systemuser[0]['region_id'] 		= $systemuserlist['region_id'];
+							$systemuser[0]['branch_id'] 		= $systemuserlist['branch_id'];
+							$systemuser[0]['vendor_id'] 		= $systemuserlist['vendor_id'];
+							$systemuser[0]['vendor_code'] 		= $systemuserlist['vendor_code'];
+							$systemuser[0]['vendor_name'] 		= $systemuserlist['vendor_name'];
+							$systemuser[0]['vendor_address'] 	= $systemuserlist['vendor_address'];
+							$systemuser[0]['vendor_phone'] 		= $systemuserlist['vendor_phone'];
 							
 							$response['error'] 				= FALSE;
 							$response['error_msg_title'] 	= "Success";

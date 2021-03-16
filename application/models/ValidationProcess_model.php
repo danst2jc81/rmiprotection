@@ -7,8 +7,8 @@
 			$this->CI = get_instance();
 		}
 		
-		public function verifyData($data){
-			$this->db->select('user_id, username, password, user_group_id, log_state, user_level');
+		public function getSystemUser($data){
+			$this->db->select('user_id, username, password, user_group_id, log_state, user_level, region_id, branch_id, vendor_id');
 			$this->db->from('system_user');
 			$this->db->where('username', $data['username']);
 			$this->db->where('password', $data['password']);
@@ -52,5 +52,13 @@
 			$result = $this->db->get()->row_array();
 			return $result['company_name'];
 		}
+
+		public function getCoreVendor_Detail($vendor_id){
+			$this->db->select('core_vendor.vendor_id, core_vendor.region_id, core_vendor.branch_id, core_vendor.province_id, core_vendor.city_id, core_vendor.vendor_code, core_vendor.vendor_name, core_vendor.vendor_address, core_vendor.vendor_phone');
+			$this->db->from('core_vendor');
+			$this->db->where('core_vendor.vendor_id', $vendor_id);
+			$result = $this->db->get()->row_array();
+			return $result;
+		}	
 	}
 ?>

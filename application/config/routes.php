@@ -78,3 +78,7 @@ $route['branch/delete/(:num)']	        = 'CoreBranch/deleteCoreBranch/$1';
 $route['branch/process-add'] 	        = 'CoreBranch/processAddCoreBranch';
 $route['branch/process-edit'] 	        = 'CoreBranch/processEditCoreBranch';
 $route['branch/get-city']   	        = 'CoreBranch/getCoreCity';
+
+/* REGISTRATION TENANT */
+$route['registrasi/baru/(:num)']    	= 'RegistrationTenant/AddRegistrationTenant/$1';
+$route['registrasi/process-add'] 	    = 'RegistrationTenant/processAddRegistrationTenant';

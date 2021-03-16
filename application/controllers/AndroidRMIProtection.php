@@ -1,93 +1,244 @@
 <?php
-	Class AndroidMitraUtama extends CI_Controller {
+	Class AndroidRMIProtection extends CI_Controller {
 		public function __construct(){
 			parent::__construct();
-			$this->load->model('AndroidMitraUtama_model');
+			$this->load->model('AndroidRMIProtection_model');
 			$this->load->library('configuration');
 			$this->load->helper('sistem');
 			$this->load->database("default");
 			$this->load->helper('url');
 		}
 		
-		public function getProductionResult(){
+		public function getRegistrationTenant(){
 			$base_url = base_url();
 
 			$response = array(
 				'error'							=> FALSE,
 				'error_msg'						=> "",
 				'error_msg_title'				=> "",
-				'productionresult'				=> "",
+				'registrationtenant'			=> "",
 			);
 
 			$data = array(
-				'warehouse_check'		=> $this->input->post('warehouse_check',true),
-				'machine_check'			=> $this->input->post('machine_check',true),
-				'item_check'			=> $this->input->post('item_check',true),
-				'period_date_check'		=> $this->input->post('period_date_check',true),
-				'warehouse_id'			=> $this->input->post('warehouse_id',true),
-				'machine_id'			=> $this->input->post('machine_id',true),				
-				'item_id'				=> $this->input->post('item_id',true),				
-				'start_date'			=> $this->input->post('start_date',true),
-				'end_date'				=> $this->input->post('end_date',true),
+				'region_id'			=> $this->input->post('region_id',true),
+				'branch_id'			=> $this->input->post('branch_id',true),
+				'vendor_id'			=> $this->input->post('vendor_id',true),
+				'tenant_status'		=> $this->input->post('tenant_status',true),
 			);
 
-			if ($data['period_date_check'] == 0){
-				$start_date 	= date("Y-m-d");
-				$end_date 		= date("Y-m-d");
-			} else {
-				$start_date 	= $data['start_date'];
-				$end_date 		= $data['end_date'];
-			}
-
 			if($response["error"] == FALSE){
-				$productionresultlist 	= $this->AndroidMitraUtama_model->getProductionResult($data);
+				$registrationtenantlist 	= $this->AndroidRMIProtection_model->getRegistrationTenant($data['region_id'], $data['branch_id'], $data['vendor_id'], $data['tenant_status']);
 
-				/* print_r("salesyearlymonthlylist ");
-				print_r($salesyearlymonthlylist);
-				print_r("<BR> "); */
-				/* exit; */
-
-				if(!$productionresultlist){
+				if(!$registrationtenantlist){
 					$response['error'] 				= TRUE;
 					$response['error_msg_title'] 	= "No Data";
 					$response['error_msg'] 			= "Error Query Data";
 				}else{
-					if (empty($productionresultlist)){
+					if (empty($registrationtenantlist)){
 						$response['error'] 				= TRUE;
 						$response['error_msg_title'] 	= "No Data";
 						$response['error_msg'] 			= "Data Does Not Exist";
 					} else {
-						if (!empty($productionresultlist)){
-							foreach ($productionresultlist as $key => $val) {
+						if (!empty($registrationtenantlist)){
+							foreach ($registrationtenantlist as $key => $val) {
+								$tenantstatus 		= $this->configuration->TenantStatus();
+								$tenant_status_name = $tenantstatus[$val['tenant_status']];
 
-								$productionresult[$key]['production_result_id'] 	= $val['production_result_id'];
-								$productionresult[$key]['warehouse_id'] 			= $val['warehouse_id'];
-								$productionresult[$key]['warehouse_name'] 			= $val['warehouse_name'];
-								$productionresult[$key]['machine_id'] 				= $val['machine_id'];
-								$productionresult[$key]['machine_name'] 			= $val['machine_name'];
-								$productionresult[$key]['production_result_date'] 	= tgltoview($val['production_result_date']);
-		
-								$productionresultitemlist = $this->AndroidMitraUtama_model->getProductionResultItem_Detail($val['production_result_id'], $data['item_check'], $data['item_id']);
-
-								$production_result_item_list = "";
-
-								foreach ($productionresultitemlist as $keyItem => $valItem) {
-									$productionresult[$key]['detail_item'][$keyItem]['item_name']			= $valItem['item_name'];
-									$productionresult[$key]['detail_item'][$keyItem]['quantity']			= nominal($valItem['quantity']);
-									$productionresult[$key]['detail_item'][$keyItem]['item_unit_name']			= $valItem['item_unit_name'];
-								}
+								$registrationtenant[$key]['tenant_id'] 					= $val['tenant_id'];
+								$registrationtenant[$key]['region_id'] 					= $val['region_id'];
+								$registrationtenant[$key]['region_name'] 				= $val['region_name'];
+								$registrationtenant[$key]['branch_id'] 					= $val['branch_id'];
+								$registrationtenant[$key]['branch_name'] 				= $val['branch_name'];
+								$registrationtenant[$key]['province_id'] 				= $val['province_id'];
+								$registrationtenant[$key]['province_name'] 				= $val['province_name'];
+								$registrationtenant[$key]['city_id'] 					= $val['city_id'];
+								$registrationtenant[$key]['city_name'] 					= $val['city_name'];
+								$registrationtenant[$key]['tenant_name'] 				= $val['tenant_name'];
+								$registrationtenant[$key]['tenant_registration_date'] 	= $val['tenant_registration_date'];
+								$registrationtenant[$key]['tenant_address'] 			= $val['tenant_address'];
+								$registrationtenant[$key]['tenant_mobile_phone'] 		= $val['tenant_mobile_phone'];
+								$registrationtenant[$key]['tenant_nik'] 				= $val['tenant_nik'];
+								$registrationtenant[$key]['tenant_profile_photo'] 		= $val['tenant_profile_photo'];
+								$registrationtenant[$key]['tenant_nik_photo'] 			= $val['tenant_nik_photo'];
+								$registrationtenant[$key]['tenant_status_name'] 		= $tenant_status_name;
+								$registrationtenant[$key]['tenant_status_id'] 			= $val['tenant_status_id'];
+								$registrationtenant[$key]['tenant_status_on'] 			= $val['tenant_status_on'];
+								$registrationtenant[$key]['tenant_status_remark'] 		= $val['tenant_status_remark'];
 							}
 						}
 						
 						$response['error'] 							= FALSE;
 						$response['error_msg_title'] 				= "Success";
 						$response['error_msg'] 						= "Data Exist";
-						$response['productionresult'] 				= $productionresult;
+						$response['registrationtenant'] 			= $registrationtenant;
 					}
 				}
 			}
 			echo json_encode($response);
 		}
+
+		public function getCoreVehicle(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'corevehicle'			=> "",
+			);
+
+			$data = array(
+				'vendor_id'			=> $this->input->post('vendor_id',true),
+			);
+
+			if($response["error"] == FALSE){
+				$corevehiclelist = $this->AndroidRMIProtection_model->getCoreVehicle($data['vendor_id']);
+
+				if(!$corevehiclelist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($corevehiclelist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						foreach ($corevehiclelist as $key => $val) {
+							$corevehicle[$key]['vehicle_id']				= $val['vehicle_id'];
+							$corevehicle[$key]['vehicle_police_number'] 	= $val['vehicle_police_number'];
+						}
+						
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['corevehicle'] 			= $corevehicle;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
+
+		public function processAddTransVehicleRental(){
+			$vehicle_rental_date 		= date("Y-m-d");
+			$vehicle_rental_return_date	= date("Y-m-d");
+
+			$data = array (
+				'vendor_id'						=> $this->input->post('vendor_id',true),
+				'vehicle_id'					=> $this->input->post('vehicle_id',true),
+				'tenant_id'						=> $this->input->post('tenant_id',true),
+				'vehicle_rental_date'			=> $vehicle_rental_date,
+				'vehicle_rental_return_date'	=> $vehicle_rental_return_date,
+				'data_state'					=> 0,
+				'created_id'					=> $this->input->post('vendor_id',true)
+			);
+
+			$response = array(
+				'error'						=> FALSE,
+				'error_msg_title'			=> "",
+				'error_msg'					=> "",
+			);
+			
+			if($response["error"] == FALSE){
+				if ($this->AndroidRMIProtection_model->insertTransVehicleRental($data)){
+					
+				}
+
+				$response['error']		 					= FALSE;
+				$response['error_msg_title'] 				= "Success";
+				$response['error_msg'] 						= "Data Saved";
+			}
+			
+			echo json_encode($response);
+		}
+
+		public function getTransVehicleRental(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'transvehiclerental'			=> "",
+			);
+
+			$data = array(
+				'vendor_id'			=> $this->input->post('vendor_id',true),
+			);
+
+			if($response["error"] == FALSE){
+				$transvehiclerentallist 	= $this->AndroidRMIProtection_model->getTransVehicleRental($data['vendor_id']);
+
+				if(!$transvehiclerentallist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($transvehiclerentallist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						if (!empty($transvehiclerentallist)){
+							foreach ($transvehiclerentallist as $key => $val) {
+
+								$transvehiclerental[$key]['vehicle_rental_id'] 				= $val['vehicle_rental_id'];
+								$transvehiclerental[$key]['vehicle_id'] 					= $val['vehicle_id'];
+								$transvehiclerental[$key]['vehicle_police_number'] 			= $val['vehicle_police_number'];
+								$transvehiclerental[$key]['tenant_id'] 						= $val['tenant_id'];
+								$transvehiclerental[$key]['tenant_name'] 					= $val['tenant_name'];
+								$transvehiclerental[$key]['tenant_mobile_phone'] 			= $val['tenant_mobile_phone'];
+								$transvehiclerental[$key]['tenant_address'] 				= $val['tenant_address'];
+								$transvehiclerental[$key]['tenant_nik'] 					= $val['tenant_nik'];
+								$transvehiclerental[$key]['vehicle_rental_date'] 			= tgltoview($val['vehicle_rental_date']);
+								$transvehiclerental[$key]['vehicle_rental_return_date'] 	= tgltoview($val['vehicle_rental_return_date']);
+							}
+						}
+						
+						$response['error'] 							= FALSE;
+						$response['error_msg_title'] 				= "Success";
+						$response['error_msg'] 						= "Data Exist";
+						$response['transvehiclerental'] 			= $transvehiclerental;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		public function getInvtWarehouse(){
 			$base_url = base_url();
@@ -100,7 +251,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$invtwarehouselist = $this->AndroidMitraUtama_model->getInvtWarehouse();
+				$invtwarehouselist = $this->AndroidRMIProtection_model->getInvtWarehouse();
 
 				if(!$invtwarehouselist){
 					$response['error'] 				= TRUE;
@@ -149,7 +300,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$coremachinelist = $this->AndroidMitraUtama_model->getCoreMachine($data['warehouse_id']);
+				$coremachinelist = $this->AndroidRMIProtection_model->getCoreMachine($data['warehouse_id']);
 
 				if(!$coremachinelist){
 					$response['error'] 				= TRUE;
@@ -190,7 +341,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$invtitemlist = $this->AndroidMitraUtama_model->getInvtItem_All();
+				$invtitemlist = $this->AndroidRMIProtection_model->getInvtItem_All();
 
 				if(!$invtitemlist){
 					$response['error'] 				= TRUE;
@@ -230,7 +381,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$invtitemcategorylist = $this->AndroidMitraUtama_model->getInvtItemCategory();
+				$invtitemcategorylist = $this->AndroidRMIProtection_model->getInvtItemCategory();
 
 				if(!$invtitemcategorylist){
 					$response['error'] 				= TRUE;
@@ -272,7 +423,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$invtitemlist = $this->AndroidMitraUtama_model->getInvtItem($data['item_category_id']);
+				$invtitemlist = $this->AndroidRMIProtection_model->getInvtItem($data['item_category_id']);
 
 				if(!$invtitemlist){
 					$response['error'] 				= TRUE;
@@ -312,7 +463,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$invtitemunitlist = $this->AndroidMitraUtama_model->getInvtItemUnit();
+				$invtitemunitlist = $this->AndroidRMIProtection_model->getInvtItemUnit();
 
 				if(!$invtitemunitlist){
 					$response['error'] 				= TRUE;
@@ -355,8 +506,8 @@
 			);
 			
 			$data_item = array();
-			$raw_productionresult = json_decode($this->input->post('data_item',true),true);			
-			foreach($raw_productionresult as $keyProductionResult => $valProductionResult){
+			$raw_registrationtenant = json_decode($this->input->post('data_item',true),true);			
+			foreach($raw_registrationtenant as $keyProductionResult => $valProductionResult){
 				$data_item[$keyProductionResult] = array(
 					'item_category_id'				=>	$valProductionResult['item_category_id'],
 					'item_id'						=>	$valProductionResult['item_id'],
@@ -372,7 +523,7 @@
 					$total_item 		= $total_item + $valItem['quantity'];
 				}
 
-				$data_productionresult = array(
+				$data_registrationtenant = array(
 					'warehouse_id'						=> $data['warehouse_id'],
 					'machine_id'						=> $data['machine_id'],
 					'production_result_date'			=> $data['production_result_date'],
@@ -383,11 +534,11 @@
 					'created_on' 						=> date("Y-m-d H:i:s"),
 				);
 			
-				if ($this->AndroidMitraUtama_model->insertProductionResult($data_productionresult)){
-					$production_result_id = $this->AndroidMitraUtama_model->getProductionResultID($data_productionresult['created_id']);
+				if ($this->AndroidRMIProtection_model->insertProductionResult($data_registrationtenant)){
+					$production_result_id = $this->AndroidRMIProtection_model->getProductionResultID($data_registrationtenant['created_id']);
 
 					foreach($data_item as $key => $val){
-						$data_productionresultitem = array (
+						$data_registrationtenantitem = array (
 							'production_result_id'				=> $production_result_id,
 							'item_category_id'					=> $val['item_category_id'],
 							'item_id'							=> $val['item_id'],
@@ -398,11 +549,11 @@
 							'created_on' 						=> date("Y-m-d H:i:s"),
 						);
 						
-						$this->AndroidMitraUtama_model->insertProductionResultItem($data_productionresultitem);
+						$this->AndroidRMIProtection_model->insertProductionResultItem($data_registrationtenantitem);
 					}
 				}
 
-				$response['error_productionresult']		 	= FALSE;
+				$response['error_registrationtenant']		 	= FALSE;
 				$response['error_msg_title'] 				= "Success";
 				$response['error_msg'] 						= "Data Saved";
 				$response["production_result_id"] 			= $production_result_id;
@@ -426,7 +577,7 @@
 			);			
 
 			if($response["error"] == FALSE){
-				$acctexpenselist 	= $this->AndroidMitraUtama_model->getAcctExpense();
+				$acctexpenselist 	= $this->AndroidRMIProtection_model->getAcctExpense();
 
 				if(!$acctexpenselist){
 					$response['error'] 				= TRUE;
@@ -483,7 +634,7 @@
 			);			
 
 			if($response["error"] == FALSE){
-				$acctdisbursementlist 	= $this->AndroidMitraUtama_model->getAcctDisbursement($data['start_date'], $data['end_date']);
+				$acctdisbursementlist 	= $this->AndroidRMIProtection_model->getAcctDisbursement($data['start_date'], $data['end_date']);
 
 				/* print_r("acctdisbursementlist ");
 				print_r($acctdisbursementlist);
@@ -505,7 +656,7 @@
 							$acctdisbursement[$key]['expense_name']					= $val['expense_name'];
 							$acctdisbursement[$key]['disbursement_date']			= tgltoview($val['disbursement_date']);
 
-							$acctdisbursementitemlist = $this->AndroidMitraUtama_model->getAcctDisbursementItem_Detail($val['disbursement_id']);
+							$acctdisbursementitemlist = $this->AndroidRMIProtection_model->getAcctDisbursementItem_Detail($val['disbursement_id']);
 
 							$acct_disbursement_item_list = "";
 
@@ -563,8 +714,8 @@
 
 			if($response["error_acctdisbursement"] == FALSE){
 				if(!empty($data_disbursement)){					
-					if ($this->AndroidMitraUtama_model->insertAcctDisbursement($data_disbursement)){
-						$disbursement_id = $this->AndroidMitraUtama_model->getDisbursementID($data_disbursement['created_id']);
+					if ($this->AndroidRMIProtection_model->insertAcctDisbursement($data_disbursement)){
+						$disbursement_id = $this->AndroidRMIProtection_model->getDisbursementID($data_disbursement['created_id']);
 
 						$data_item = array(
 							'disbursement_id'				=> $disbursement_id,
@@ -572,7 +723,7 @@
 							'disbursement_item_amount'		=> $data_disbursement_item['disbursement_item_amount'],
 						);
 
-						if($this->AndroidMitraUtama_model->insertAcctDisbursementItem($data_item)){
+						if($this->AndroidRMIProtection_model->insertAcctDisbursementItem($data_item)){
 							
 						}
 
@@ -610,7 +761,7 @@
 
 			if($response["error_invtwarehouse"] == FALSE){
 				if(!empty($data_warehouse)){					
-					if ($this->AndroidMitraUtama_model->insertInvtWarehouse($data_warehouse)){
+					if ($this->AndroidRMIProtection_model->insertInvtWarehouse($data_warehouse)){
 
 						$response['error_invtwarehouse'] 		= FALSE;
 						$response['error_msg_title'] 			= "Success";
@@ -654,7 +805,7 @@
 
 			if($response["error_coremachine"] == FALSE){
 				if(!empty($data_machine)){					
-					if ($this->AndroidMitraUtama_model->insertCoreMachine($data_machine)){
+					if ($this->AndroidRMIProtection_model->insertCoreMachine($data_machine)){
 
 						$response['error_coremachine'] 		= FALSE;
 						$response['error_msg_title'] 			= "Success";
@@ -696,7 +847,7 @@
 
 			if($response["error_acctexpense"] == FALSE){
 				if(!empty($data_expense)){					
-					if ($this->AndroidMitraUtama_model->insertAcctExpense($data_expense)){
+					if ($this->AndroidRMIProtection_model->insertAcctExpense($data_expense)){
 
 						$response['error_acctexpense'] 			= FALSE;
 						$response['error_msg_title'] 			= "Success";
@@ -753,7 +904,7 @@
 			print_r("<BR>"); */
 
 			if($response["error"] == FALSE){
-				$salesdeliverynotelist 	= $this->AndroidMitraUtama_model->getSalesDeliveryNote($data, $start_date, $end_date);
+				$salesdeliverynotelist 	= $this->AndroidRMIProtection_model->getSalesDeliveryNote($data, $start_date, $end_date);
 
 				/* print_r("salesyearlymonthlylist ");
 				print_r($salesyearlymonthlylist);
@@ -779,7 +930,7 @@
 								$salesdeliverynote[$key]['customer_name'] 				= $val['customer_name'];
 								$salesdeliverynote[$key]['sales_delivery_note_date'] 	= tgltoview($val['sales_delivery_note_date']);
 		
-								$salesdeliverynoteitemlist = $this->AndroidMitraUtama_model->getSalesDeliveryNoteItem_Detail($val['sales_delivery_note_id'], $data['item_check'], $data['item_id']);
+								$salesdeliverynoteitemlist = $this->AndroidRMIProtection_model->getSalesDeliveryNoteItem_Detail($val['sales_delivery_note_id'], $data['item_check'], $data['item_id']);
 
 								$sales_delivery_note_item_list = "";
 
@@ -812,7 +963,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$salescustomerlist = $this->AndroidMitraUtama_model->getSalesCustomer();
+				$salescustomerlist = $this->AndroidRMIProtection_model->getSalesCustomer();
 
 				if(!$salescustomerlist){
 					$response['error'] 				= TRUE;
@@ -882,8 +1033,8 @@
 					'created_on' 						=> date("Y-m-d H:i:s"),
 				);
 			
-				if ($this->AndroidMitraUtama_model->insertSalesDeliveryNote($data_deliverynote)){
-					$sales_delivery_note_id = $this->AndroidMitraUtama_model->getSalesDeliveryNoteID($data_deliverynote['created_id']);
+				if ($this->AndroidRMIProtection_model->insertSalesDeliveryNote($data_deliverynote)){
+					$sales_delivery_note_id = $this->AndroidRMIProtection_model->getSalesDeliveryNoteID($data_deliverynote['created_id']);
 
 					foreach($data_item as $key => $val){
 						$data_deliverynoteitem = array (
@@ -897,7 +1048,7 @@
 							'created_on' 						=> date("Y-m-d H:i:s"),
 						);
 						
-						$this->AndroidMitraUtama_model->insertSalesDeliveryNoteItem($data_deliverynoteitem);
+						$this->AndroidRMIProtection_model->insertSalesDeliveryNoteItem($data_deliverynoteitem);
 					}
 				}
 
@@ -921,33 +1072,33 @@
 				'error'						=> FALSE,
 				'error_msg'					=> "",
 				'error_msg_title'			=> "",
-				'productionresultdetail'	=> "",
+				'registrationtenantdetail'	=> "",
 			);
 
 			if($response["error"] == FALSE){
-				$productionresultdetaillist = $this->AndroidMitraUtama_model->getProductionResultDetail($data['production_result_id']);
+				$registrationtenantdetaillist = $this->AndroidRMIProtection_model->getProductionResultDetail($data['production_result_id']);
 
-				if(!$productionresultdetaillist){
+				if(!$registrationtenantdetaillist){
 					$response['error'] 				= TRUE;
 					$response['error_msg_title'] 	= "No Data";
 					$response['error_msg'] 			= "Error Query Data";
 				}else{
-					if (empty($productionresultdetaillist)){
+					if (empty($registrationtenantdetaillist)){
 						$response['error'] 				= TRUE;
 						$response['error_msg_title'] 	= "No Data";
 						$response['error_msg'] 			= "Data Does Not Exist";
 					} else {
-						$productionresultdetail[0]['production_result_id']	= $productionresultdetaillist['production_result_id'];
-						$productionresultdetail[0]['warehouse_id'] 			= $productionresultdetaillist['warehouse_id'];
-						$productionresultdetail[0]['warehouse_name'] 		= $productionresultdetaillist['warehouse_name'];
-						$productionresultdetail[0]['machine_id'] 			= $productionresultdetaillist['machine_id'];
-						$productionresultdetail[0]['machine_name'] 			= $productionresultdetaillist['machine_name'];
-						$productionresultdetail[0]['production_result_date'] = tgltoview($productionresultdetaillist['production_result_date']);
+						$registrationtenantdetail[0]['production_result_id']	= $registrationtenantdetaillist['production_result_id'];
+						$registrationtenantdetail[0]['warehouse_id'] 			= $registrationtenantdetaillist['warehouse_id'];
+						$registrationtenantdetail[0]['warehouse_name'] 		= $registrationtenantdetaillist['warehouse_name'];
+						$registrationtenantdetail[0]['machine_id'] 			= $registrationtenantdetaillist['machine_id'];
+						$registrationtenantdetail[0]['machine_name'] 			= $registrationtenantdetaillist['machine_name'];
+						$registrationtenantdetail[0]['production_result_date'] = tgltoview($registrationtenantdetaillist['production_result_date']);
 						
 						$response['error'] 					= FALSE;
 						$response['error_msg_title'] 		= "Success";
 						$response['error_msg'] 				= "Data Exist";
-						$response['productionresultdetail'] = $productionresultdetail;
+						$response['registrationtenantdetail'] = $registrationtenantdetail;
 					}
 				}
 			}
@@ -965,37 +1116,37 @@
 				'error'							=> FALSE,
 				'error_msg'						=> "",
 				'error_msg_title'				=> "",
-				'productionresultitemdetail'	=> "",
+				'registrationtenantitemdetail'	=> "",
 			);
 
 			if($response["error"] == FALSE){
-				$productionresultitemdetaillist = $this->AndroidMitraUtama_model->getProductionResultItemDetail($data['production_result_id']);
+				$registrationtenantitemdetaillist = $this->AndroidRMIProtection_model->getProductionResultItemDetail($data['production_result_id']);
 
-				if(!$productionresultitemdetaillist){
+				if(!$registrationtenantitemdetaillist){
 					$response['error'] 				= TRUE;
 					$response['error_msg_title'] 	= "No Data";
 					$response['error_msg'] 			= "Error Query Data";
 				}else{
-					if (empty($productionresultitemdetaillist)){
+					if (empty($registrationtenantitemdetaillist)){
 						$response['error'] 				= TRUE;
 						$response['error_msg_title'] 	= "No Data";
 						$response['error_msg'] 			= "Data Does Not Exist";
 					} else {
-						foreach ($productionresultitemdetaillist as $key => $val) {
-							$productionresultitemdetail[$key]['production_result_item_id']	= $val['production_result_item_id'];
-							$productionresultitemdetail[$key]['item_category_id'] 			= $val['item_category_id'];
-							$productionresultitemdetail[$key]['item_category_name'] 		= $val['item_category_name'];
-							$productionresultitemdetail[$key]['item_id'] 					= $val['item_id'];
-							$productionresultitemdetail[$key]['item_name'] 					= $val['item_name'];
-							$productionresultitemdetail[$key]['item_unit_id'] 				= $val['item_unit_id'];
-							$productionresultitemdetail[$key]['item_unit_name'] 			= $val['item_unit_name'];
-							$productionresultitemdetail[$key]['quantity'] 					= $val['quantity'];
+						foreach ($registrationtenantitemdetaillist as $key => $val) {
+							$registrationtenantitemdetail[$key]['production_result_item_id']	= $val['production_result_item_id'];
+							$registrationtenantitemdetail[$key]['item_category_id'] 			= $val['item_category_id'];
+							$registrationtenantitemdetail[$key]['item_category_name'] 		= $val['item_category_name'];
+							$registrationtenantitemdetail[$key]['item_id'] 					= $val['item_id'];
+							$registrationtenantitemdetail[$key]['item_name'] 					= $val['item_name'];
+							$registrationtenantitemdetail[$key]['item_unit_id'] 				= $val['item_unit_id'];
+							$registrationtenantitemdetail[$key]['item_unit_name'] 			= $val['item_unit_name'];
+							$registrationtenantitemdetail[$key]['quantity'] 					= $val['quantity'];
 						}
 						
 						$response['error'] 						= FALSE;
 						$response['error_msg_title'] 			= "Success";
 						$response['error_msg'] 					= "Data Exist";
-						$response['productionresultitemdetail'] = $productionresultitemdetail;
+						$response['registrationtenantitemdetail'] = $registrationtenantitemdetail;
 					}
 				}
 			}
@@ -1017,7 +1168,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$salesdeliverynotedetaillist = $this->AndroidMitraUtama_model->getSalesDeliveryNoteDetail($data['sales_delivery_note_id']);
+				$salesdeliverynotedetaillist = $this->AndroidRMIProtection_model->getSalesDeliveryNoteDetail($data['sales_delivery_note_id']);
 
 				if(!$salesdeliverynotedetaillist){
 					$response['error'] 				= TRUE;
@@ -1060,7 +1211,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$salesdeliverynoteitemdetaillist = $this->AndroidMitraUtama_model->getSalesDeliveryNoteItemDetail($data['sales_delivery_note_id']);
+				$salesdeliverynoteitemdetaillist = $this->AndroidRMIProtection_model->getSalesDeliveryNoteItemDetail($data['sales_delivery_note_id']);
 
 				if(!$salesdeliverynoteitemdetaillist){
 					$response['error'] 				= TRUE;
@@ -1108,7 +1259,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$acctdisbursementdetaillist = $this->AndroidMitraUtama_model->getAcctDisbursementDetail($data['disbursement_id']);
+				$acctdisbursementdetaillist = $this->AndroidRMIProtection_model->getAcctDisbursementDetail($data['disbursement_id']);
 
 				if(!$acctdisbursementdetaillist){
 					$response['error'] 				= TRUE;
@@ -1151,7 +1302,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$acctdisbursementitemdetaillist = $this->AndroidMitraUtama_model->getAcctDisbursementItemDetail($data['disbursement_id']);
+				$acctdisbursementitemdetaillist = $this->AndroidRMIProtection_model->getAcctDisbursementItemDetail($data['disbursement_id']);
 
 				if(!$acctdisbursementitemdetaillist){
 					$response['error'] 				= TRUE;
@@ -1201,7 +1352,7 @@
 					'voided_remark'				=> $data['voided_remark'],
 				);
 			
-				if ($this->AndroidMitraUtama_model->voidSalesDeliveryNote($data_deletesalesdeliverynote)){
+				if ($this->AndroidRMIProtection_model->voidSalesDeliveryNote($data_deletesalesdeliverynote)){
 					
 				}
 
@@ -1227,7 +1378,7 @@
 			);
 			
 			if($response["error"] == FALSE){
-				$data_deleteproductionresult = array(
+				$data_deleteregistrationtenant = array(
 					'production_result_id'		=> $data['production_result_id'],
 					'data_state'				=> 2,
 					'voided_id'					=> $data['user_id'],
@@ -1235,11 +1386,11 @@
 					'voided_remark'				=> $data['voided_remark'],
 				);
 			
-				if ($this->AndroidMitraUtama_model->voidProductionResult($data_deleteproductionresult)){
+				if ($this->AndroidRMIProtection_model->voidProductionResult($data_deleteregistrationtenant)){
 					
 				}
 
-				$response['error_deleteproductionresult']	= FALSE;
+				$response['error_deleteregistrationtenant']	= FALSE;
 				$response['error_msg_title'] 				= "Success";
 				$response['error_msg'] 						= "Data Saved";
 			}
@@ -1269,7 +1420,7 @@
 					'voided_remark'				=> $data['voided_remark'],
 				);
 			
-				if ($this->AndroidMitraUtama_model->voidAcctDisbursement($data_deleteacctdisbursement)){
+				if ($this->AndroidRMIProtection_model->voidAcctDisbursement($data_deleteacctdisbursement)){
 					
 				}
 
@@ -1328,7 +1479,7 @@
 					'created_on'						=> date("Y-m-d H:i:s"),
 				);
 			
-				if ($this->AndroidMitraUtama_model->updateSalesDeliveryNote($data_deliverynote)){
+				if ($this->AndroidRMIProtection_model->updateSalesDeliveryNote($data_deliverynote)){
 
 					foreach($data_item as $key => $val){
 						$data_salesdeliverynoteitem = array(
@@ -1343,7 +1494,7 @@
 						);
 
 						if ($val['item_status'] == 1){
-							if ($this->AndroidMitraUtama_model->insertSalesDeliveryNoteItem($data_salesdeliverynoteitem)){
+							if ($this->AndroidRMIProtection_model->insertSalesDeliveryNoteItem($data_salesdeliverynoteitem)){
 								$status = 1;
 
 								/* $this->fungsi->set_log($auth['user_id'], $data_salesdeliverynoteitem['sales_delivery_note_id'], '5111', 'SalesDeliveryNote.processAddSalesDeliveryNoteItem', 'Add New Sales Delivery Note Item'); */
@@ -1364,7 +1515,7 @@
 								'voided_on'						=> date("Y-m-d H:i:s"),
 							);
 
-							if ($this->AndroidMitraUtama_model->voidSalesDeliveryNoteItem($data_delete)){
+							if ($this->AndroidRMIProtection_model->voidSalesDeliveryNoteItem($data_delete)){
 								$status = 1;
 
 								/* $this->fungsi->set_log($auth['user_id'], $data_delete['sales_delivery_note_item_id'], '5112', 'SalesDeliveryNoteItem.processVoidSalesDeliveryNoteItem', 'Void Sales Delivery Note Item'); */
@@ -1403,8 +1554,8 @@
 			);
 			
 			$data_item = array();
-			$raw_productionresult = json_decode($this->input->post('data_item',true),true);			
-			foreach($raw_productionresult as $keyProductionResult => $valProductionResult){
+			$raw_registrationtenant = json_decode($this->input->post('data_item',true),true);			
+			foreach($raw_registrationtenant as $keyProductionResult => $valProductionResult){
 				$data_item[$keyProductionResult] = array(
 					'production_result_item_id'		=>	$valProductionResult['record_id'],
 					'item_category_id'				=>	$valProductionResult['item_category_id'],
@@ -1424,7 +1575,7 @@
 					}
 				}
 
-				$data_productionresult = array(
+				$data_registrationtenant = array(
 					'production_result_id'			=> $data['production_result_id'],
 					'warehouse_id'					=> $data['warehouse_id'],
 					'machine_id'					=> $data['machine_id'],
@@ -1434,10 +1585,10 @@
 					'created_on'					=> date("Y-m-d H:i:s"),
 				);
 			
-				if ($this->AndroidMitraUtama_model->updateProductionResult($data_productionresult)){
+				if ($this->AndroidRMIProtection_model->updateProductionResult($data_registrationtenant)){
 
 					foreach($data_item as $key => $val){
-						$data_productionresultitem = array(
+						$data_registrationtenantitem = array(
 							'production_result_id'		=> $data['production_result_id'],
 							'item_category_id'			=> $val['item_category_id'],
 							'item_id'					=> $val['item_id'],
@@ -1449,7 +1600,7 @@
 						);
 
 						if ($val['item_status'] == 1){
-							if ($this->AndroidMitraUtama_model->insertProductionResultItem($data_productionresultitem)){
+							if ($this->AndroidRMIProtection_model->insertProductionResultItem($data_registrationtenantitem)){
 								$status = 1;
 
 								/* $this->fungsi->set_log($auth['user_id'], $data_salesdeliverynoteitem['sales_delivery_note_id'], '5111', 'SalesDeliveryNote.processAddSalesDeliveryNoteItem', 'Add New Sales Delivery Note Item'); */
@@ -1470,7 +1621,7 @@
 								'voided_on'						=> date("Y-m-d H:i:s"),
 							);
 
-							if ($this->AndroidMitraUtama_model->voidProductionResultItem($data_delete)){
+							if ($this->AndroidRMIProtection_model->voidProductionResultItem($data_delete)){
 								$status = 1;
 
 								/* $this->fungsi->set_log($auth['user_id'], $data_delete['sales_delivery_note_item_id'], '5112', 'SalesDeliveryNoteItem.processVoidSalesDeliveryNoteItem', 'Void Sales Delivery Note Item'); */
@@ -1482,7 +1633,7 @@
 					}
 				}
 
-				$response['error_productionresult']	 	= FALSE;
+				$response['error_registrationtenant']	 	= FALSE;
 				$response['error_msg_title'] 			= "Success";
 				$response['error_msg'] 					= "Data Saved";
 				$response["production_result_id"] 		= $data['production_result_id'];
@@ -1506,7 +1657,7 @@
 			);
 
 			if($response["error"] == FALSE){
-				$acctdisbursementdetaillist = $this->AndroidMitraUtama_model->getUpdateAcctDisbursementDetail($data['disbursement_id']);
+				$acctdisbursementdetaillist = $this->AndroidRMIProtection_model->getUpdateAcctDisbursementDetail($data['disbursement_id']);
 
 				if(!$acctdisbursementdetaillist){
 					$response['error'] 				= TRUE;
@@ -1565,14 +1716,14 @@
 
 			if($response["error_acctdisbursement"] == FALSE){
 				if(!empty($data_acctdisbursement)){					
-					if ($this->AndroidMitraUtama_model->updateAcctDisbursement($data_acctdisbursement)){
+					if ($this->AndroidRMIProtection_model->updateAcctDisbursement($data_acctdisbursement)){
 						$data_item = array(
 							'disbursement_id'				=> $data_acctdisbursement['disbursement_id'],
 							'disbursement_item_title'		=> $data_acctdisbursementitem['disbursement_item_title'],
 							'disbursement_item_amount'		=> $data_acctdisbursementitem['disbursement_item_amount'],
 						);
 
-						if($this->AndroidMitraUtama_model->updateAcctDisbursementItem($data_item)){
+						if($this->AndroidRMIProtection_model->updateAcctDisbursementItem($data_item)){
 							
 						}
 
@@ -1609,7 +1760,7 @@
 			); */
 
 			if($response["error"] == FALSE){
-				$invtitemstocklist = $this->AndroidMitraUtama_model->getInvtItemStock($data['item_category_id']);
+				$invtitemstocklist = $this->AndroidRMIProtection_model->getInvtItemStock($data['item_category_id']);
 
 				/* print_r("invtitemstocklist ");
 				print_r($invtitemstocklist);

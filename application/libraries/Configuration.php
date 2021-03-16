@@ -11,23 +11,12 @@ class Configuration {
 
 	}
 
-	public function PackageCustomDomain(){
-		$packagecustomdomian = array ( 0 => 'Tidak Custom Domain', 1 => 'Custom Domain');
+	public function TenantStatus(){
+		$tenantstatus = array ( 0 => 'New', 1 => 'Active', 9 => 'Blacklist');
 
-		return $packagecustomdomian;
+		return $tenantstatus;
 	}
 
-	public function PackageDonation(){
-		$packagedonation = array (1 => 'Bisa Donasi', 0 => 'Tidak Bisa Donasi');
-
-		return $packagedonation;
-	}
-
-	public function PackageGift(){
-		$packagegift = array (0 => 'Tidak Menerima Hadiah', 1 => 'Menerima Hadiah');
-
-		return $packagegift;
-	}
 
 
 
