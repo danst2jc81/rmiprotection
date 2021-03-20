@@ -8,7 +8,7 @@
 		}
 
 		public function getRegistrationTenant($region_id, $branch_id, $vendor_id, $tenant_status){
-			$this->db->select('registration_tenant.tenant_id, registration_tenant.region_id, core_region.region_name, registration_tenant.branch_id, core_branch.branch_name, registration_tenant.province_id, core_province.province_name, registration_tenant.city_id, core_city.city_name, registration_tenant.tenant_name, registration_tenant.tenant_registration_date, registration_tenant.tenant_address, registration_tenant.tenant_mobile_phone, registration_tenant.tenant_nik, registration_tenant.tenant_profile_photo, registration_tenant.tenant_nik_photo, registration_tenant.tenant_status, registration_tenant.tenant_status_id, registration_tenant.tenant_status_on, registration_tenant.tenant_status_remark');
+			$this->db->select('registration_tenant.tenant_id, registration_tenant.region_id, core_region.region_name, registration_tenant.branch_id, core_branch.branch_name, registration_tenant.vendor_id, core_vendor.vendor_name, registration_tenant.province_id, core_province.province_name, registration_tenant.city_id, core_city.city_name, registration_tenant.tenant_name, registration_tenant.tenant_registration_date, registration_tenant.tenant_address, registration_tenant.tenant_mobile_phone, registration_tenant.tenant_nik, registration_tenant.tenant_profile_photo, registration_tenant.tenant_nik_photo, registration_tenant.tenant_status, registration_tenant.tenant_status_id, registration_tenant.tenant_status_on, registration_tenant.tenant_status_remark');
 			$this->db->from('registration_tenant');
 			$this->db->join('core_region', 'registration_tenant.region_id = core_region.region_id');
 			$this->db->join('core_branch', 'registration_tenant.branch_id = core_branch.branch_id');
@@ -18,7 +18,10 @@
 			$this->db->where('registration_tenant.region_id', $region_id);
 			$this->db->where('registration_tenant.branch_id', $branch_id);
 			$this->db->where('registration_tenant.vendor_id', $vendor_id);
-			$this->db->where('registration_tenant.tenant_status', $tenant_status);
+
+			if ($tenant_status != ''){
+				$this->db->where('registration_tenant.tenant_status', $tenant_status);
+			}
 			$this->db->order_by('registration_tenant.tenant_id', 'DESC');
 			$result = $this->db->get()->result_array();
 			return $result;
@@ -34,8 +37,10 @@
 			return $result;
 		}
 
-		public function insertTransVehicleRental($data){
-			if($this->db->insert('trans_vehicle_rental', $data)){
+		public function updateTransVehicleRental($data){
+			$this->db->where("trans_vehicle_rental.vehicle_rental_id", $data['vehicle_rental_id']);
+			$query = $this->db->update('trans_vehicle_rental', $data);
+			if($query){
 				return true;
 			}else{
 				return false;
@@ -43,27 +48,77 @@
 		}
 
 		public function getTransVehicleRental($vendor_id){
-			$this->db->select('trans_vehicle_rental.vehicle_rental_id, trans_vehicle_rental.vehicle_id, core_vehicle.vehicle_police_number, trans_vehicle_rental.tenant_id, registration_tenant.tenant_name, registration_tenant.tenant_address, registration_tenant.tenant_mobile_phone, registration_tenant.tenant_nik, trans_vehicle_rental.vehicle_rental_date, trans_vehicle_rental.vehicle_rental_return_date');
+			$this->db->select('trans_vehicle_rental.vehicle_rental_id, trans_vehicle_rental.vehicle_id, core_vehicle.vehicle_police_number, trans_vehicle_rental.tenant_id, registration_tenant.tenant_name, registration_tenant.tenant_address, registration_tenant.tenant_mobile_phone, registration_tenant.tenant_nik, registration_tenant.tenant_status, trans_vehicle_rental.vehicle_rental_date, trans_vehicle_rental.vehicle_rental_return_date');
 			$this->db->from('trans_vehicle_rental');
 			$this->db->join('core_vehicle', 'trans_vehicle_rental.vehicle_id = core_vehicle.vehicle_id');
 			$this->db->join('registration_tenant', 'trans_vehicle_rental.tenant_id = registration_tenant.tenant_id');
 			$this->db->where('trans_vehicle_rental.vendor_id', $vendor_id);
+			$this->db->where('trans_vehicle_rental.vehicle_id <> ', 0);
 			$this->db->order_by('trans_vehicle_rental.vehicle_rental_id', 'DESC');
 			$result = $this->db->get()->result_array();
 			return $result;
 		}
 
+		public function updateRegistrationTenant($data){
+			$this->db->where("registration_tenant.tenant_id", $data['tenant_id']);
+			$query = $this->db->update('registration_tenant', $data);
+			if($query){
+				return true;
+			}else{
+				return false;
+			}
+		}
 
+		public function updateSystemUser($data){
+			$this->db->where('system_user.user_id', $data['user_id']);
+			$query = $this->db->update('system_user', $data);
+			if($query){
+				return true;
+			}else{
+				return false;
+			}
+		}
 
+		public function getRegistrationTenant_Detail($tenant_id){
+			$this->db->select('registration_tenant.tenant_id, registration_tenant.region_id, core_region.region_name, registration_tenant.branch_id, core_branch.branch_name, registration_tenant.vendor_id, core_vendor.vendor_name, registration_tenant.province_id, core_province.province_name, registration_tenant.city_id, core_city.city_name, registration_tenant.tenant_name, registration_tenant.tenant_registration_date, registration_tenant.tenant_address, registration_tenant.tenant_mobile_phone, registration_tenant.tenant_nik, registration_tenant.tenant_profile_photo, registration_tenant.tenant_nik_photo, registration_tenant.tenant_status, registration_tenant.tenant_status_id, registration_tenant.tenant_status_on, registration_tenant.tenant_status_remark');
+			$this->db->from('registration_tenant');
+			$this->db->join('core_region', 'registration_tenant.region_id = core_region.region_id');
+			$this->db->join('core_branch', 'registration_tenant.branch_id = core_branch.branch_id');
+			$this->db->join('core_vendor', 'registration_tenant.vendor_id = core_vendor.vendor_id');
+			$this->db->join('core_province', 'registration_tenant.province_id = core_province.province_id');
+			$this->db->join('core_city', 'registration_tenant.city_id = core_city.city_id');
+			$this->db->where('registration_tenant.tenant_id', $tenant_id);
+			$result = $this->db->get()->row_array();
+			return $result;
+		}
 
+		public function getSystemUser(){
+			$this->db->select('system_user.vendor_id, system_user.user_token');
+			$this->db->from('system_user');
+			$result = $this->db->get()->result_array();
+			return $result;
+		}
 
+		public function getTransVehicleRental_Update($vendor_id){
+			$this->db->select('trans_vehicle_rental.vehicle_rental_id, trans_vehicle_rental.vehicle_id, trans_vehicle_rental.tenant_id, registration_tenant.tenant_name, registration_tenant.tenant_address, registration_tenant.tenant_mobile_phone, registration_tenant.tenant_nik, registration_tenant.tenant_status, trans_vehicle_rental.vehicle_rental_date, trans_vehicle_rental.vehicle_rental_return_date');
+			$this->db->from('trans_vehicle_rental');
+			$this->db->join('registration_tenant', 'trans_vehicle_rental.tenant_id = registration_tenant.tenant_id');
+			$this->db->where('trans_vehicle_rental.vendor_id', $vendor_id);
+			$this->db->where('trans_vehicle_rental.vehicle_id', 0);
+			$this->db->order_by('trans_vehicle_rental.vehicle_rental_id', 'DESC');
+			$result = $this->db->get()->result_array();
+			return $result;
+		}
 
-
-
-
-
-
-
+		public function getTransVehicleRental_DetailUpdate($vehicle_rental_id){
+			$this->db->select('trans_vehicle_rental.vehicle_rental_id, trans_vehicle_rental.vehicle_id, trans_vehicle_rental.tenant_id, registration_tenant.tenant_name, registration_tenant.tenant_address, registration_tenant.tenant_mobile_phone, registration_tenant.tenant_nik, registration_tenant.tenant_status, trans_vehicle_rental.vehicle_rental_date, trans_vehicle_rental.vehicle_rental_return_date');
+			$this->db->from('trans_vehicle_rental');
+			$this->db->join('registration_tenant', 'trans_vehicle_rental.tenant_id = registration_tenant.tenant_id');
+			$this->db->where('trans_vehicle_rental.vehicle_rental_id', $vehicle_rental_id);
+			$this->db->order_by('trans_vehicle_rental.vehicle_rental_id', 'DESC');
+			$result = $this->db->get()->row_array();
+			return $result;
+		}
 
 
 
@@ -510,5 +565,7 @@
 			$result = $this->db->get()->result_array();
 			return $result;
 		}
+
+		
 	}
 ?>

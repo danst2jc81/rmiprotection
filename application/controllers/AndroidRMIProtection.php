@@ -119,18 +119,70 @@
 			echo json_encode($response);
 		}
 
-		public function processAddTransVehicleRental(){
-			$vehicle_rental_date 		= date("Y-m-d");
-			$vehicle_rental_return_date	= date("Y-m-d");
+		public function getTransVehicleRental_DetailUpdate(){
+			$base_url = base_url();
 
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'transvehiclerentaldetail'		=> "",
+			);
+
+			$data = array(
+				'vendor_id'			=> $this->input->post('vendor_id',true),
+				'vehicle_rental_id'	=> $this->input->post('vehicle_rental_id',true),
+			);
+
+			$data = array(
+				'vehicle_rental_id'	=> 2,
+			);
+
+			if($response["error"] == FALSE){
+				$transvehiclerentallist 	= $this->AndroidRMIProtection_model->getTransVehicleRental_DetailUpdate($data['vehicle_rental_id']);
+
+				if(!$transvehiclerentallist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($transvehiclerentallist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						if (!empty($transvehiclerentallist)){
+							$tenantstatus 		= $this->configuration->TenantStatus();
+							$tenant_status_name = $tenantstatus[$transvehiclerentallist['tenant_status']];
+
+							$transvehiclerentaldetail[0]['vehicle_rental_id'] 				= $transvehiclerentallist['vehicle_rental_id'];
+							$transvehiclerentaldetail[0]['tenant_id'] 						= $transvehiclerentallist['tenant_id'];
+							$transvehiclerentaldetail[0]['tenant_name'] 					= $transvehiclerentallist['tenant_name'];
+							$transvehiclerentaldetail[0]['tenant_mobile_phone'] 			= $transvehiclerentallist['tenant_mobile_phone'];
+							$transvehiclerentaldetail[0]['tenant_address'] 					= $transvehiclerentallist['tenant_address'];
+							$transvehiclerentaldetail[0]['tenant_nik'] 						= $transvehiclerentallist['tenant_nik'];
+							$transvehiclerentaldetail[0]['tenant_status_name']				= $tenant_status_name;
+							$transvehiclerentaldetail[0]['vehicle_rental_date'] 			= tgltoview($transvehiclerentallist['vehicle_rental_date']);
+						}
+						
+						$response['error'] 							= FALSE;
+						$response['error_msg_title'] 				= "Success";
+						$response['error_msg'] 						= "Data Exist";
+						$response['transvehiclerentaldetail'] 		= $transvehiclerentaldetail;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
+
+		public function processUpdateTransVehicleRental(){
+					
 			$data = array (
+				'vehicle_rental_id'				=> $this->input->post('vehicle_rental_id',true),
 				'vendor_id'						=> $this->input->post('vendor_id',true),
 				'vehicle_id'					=> $this->input->post('vehicle_id',true),
 				'tenant_id'						=> $this->input->post('tenant_id',true),
-				'vehicle_rental_date'			=> $vehicle_rental_date,
-				'vehicle_rental_return_date'	=> $vehicle_rental_return_date,
-				'data_state'					=> 0,
-				'created_id'					=> $this->input->post('vendor_id',true)
+				'vehicle_rental_return_date'	=> tgltodb($this->input->post('vehicle_rental_return_date',true)),
 			);
 
 			$response = array(
@@ -140,7 +192,7 @@
 			);
 			
 			if($response["error"] == FALSE){
-				if ($this->AndroidRMIProtection_model->insertTransVehicleRental($data)){
+				if ($this->AndroidRMIProtection_model->updateTransVehicleRental($data)){
 					
 				}
 
@@ -181,6 +233,8 @@
 					} else {
 						if (!empty($transvehiclerentallist)){
 							foreach ($transvehiclerentallist as $key => $val) {
+								$tenantstatus 		= $this->configuration->TenantStatus();
+								$tenant_status_name = $tenantstatus[$val['tenant_status']];
 
 								$transvehiclerental[$key]['vehicle_rental_id'] 				= $val['vehicle_rental_id'];
 								$transvehiclerental[$key]['vehicle_id'] 					= $val['vehicle_id'];
@@ -190,6 +244,7 @@
 								$transvehiclerental[$key]['tenant_mobile_phone'] 			= $val['tenant_mobile_phone'];
 								$transvehiclerental[$key]['tenant_address'] 				= $val['tenant_address'];
 								$transvehiclerental[$key]['tenant_nik'] 					= $val['tenant_nik'];
+								$transvehiclerental[$key]['tenant_status_name']				= $tenant_status_name;
 								$transvehiclerental[$key]['vehicle_rental_date'] 			= tgltoview($val['vehicle_rental_date']);
 								$transvehiclerental[$key]['vehicle_rental_return_date'] 	= tgltoview($val['vehicle_rental_return_date']);
 							}
@@ -205,13 +260,213 @@
 			echo json_encode($response);
 		}
 
+		public function processUpdateRegistrationTenant(){
+			$vehicle_rental_date 		= date("Y-m-d");
+			$vehicle_rental_return_date	= date("Y-m-d");
 
+			$data = array (
+				'vendor_id'						=> $this->input->post('vendor_id',true),
+				'tenant_id'						=> $this->input->post('tenant_id',true),
+				'tenant_status'					=> 9,
+				'tenant_status_id'				=> $this->input->post('vendor_id',true),
+				'tenant_status_on'				=> date("Y-m-d H:i:s"),
+				'tenant_status_remark'			=> $this->input->post('tenant_status_remark',true),
+			);
 
+			$response = array(
+				'error'						=> FALSE,
+				'error_msg_title'			=> "",
+				'error_msg'					=> "",
+			);
+			
+			if($response["error"] == FALSE){
+				if ($this->AndroidRMIProtection_model->updateRegistrationTenant($data)){
+					redirect('AndroidRMIProtection/sendRegistrationTenantNotification/'.$data['tenant_status'].'/'.$data['tenant_id'].'/'.$data['vendor_id']);
+				}
 
+				$response['error']		 					= FALSE;
+				$response['error_msg_title'] 				= "Success";
+				$response['error_msg'] 						= "Data Saved";
+			}
+			
+			echo json_encode($response);
+		}
 
+		public function processUpdateSystemUserToken(){
 
+			$data = array(
+				'user_id'						=> $this->input->post('user_id',true),
+				'user_token'					=> $this->input->post('user_token',true),
+			);
+		
+			$response = array(
+				'error'				=> FALSE,
+				'error_msg_title'	=> "",
+				'error_msg'			=> "",
+			);
 
+			if($response["error"] == FALSE){
+				if(!empty($data)){
+					
+					if ($this->AndroidRMIProtection_model->updateSystemUser($data)){
+						$response['error'] 				= FALSE;
+						$response['error_msg_title'] 	= "Update Data Token User";
+						$response['error_msg'] 			= "Update Data Token User Berhasil";			
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "Update Data Token User";
+						$response['error_msg'] 			= "Update Data Token User Gagal";
+					}
+				}
 
+			} 
+			
+			echo json_encode($response);
+		}
+
+		public function getRegistrationTenantDetail(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'registrationtenantdetail'		=> "",
+			);
+
+			$data = array(
+				'tenant_id'			=> $this->input->post('tenant_id',true),
+			);
+
+			if($response["error"] == FALSE){
+				$registrationtenantdetaillist 	= $this->AndroidRMIProtection_model->getRegistrationTenant_Detail($data['tenant_id']);
+
+				if(!$registrationtenantdetaillist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($registrationtenantdetaillist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						if (!empty($registrationtenantdetaillist)){
+							$tenantstatus 		= $this->configuration->TenantStatus();
+							$tenant_status_name = $tenantstatus[$registrationtenantdetaillist['tenant_status']];
+
+							$registrationtenantdetail[0]['tenant_id'] 					= $registrationtenantdetaillist['tenant_id'];
+							$registrationtenantdetail[0]['region_id'] 					= $registrationtenantdetaillist['region_id'];
+							$registrationtenantdetail[0]['region_name'] 				= $registrationtenantdetaillist['region_name'];
+							$registrationtenantdetail[0]['branch_id'] 					= $registrationtenantdetaillist['branch_id'];
+							$registrationtenantdetail[0]['branch_name'] 				= $registrationtenantdetaillist['branch_name'];
+							$registrationtenantdetail[0]['vendor_id'] 					= $registrationtenantdetaillist['vendor_id'];
+							$registrationtenantdetail[0]['vendor_name'] 				= $registrationtenantdetaillist['vendor_name'];
+							$registrationtenantdetail[0]['province_id'] 				= $registrationtenantdetaillist['province_id'];
+							$registrationtenantdetail[0]['province_name'] 				= $registrationtenantdetaillist['province_name'];
+							$registrationtenantdetail[0]['city_id'] 					= $registrationtenantdetaillist['city_id'];
+							$registrationtenantdetail[0]['city_name'] 					= $registrationtenantdetaillist['city_name'];
+							$registrationtenantdetail[0]['tenant_name'] 				= $registrationtenantdetaillist['tenant_name'];
+							$registrationtenantdetail[0]['tenant_registration_date'] 	= $registrationtenantdetaillist['tenant_registration_date'];
+							$registrationtenantdetail[0]['tenant_address'] 				= $registrationtenantdetaillist['tenant_address'];
+							$registrationtenantdetail[0]['tenant_mobile_phone'] 		= $registrationtenantdetaillist['tenant_mobile_phone'];
+							$registrationtenantdetail[0]['tenant_nik'] 					= $registrationtenantdetaillist['tenant_nik'];
+							$registrationtenantdetail[0]['tenant_profile_photo'] 		= $registrationtenantdetaillist['tenant_profile_photo'];
+							$registrationtenantdetail[0]['tenant_nik_photo'] 			= $registrationtenantdetaillist['tenant_nik_photo'];
+							$registrationtenantdetail[0]['tenant_status_name'] 			= $tenant_status_name;
+							$registrationtenantdetail[0]['tenant_status_id'] 			= $registrationtenantdetaillist['tenant_status_id'];
+							$registrationtenantdetail[0]['tenant_status_on'] 			= $registrationtenantdetaillist['tenant_status_on'];
+							$registrationtenantdetail[0]['tenant_status_remark'] 		= $registrationtenantdetaillist['tenant_status_remark'];
+							
+						}
+						
+						$response['error'] 							= FALSE;
+						$response['error_msg_title'] 				= "Success";
+						$response['error_msg'] 						= "Data Exist";
+						$response['registrationtenantdetail'] 		= $registrationtenantdetail;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
+
+		public function sendRegistrationTenantNotification(){
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+			);
+
+			$tenant_status 		= $this->uri->segment(3);
+			$tenant_id 			= $this->uri->segment(4);
+			$vendor_id 			= $this->uri->segment(5);
+
+			$registrationtenant = $this->AndroidRMIProtection_model->getRegistrationTenant_Detail($tenant_id);
+			$tenantstatus 		= $this->configuration->TenantStatus();
+
+			$tenant_status		= $registrationtenant['tenant_status'];
+			$tenant_status_name	= $tenantstatus[$tenant_status];
+
+			$system_user 		= $this->AndroidRMIProtection_model->getSystemUser();
+
+			if (!empty($system_user)){
+				foreach ($system_user as $keyUser => $valUser) {
+					$token 		= $valUser['user_token'];
+					$message 	= 'BLACKLIST Penyewa Atas Nama '.$registrationtenant['tenant_name'].' Handphone '.$registrationtenant['tenant_mobile_phone'].' No KTP '.$registrationtenant['tenant_nik'];
+
+					if (!empty($token)){
+						$res = array();
+						$res['body'] = $message;
+
+						$data['tenant_id'] = array(
+							'tenant_id'			=> $tenant_id,
+							'tenant_status'		=> $tenant_status,
+						);
+
+						
+						$fields = array(
+							'to' => $token,
+							'notification' => $res,
+							'data' => $data,
+						);
+
+						$url 		= 'https://fcm.googleapis.com/fcm/send';
+						$server_key = "AAAALRBPTYE:APA91bFVxYuldBENrPeIDk-XTEdTz03unSUUxZj6p4LdIdLS4GIXdULe_xGQhsY-zMKuWcjz6jFGV1399OTzL5o-pGIjspBz0aSFqVJOh4IhUO9nMBUyBoPsYg80ObY_i_oCrDI8msY1";
+						
+						$headers = array(
+							'Authorization: key=' . $server_key,
+							'Content-Type: application/json'
+						);
+						// Open connection
+						$ch = curl_init();
+					
+						// Set the url, number of POST vars, POST data
+						curl_setopt($ch, CURLOPT_URL, $url);
+					
+						curl_setopt($ch, CURLOPT_POST, true);
+						curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					
+						// Disabling SSL Certificate support temporarly
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+					
+						curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+					
+						// Execute post
+						$result = curl_exec($ch);
+						if ($result === FALSE) {
+							echo 'Curl failed: ' . curl_error($ch);
+						}
+					
+						// Close connection
+						curl_close($ch);
+					}
+				}
+				
+				echo json_encode($response);	
+				
+			}
+		}
 
 
 
@@ -1790,6 +2045,62 @@
 						$response['error_msg_title'] 		= "Success";
 						$response['error_msg'] 				= "Data Exist";
 						$response['invtitemstock'] 			= $invtitemstock;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
+
+		public function getTransVehicleRental_Update(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'transvehiclerentalupdate'		=> "",
+			);
+
+			$data = array(
+				'vendor_id'			=> $this->input->post('vendor_id',true),
+			);
+
+			if($response["error"] == FALSE){
+				$transvehiclerentallist 	= $this->AndroidRMIProtection_model->getTransVehicleRental_Update($data['vendor_id']);
+
+				if(!$transvehiclerentallist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($transvehiclerentallist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						if (!empty($transvehiclerentallist)){
+							foreach ($transvehiclerentallist as $key => $val) {
+								$tenantstatus 		= $this->configuration->TenantStatus();
+								$tenant_status_name = $tenantstatus[$val['tenant_status']];
+
+								$transvehiclerentalupdate[$key]['vehicle_rental_id'] 			= $val['vehicle_rental_id'];
+								$transvehiclerentalupdate[$key]['vehicle_id'] 					= 0;
+								$transvehiclerentalupdate[$key]['vehicle_police_number'] 		= "Belum Ada Motor";
+								$transvehiclerentalupdate[$key]['tenant_id'] 					= $val['tenant_id'];
+								$transvehiclerentalupdate[$key]['tenant_name'] 					= $val['tenant_name'];
+								$transvehiclerentalupdate[$key]['tenant_mobile_phone'] 			= $val['tenant_mobile_phone'];
+								$transvehiclerentalupdate[$key]['tenant_address'] 				= $val['tenant_address'];
+								$transvehiclerentalupdate[$key]['tenant_nik'] 					= $val['tenant_nik'];
+								$transvehiclerentalupdate[$key]['tenant_status_name'] 			= $tenant_status_name;
+								$transvehiclerentalupdate[$key]['vehicle_rental_date'] 			= tgltoview($val['vehicle_rental_date']);
+								$transvehiclerentalupdate[$key]['vehicle_rental_return_date'] 	= tgltoview($val['vehicle_rental_return_date']);
+							}
+						}
+						
+						$response['error'] 							= FALSE;
+						$response['error_msg_title'] 				= "Success";
+						$response['error_msg'] 						= "Data Exist";
+						$response['transvehiclerentalupdate'] 		= $transvehiclerentalupdate;
 					}
 				}
 			}

@@ -54,31 +54,32 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 /* CORE HEADQUARTERS */
-$route['headquarters'] 				    = 'CoreHeadquarters';
-$route['headquarters/add'] 			    = 'CoreHeadquarters/addCoreHeadquarters';
-$route['headquarters/edit/(:num)']	    = 'CoreHeadquarters/editCoreHeadquarters/$1';
-$route['headquarters/delete/(:num)']	= 'CoreHeadquarters/deleteCoreHeadquarters/$1';
-$route['headquarters/process-add'] 	    = 'CoreHeadquarters/processAddCoreHeadquarters';
-$route['headquarters/process-edit'] 	= 'CoreHeadquarters/processEditCoreHeadquarters';
+$route['headquarters'] 				        = 'CoreHeadquarters';
+$route['headquarters/add'] 			        = 'CoreHeadquarters/addCoreHeadquarters';
+$route['headquarters/edit/(:num)']	        = 'CoreHeadquarters/editCoreHeadquarters/$1';
+$route['headquarters/delete/(:num)']	    = 'CoreHeadquarters/deleteCoreHeadquarters/$1';
+$route['headquarters/process-add'] 	        = 'CoreHeadquarters/processAddCoreHeadquarters';
+$route['headquarters/process-edit'] 	    = 'CoreHeadquarters/processEditCoreHeadquarters';
 
 /* CORE REGION */
-$route['region'] 				        = 'CoreRegion';
-$route['region/add'] 			        = 'CoreRegion/addCoreRegion';
-$route['region/edit/(:num)']	        = 'CoreRegion/editCoreRegion/$1';
-$route['region/delete/(:num)']	        = 'CoreRegion/deleteCoreRegion/$1';
-$route['region/process-add'] 	        = 'CoreRegion/processAddCoreRegion';
-$route['region/process-edit'] 	        = 'CoreRegion/processEditCoreRegion';
+$route['region'] 				            = 'CoreRegion';
+$route['region/add'] 			            = 'CoreRegion/addCoreRegion';
+$route['region/edit/(:num)']	            = 'CoreRegion/editCoreRegion/$1';
+$route['region/delete/(:num)']	            = 'CoreRegion/deleteCoreRegion/$1';
+$route['region/process-add'] 	            = 'CoreRegion/processAddCoreRegion';
+$route['region/process-edit'] 	            = 'CoreRegion/processEditCoreRegion';
 
 /* CORE BRANCH */
-$route['branch'] 				        = 'CoreBranch';
-$route['branch/filter'] 		        = 'CoreBranch/filter';
-$route['branch/add'] 			        = 'CoreBranch/addCoreBranch';
-$route['branch/edit/(:num)']	        = 'CoreBranch/editCoreBranch/$1';
-$route['branch/delete/(:num)']	        = 'CoreBranch/deleteCoreBranch/$1';
-$route['branch/process-add'] 	        = 'CoreBranch/processAddCoreBranch';
-$route['branch/process-edit'] 	        = 'CoreBranch/processEditCoreBranch';
-$route['branch/get-city']   	        = 'CoreBranch/getCoreCity';
+$route['branch'] 				            = 'CoreBranch';
+$route['branch/filter'] 		            = 'CoreBranch/filter';
+$route['branch/add'] 			            = 'CoreBranch/addCoreBranch';
+$route['branch/edit/(:num)']	            = 'CoreBranch/editCoreBranch/$1';
+$route['branch/delete/(:num)']	            = 'CoreBranch/deleteCoreBranch/$1';
+$route['branch/process-add'] 	            = 'CoreBranch/processAddCoreBranch';
+$route['branch/process-edit'] 	            = 'CoreBranch/processEditCoreBranch';
+$route['branch/get-city']   	            = 'CoreBranch/getCoreCity';
 
 /* REGISTRATION TENANT */
-$route['registrasi/baru/(:num)']    	= 'RegistrationTenant/AddRegistrationTenant/$1';
-$route['registrasi/process-add'] 	    = 'RegistrationTenant/processAddRegistrationTenant';
+$route['registrasi/baru/(:num)']    	            = 'RegistrationTenant/AddRegistrationTenant/$1';
+$route['registrasi/process-add'] 	                = 'RegistrationTenant/processAddRegistrationTenant';
+$route['registrasi/notif/(:num)/(:num)/(:num)'] 	= 'RegistrationTenant/sendRegistrationTenantNotification/$1/$1/$1';
