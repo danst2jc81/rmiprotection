@@ -26,7 +26,7 @@
 			if(!is_array($sesi)){
 				$sesi['region_id']		= '';
 				$sesi['province_id']	= '';
-				$sesi['section_id']		= '';
+				$sesi['city_id']		= '';
 			}
 
 			$this->session->unset_userdata('addCoreBranch-'.$unique['unique']);

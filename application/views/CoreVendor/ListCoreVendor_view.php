@@ -37,15 +37,29 @@
 	base_url = '<?php echo base_url();?>';
 
 	function reset_search(){
-		document.location = base_url+"CoreBranch/reset_search";
+		document.location = base_url+"CoreVendor/reset_search";
 	}
+
+	$(document).ready(function(){
+        $("#region_id").change(function(){
+            var region_id = $("#region_id").val();
+            $.ajax({
+               type : "POST",
+               url  : "<?php echo base_url(); ?>vendor/get-branch",
+               data : {region_id: region_id},
+               success: function(data){
+                   $("#branch_id").html(data);				   
+               }
+            }); 
+        });
+    });
 
 	$(document).ready(function(){
         $("#province_id").change(function(){
             var province_id = $("#province_id").val();
             $.ajax({
                type : "POST",
-               url  : "<?php echo base_url(); ?>branch/get-city",
+               url  : "<?php echo base_url(); ?>vendor/get-city",
                data : {province_id: province_id},
                success: function(data){
                    $("#city_id").html(data);				   
@@ -56,7 +70,7 @@
 
 </script>
 <?php
-	$data = $this->session->userdata('filter-CoreBranch');
+	$data = $this->session->userdata('filter-CoreVendor');
 
 	if(!is_array($data)){
 		$data['region_id']		='';
@@ -75,7 +89,7 @@
 			<i class="fa fa-angle-right"></i>
 		</li>
 		<li>
-			<a href="<?php echo base_url();?>branch">
+			<a href="<?php echo base_url();?>vendor">
 				Daftar Cabang
 			</a>
 			<i class="fa fa-angle-right"></i>
@@ -88,7 +102,7 @@
 </h3>
 
 <?php 
-	echo form_open('branch/filter',array('id' => 'myform', 'class' => '')); 
+	echo form_open('vendor/filter',array('id' => 'myform', 'class' => '')); 
 ?>
 <div class="row">
 	<div class="col-md-12">
@@ -105,7 +119,7 @@
 				<div class="form-body">
 					
 					<div class="row">			
-						<div class = "col-md-4">
+						<div class = "col-md-6">
 							<div class="form-group form-md-line-input">
 								<?php 
 									echo form_dropdown('region_id', $coreregion ,set_value('region_id',$data['region_id']),'id="region_id", class="form-control select2me" ');
@@ -118,7 +132,28 @@
 							</div>	
 						</div>
 
-						<div class = "col-md-4">
+						<div class = "col-md-6">
+							<div class="form-group form-md-line-input">
+								<?php
+									if ($data['region_id'] != ''){
+										$corebranch = create_double($this->CoreVendor_model->getCoreBranch($data['region_id']), 'branch_id', 'branch_name');
+
+										echo form_dropdown('branch_id', $corebranch, set_value('branch_id', $data['branch_id']), 'id="branch_id" class="form-control select2me"');
+									} else {
+								?>
+									<select name="branch_id" id="branch_id" class="form-control select2me">
+										<option value="">--Choose One--</option>
+									</select>
+								<?php
+									}
+								?>
+								<label class="control-label">Nama Cabang</label>
+							</div>
+						</div>
+					</div>
+					
+					<div class = "row">
+						<div class = "col-md-6">
 							<div class="form-group form-md-line-input">
 								<?php 
 									echo form_dropdown('province_id', $coreprovince ,set_value('province_id',$data['province_id']),'id="province_id", class="form-control select2me" ');
@@ -131,11 +166,11 @@
 							</div>	
 						</div>
 
-						<div class = "col-md-4">
+						<div class = "col-md-6">
 							<div class="form-group form-md-line-input">
 								<?php
 									if ($data['province_id'] != ''){
-										$corecity = create_double($this->CoreBranch_model->getCoreCity($data['province_id']), 'city_id', 'city_name');
+										$corecity = create_double($this->CoreVendor_model->getCoreCity($data['province_id']), 'city_id', 'city_name');
 
 										echo form_dropdown('city_id', $corecity, set_value('city_id', $data['city_id']), 'id="city_id" class="form-control select2me"');
 									} else {
@@ -172,7 +207,7 @@
 					List
 				</div>
 				<div class="actions">
-					<a href="<?php echo base_url();?>branch/add" class="btn btn-default btn-sm">
+					<a href="<?php echo base_url();?>vendor/add" class="btn btn-default btn-sm">
 						<i class="fa fa-plus"></i>
 						<span class="hidden-480">
 							Cabang Baru
@@ -187,11 +222,12 @@
 							<tr>
 								<th width="0%"></th>
 								<th width="5%">No.</th>
-								<th width="15%">Nama Korwil</th>
+								<th width="10%">Nama Korwil</th>
+								<th width="10%">Nama Cabang</th>
 								<th width="10%">Provinsi</th>
 								<th width="10%">Kota</th>
-								<th width="10%">Kode Cabang</th>
-								<th width="15%">Nama Cabang</th>
+								<th width="10%">Kode Vendor</th>
+								<th width="10%">Nama Vendor</th>
 								<th width="10%">Kontak</th>
 								<th width="10%">Telepon</th>
 								<th width="15%">Action</th>
@@ -200,26 +236,27 @@
 						<tbody>
 							<?php
 								$no = 1;
-								if(!is_array($corebranch)){
+								if(!is_array($corevendor)){
 									echo "<tr><th colspan='6'>Data Masih Kosong</th></tr>";
 								} else {
-									foreach($corebranch as $key => $val){
+									foreach($corevendor as $key => $val){
 										echo"
 											<tr>
 												<td></td>
 												<td>".$no."</td>
 												<td>".$val['region_name']."</td>	
+												<td>".$val['branch_name']."</td>
 												<td>".$val['province_name']."</td>
 												<td>".$val['city_name']."</td>
-												<td>".$val['branch_code']."</td>	
-												<td>".$val['branch_name']."</td>					
-												<td>".$val['branch_contact_person']."</td>
-												<td>".$val['branch_phone']."</td>
+												<td>".$val['vendor_code']."</td>	
+												<td>".$val['vendor_name']."</td>					
+												<td>".$val['vendor_contact_person']."</td>
+												<td>".$val['vendor_phone']."</td>
 												<td>
-													<a href='".$this->config->item('base_url').'branch/edit/'.$val['branch_id']."' class='btn default btn-xs purple'>
+													<a href='".$this->config->item('base_url').'vendor/edit/'.$val['vendor_id']."' class='btn default btn-xs purple'>
 														<i class='fa fa-edit'></i> Edit
 													</a>
-													<a href='".$this->config->item('base_url').'branch/delete/'.$val['branch_id']."' onClick='javascript:return confirm(\"Are you sure you want to delete this entry ?\")' class='btn default btn-xs red'>
+													<a href='".$this->config->item('base_url').'vendor/delete/'.$val['vendor_id']."' onClick='javascript:return confirm(\"Are you sure you want to delete this entry ?\")' class='btn default btn-xs red'>
 														<i class='fa fa-trash-o'></i> Delete
 													</a>
 												</td>

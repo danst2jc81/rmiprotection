@@ -80,6 +80,19 @@ $route['branch/process-edit'] 	            = 'CoreBranch/processEditCoreBranch';
 $route['branch/get-city']   	            = 'CoreBranch/getCoreCity';
 
 /* REGISTRATION TENANT */
-$route['registrasi/baru/(:num)']    	            = 'RegistrationTenant/AddRegistrationTenant/$1';
-$route['registrasi/process-add'] 	                = 'RegistrationTenant/processAddRegistrationTenant';
-$route['registrasi/notif/(:num)/(:num)/(:num)'] 	= 'RegistrationTenant/sendRegistrationTenantNotification/$1/$1/$1';
+$route['registrasi/baru/(:num)']    	                = 'RegistrationTenant/AddRegistrationTenant/$1';
+$route['registrasi/process-add'] 	                    = 'RegistrationTenant/processAddRegistrationTenant';
+$route['registrasi/notif/(:num)/(:num)/(:num)/(:num)'] 	= 'RegistrationTenant/sendRegistrationTenantNotification/$1/$1/$1/$1';
+$route['registrasi/baru/(:num)']    	                = 'RegistrationTenant/AddRegistrationTenant/$1';
+$route['registrasi/process-add'] 	                    = 'RegistrationTenant/processAddRegistrationTenant';
+
+/* CORE VENDOR */
+$route['vendor'] 				        = 'CoreVendor';
+$route['vendor/filter'] 		        = 'CoreVendor/filter';
+$route['vendor/add'] 			        = 'CoreVendor/addCoreVendor';
+$route['vendor/edit/(:num)']	        = 'CoreVendor/editCoreVendor/$1';
+$route['vendor/delete/(:num)']	        = 'CoreVendor/deleteCoreVendor/$1';
+$route['vendor/process-add'] 	        = 'CoreVendor/processAddCoreVendor';
+$route['vendor/process-edit'] 	        = 'CoreVendor/processEditCoreVendor';
+$route['vendor/get-branch']   	        = 'CoreVendor/getCoreBranch';
+$route['vendor/get-city']   	        = 'CoreVendor/getCoreCity';
