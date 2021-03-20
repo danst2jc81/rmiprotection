@@ -27,7 +27,7 @@
 		}
 
 		public function getTenantID($tenant_token){
-			$this->db->select('registration_tenant.tenant_token');
+			$this->db->select('registration_tenant.tenant_id');
 			$this->db->from('registration_tenant');
 			$this->db->where('registration_tenant.tenant_token', $tenant_token);
 			$this->db->order_by('registration_tenant.tenant_id', 'DESC');
@@ -83,13 +83,13 @@
 		}
 
 		public function getVehicleRentalID($created_id){
-			$this->db->select('trans_vehicle_rental.vehicle_rental_i');
+			$this->db->select('trans_vehicle_rental.vehicle_rental_id');
 			$this->db->from('trans_vehicle_rental');
-			$this->db->from('trans_vehicle_rental.created_id', $created_id);
-			$this->db->order_by('trans_vehicle_rental.vehicle_rental_i', 'DESC');
+			$this->db->where('trans_vehicle_rental.created_id', $created_id);
+			$this->db->order_by('trans_vehicle_rental.vehicle_rental_id', 'DESC');
 			$this->db->limit(1);
 			$result = $this->db->get()->row_array();
-			return $result['vehicle_rental_i'];
+			return $result['vehicle_rental_id'];
 		}
 	}
 ?>
