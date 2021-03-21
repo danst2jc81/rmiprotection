@@ -62,9 +62,9 @@
 
 			$this->session->unset_userdata('CoreHeadquartersToken-'.$unique['unique']);
 
-			$token		= $this->session->userdata('CoreHeadquartersToken-'.$unique['unique']);
+			$headquarters_token		= $this->session->userdata('CoreHeadquartersToken-'.$unique['unique']);
 
-			if(empty($token)){
+			if(empty($headquarters_token)){
 				$headquarters_token = md5(rand());
 				$this->session->set_userdata('CoreHeadquartersToken-'.$unique['unique'], $headquarters_token);
 			}
@@ -211,7 +211,7 @@
 			if($this->CoreHeadquarters_model->deleteCoreHeadquarters($data)){
 				
 
-				$this->fungsi->set_log($auth['user_id'], $auth['username'], '3204','Application.CoreHeadquarters.deleteCoreHeadquarters', $headquarters_id,'Delete Core Headquarters');
+				$this->fungsi->set_log($auth['user_id'], $auth['username'], '3204','Application.CoreHeadquarters.deleteCoreHeadquarters', $headquarters_id, 'Delete Core Headquarters');
 
 				$msg = "<div class='alert alert-success alert-dismissable'>                 
 							Hapus Data Pusat Berhasil

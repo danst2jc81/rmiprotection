@@ -28,8 +28,9 @@
 </script>
 
 <div class="workplace" style="padding:5px !important;"> 
-<?php echo form_open('SystemUserGroup/processEditSystemUserGroup',array('id' => 'myform', 'class' => 'horizontal-form')); ?>
-	<?php
+<?php 
+	echo form_open('SystemUserGroup/processEditSystemUserGroup',array('id' => 'myform', 'class' => 'horizontal-form')); 
+
 		echo $this->session->userdata('message');
 		$this->session->unset_userdata('message');
 		echo form_hidden('user_group_id', $systemusergroup['user_group_id']);
@@ -47,20 +48,20 @@
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="<?php echo base_url();?>SystemUserGroup">
-							User Group
+						<a href="<?php echo base_url();?>user-group">
+							Group User
 						</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="<?php echo base_url();?>SystemUserGroup/editSystemUserGroup/<?php echo $systemusergroup['user_group_id']; ?>">
-							Edit User Group
+						<a href="<?php echo base_url();?>user/edit/<?php echo $systemusergroup['user_group_id']; ?>">
+							Edit Group User
 						</a>
 					</li>
 				</ul>
 			</div>
 			<h3 class="page-title">
-				Form Edit User Group
+				Form Edit Group User
 			</h3>
 			<!-- END PAGE TITLE & BREADCRUMB-->
 	
@@ -72,9 +73,9 @@
 						Form Edit
 					</div>
 					<div class="actions">
-						<a href="<?php echo base_url();?>SystemUserGroup" class="btn btn-default btn-sm">
+						<a href="<?php echo base_url();?>user-group" class="btn btn-default btn-sm">
 							<i class="fa fa-angle-left"></i>
-							Back
+							Kembali
 						</a>
 					</div>
 				</div>
@@ -87,7 +88,7 @@
 						<div class = "row">
 							<div class = "col-md-12">
 								<div class="form-group form-md-line-input">
-									<label class="control-label">Name Group
+									<label class="control-label">Nama Group
 										<span class="required">
 											*
 										</span>
@@ -102,7 +103,7 @@
 						<div class = "row">
 							<div class = "col-md-12">
 								<div class="form-group form-md-line-input">
-									<label class="control-label">Privilege  Menu
+									<label class="control-label">Hak Akses  Menu
 										<span class="required">
 											*
 										</span>

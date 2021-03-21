@@ -79,7 +79,7 @@
 		</li>
 		<li>
 			<a href="<?php echo base_url();?>vendor/add">
-				VendorBaru
+				Vendor Baru
 			</a>
 		</li>
 	</ul>

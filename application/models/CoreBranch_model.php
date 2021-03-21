@@ -82,6 +82,7 @@
 			$this->db->join('core_region', 'core_branch.region_id = core_region.region_id');
 			$this->db->join('core_province', 'core_branch.province_id = core_province.province_id');
 			$this->db->join('core_city', 'core_branch.city_id = core_city.city_id');
+			$this->db->where('core_branch.branch_id', $branch_id);
 			$result = $this->db->get()->row_array();
 			return $result;
 		}
