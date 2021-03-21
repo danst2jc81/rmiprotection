@@ -134,9 +134,6 @@
 				'vehicle_rental_id'	=> $this->input->post('vehicle_rental_id',true),
 			);
 
-			$data = array(
-				'vehicle_rental_id'	=> 2,
-			);
 
 			if($response["error"] == FALSE){
 				$transvehiclerentallist 	= $this->AndroidRMIProtection_model->getTransVehicleRental_DetailUpdate($data['vehicle_rental_id']);
