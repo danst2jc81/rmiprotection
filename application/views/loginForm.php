@@ -22,7 +22,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <head>
         <meta charset="utf-8" />
-        <title>Keisha Chemical - Enterprise Business System</title>
+        <title>RMI Protection</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="Preview page of Metronic Admin Theme #1 for " name="description" />
@@ -62,8 +62,8 @@ License: You must have a valid license purchased only from themeforest(the above
             <!-- BEGIN LOGIN FORM -->
             <form action="<?php echo base_url();?>ValidationProcess/loginValidate" class="login-form" method="post">
                 <div class="form-title">
-                    <span class="form-title">Keisha Chemical</span>
-                    <span class="form-subtitle">Enterprise Business System</span>
+                    <span class="form-title">RMI Protection</span>
+                    <span class="form-subtitle">Rental Motor Indonesia</span>
                 </div>
                 <div class="alert alert-danger display-hide">
                     <button class="close" data-close="alert"></button>

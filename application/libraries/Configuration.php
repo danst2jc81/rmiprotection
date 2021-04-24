@@ -17,6 +17,12 @@ class Configuration {
 		return $tenantstatus;
 	}
 
+	public function UserLevel(){
+		$tenantstatus = array ( 1 => 'Admin', 2 => 'Administrator', 9 => 'Super Admin');
+
+		return $tenantstatus;
+	}
+
 	public function PerpetratorStatus(){
 		$perpetratorstatus = array ( 0 => 'Buronan', 1 => 'Tertangkap', 2 => 'Tersangka');
 

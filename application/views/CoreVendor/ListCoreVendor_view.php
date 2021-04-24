@@ -90,7 +90,7 @@
 		</li>
 		<li>
 			<a href="<?php echo base_url();?>vendor">
-				Daftar Cabang
+				Daftar Vendor
 			</a>
 			<i class="fa fa-angle-right"></i>
 		</li>
@@ -98,7 +98,7 @@
 </div>
 
 <h3 class="page-title">
-	Daftar Cabang
+	Daftar Vendor
 </h3>
 
 <?php 
@@ -210,7 +210,7 @@
 					<a href="<?php echo base_url();?>vendor/add" class="btn btn-default btn-sm">
 						<i class="fa fa-plus"></i>
 						<span class="hidden-480">
-							Cabang Baru
+							Vendor Baru
 						</span>
 					</a>
 				</div>
@@ -222,8 +222,8 @@
 							<tr>
 								<th width="0%"></th>
 								<th width="5%">No.</th>
-								<th width="10%">Nama Korwil</th>
-								<th width="10%">Nama Cabang</th>
+								<th width="10%">Nama Vendor</th>
+								<th width="10%">Nama Vendor</th>
 								<th width="10%">Provinsi</th>
 								<th width="10%">Kota</th>
 								<th width="10%">Kode Vendor</th>

@@ -96,6 +96,7 @@
 			$this->db->join('core_branch', 'core_vendor.branch_id = core_branch.branch_id');
 			$this->db->join('core_province', 'core_vendor.province_id = core_province.province_id');
 			$this->db->join('core_city', 'core_vendor.city_id = core_city.city_id');
+			$this->db->where('core_vendor.vendor_id', $vendor_id);
 			$result = $this->db->get()->row_array();
 			return $result;
 		}

@@ -96,3 +96,26 @@ $route['vendor/process-add'] 	        = 'CoreVendor/processAddCoreVendor';
 $route['vendor/process-edit'] 	        = 'CoreVendor/processEditCoreVendor';
 $route['vendor/get-branch']   	        = 'CoreVendor/getCoreBranch';
 $route['vendor/get-city']   	        = 'CoreVendor/getCoreCity';
+
+/* SYSTEM USER GROUP */
+$route['user-group'] 				            = 'SystemUserGroup';
+$route['user-group/add'] 			            = 'SystemUserGroup/addSystemUserGroup';
+$route['user-group/edit/(:num)']	            = 'SystemUserGroup/editSystemUserGroup/$1';
+$route['user-group/delete/(:num)']	            = 'SystemUserGroup/deleteSystemUserGroup/$1';
+$route['user-group/process-add'] 	            = 'SystemUserGroup/processAddSystemUserGroup';
+$route['user-group/process-edit'] 	            = 'SystemUserGroup/processEditSystemUserGroup';
+
+
+/* SYSTEM USER */
+$route['user'] 				            = 'SystemUser';
+$route['user/filter'] 		            = 'SystemUser/filter';
+$route['user/reset-search'] 		    = 'SystemUser/reset_search';
+$route['user/reset-add'] 		        = 'SystemUser/reset_add';
+$route['user/add'] 			            = 'SystemUser/addSystemUser';
+$route['user/edit/(:num)']	            = 'SystemUser/editSystemUser/$1';
+$route['user/delete/(:num)']	        = 'SystemUser/deleteSystemUser/$1';
+$route['user/process-add'] 	            = 'SystemUser/processAddSystemUser';
+$route['user/process-edit'] 	        = 'SystemUser/processEditSystemUser';
+$route['user/get-branch']   	        = 'SystemUser/getCoreBranch';
+$route['user/get-vendor']   	        = 'SystemUser/getCoreVendor';
+$route['user/elements-add']   	        = 'SystemUser/function_elements_add';

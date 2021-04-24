@@ -17,7 +17,7 @@
 		}
 		
 		public function getMenuList($char){
-			$result = $this->db->query("SELECT system_menu_new.id_menu, system_menu_new.text, system_menu_new.type FROM system_menu_new WHERE system_menu_new.id_menu LIKE '$char' ORDER BY system_menu_new.id_menu ASC ");
+			$result = $this->db->query("SELECT system_menu.id_menu, system_menu.text, system_menu.type FROM system_menu WHERE system_menu.id_menu LIKE '$char' ORDER BY system_menu.id_menu ASC ");
 			$result = $result->result_array();
 			return $result;
 		}

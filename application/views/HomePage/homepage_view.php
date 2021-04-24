@@ -5,7 +5,7 @@
 <!--[if gt IE 9]><!-->	<html> <!--<![endif]-->
 	<head>
 		<meta charset="utf-8" />
-		<title>Keisha Chemical - Enterprise Business System</title>
+		<title>RMI Protection</title>
 		<meta name="keywords" content="HTML5,CSS3,Template" />
 		<meta name="description" content="" />
 		<meta name="Author" content="Dorin Grigoras [www.stepofweb.com]" />

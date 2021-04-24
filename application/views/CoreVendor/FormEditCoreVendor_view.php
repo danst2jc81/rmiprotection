@@ -66,19 +66,19 @@
 		</li>
 		<li>
 			<a href="<?php echo base_url();?>vendor">
-				Daftar Cabang
+				Daftar Vendor
 			</a>
 			<i class="fa fa-angle-right"></i>
 		</li>
 		<li>
 			<a href="<?php echo base_url();?>vendor/editvendor/"<?php echo $corevendor['vendor_id'] ?>">
-				Edit Cabang 
+				Edit Vendor 
 			</a>
 		</li>
 	</ul>
 </div>
 <h3 class="page-title">
-	Form Edit Cabang 
+	Form Edit Vendor 
 </h3>
 					<!-- END PAGE TITLE & BREADCRUMB-->
 	<div class="row">
@@ -177,14 +177,14 @@
 								<div class="col-md-6">
 									<div class="form-group form-md-line-input">
 										<input type="text" class="form-control" name="vendor_code" id="vendor_code"  onChange="function_elements_add(this.name, this.value);" value="<?php echo set_value('vendor_code', $corevendor['vendor_code']);?>" autocomplete="off"/>
-										<label class="control-label">Kode Cabang<span class="required">*</span></label>
+										<label class="control-label">Kode Vendor<span class="required">*</span></label>
 									</div>
 								</div>
 
 								<div class="col-md-6">
 									<div class="form-group form-md-line-input">
 										<input type="text" class="form-control" name="vendor_name" id="vendor_name"  onChange="function_elements_add(this.name, this.value);" value="<?php echo set_value('vendor_name', $corevendor['vendor_name']);?>" autocomplete="off"/>
-										<label class="control-label">Nama Cabang<span class="required">*</span></label>
+										<label class="control-label">Nama Vendor<span class="required">*</span></label>
 									</div>
 								</div>
 							</div>
@@ -193,7 +193,7 @@
 								<div class="col-md-12">	
 									<div class="form-group form-md-line-input">
 										<textarea rows="3" name="vendor_address" id="vendor_address" onChange="function_elements_add(this.name, this.value);"  class="form-control" ><?php echo $corevendor['vendor_address'];?></textarea>
-										<label class="control-label">Alamat Cabang<span class="required">*</span></label>
+										<label class="control-label">Alamat Vendor<span class="required">*</span></label>
 									</div>
 								</div>
 							</div>
@@ -202,14 +202,14 @@
 								<div class="col-md-6">							
 									<div class="form-group form-md-line-input">
 										<input type="text" class="form-control" name="vendor_contact_person" onChange="function_elements_add(this.name, this.value);" value="<?php echo set_value('vendor_contact_person',$corevendor['vendor_contact_person']);?>" autocomplete="off"autocomplete="off"/>
-										<label class="control-label">Kontak Cabang</label>
+										<label class="control-label">Kontak Vendor</label>
 									</div>
 								</div>	
 								
 								<div class="col-md-6">							
 									<div class="form-group form-md-line-input">
 										<input type="text" class="form-control" name="vendor_phone" onChange="function_elements_add(this.name, this.value);" value="<?php echo set_value('vendor_phone', $corevendor['vendor_phone']);?>" autocomplete="off"/>
-										<label class="control-label">Telepon Cabang</label>
+										<label class="control-label">Telepon Vendor</label>
 									</div>
 								</div>
 							</div>
