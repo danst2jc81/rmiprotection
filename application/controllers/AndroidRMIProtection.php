@@ -468,9 +468,294 @@
 			}
 		}
 
+		public function getTransVehicleRental_Update(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'transvehiclerentalupdate'		=> "",
+			);
+
+			$data = array(
+				'vendor_id'			=> $this->input->post('vendor_id',true),
+			);
+
+			if($response["error"] == FALSE){
+				$transvehiclerentallist 	= $this->AndroidRMIProtection_model->getTransVehicleRental_Update($data['vendor_id']);
+
+				if(!$transvehiclerentallist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($transvehiclerentallist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						if (!empty($transvehiclerentallist)){
+							foreach ($transvehiclerentallist as $key => $val) {
+								$tenantstatus 		= $this->configuration->TenantStatus();
+								$tenant_status_name = $tenantstatus[$val['tenant_status']];
+
+								$transvehiclerentalupdate[$key]['vehicle_rental_id'] 			= $val['vehicle_rental_id'];
+								$transvehiclerentalupdate[$key]['vehicle_id'] 					= 0;
+								$transvehiclerentalupdate[$key]['vehicle_police_number'] 		= "Belum Ada Motor";
+								$transvehiclerentalupdate[$key]['tenant_id'] 					= $val['tenant_id'];
+								$transvehiclerentalupdate[$key]['tenant_name'] 					= $val['tenant_name'];
+								$transvehiclerentalupdate[$key]['tenant_mobile_phone'] 			= $val['tenant_mobile_phone'];
+								$transvehiclerentalupdate[$key]['tenant_address'] 				= $val['tenant_address'];
+								$transvehiclerentalupdate[$key]['tenant_nik'] 					= $val['tenant_nik'];
+								$transvehiclerentalupdate[$key]['tenant_status_name'] 			= $tenant_status_name;
+								$transvehiclerentalupdate[$key]['vehicle_rental_date'] 			= tgltoview($val['vehicle_rental_date']);
+								$transvehiclerentalupdate[$key]['vehicle_rental_return_date'] 	= tgltoview($val['vehicle_rental_return_date']);
+							}
+						}
+						
+						$response['error'] 							= FALSE;
+						$response['error_msg_title'] 				= "Success";
+						$response['error_msg'] 						= "Data Exist";
+						$response['transvehiclerentalupdate'] 		= $transvehiclerentalupdate;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
 
 
+		public function getDataPerpetrator(){
+			$base_url = base_url();
 
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'dataperpetrator'				=> "",
+			);
+
+			$data = array(
+				'region_id'			=> $this->input->post('region_id',true),
+				'branch_id'			=> $this->input->post('branch_id',true),
+				'vendor_id'			=> $this->input->post('vendor_id',true),
+			);
+
+			$perpetratorstatus 		= $this->configuration->PerpetratorStatus();
+
+			if($response["error"] == FALSE){
+				$dataperpetratorlist 	= $this->AndroidRMIProtection_model->getDataPerpetrator();
+
+				if(!$dataperpetratorlist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($dataperpetratorlist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						if (!empty($dataperpetratorlist)){
+							foreach ($dataperpetratorlist as $key => $val) {
+								$dataperpetratorchronology 	= $this->AndroidRMIProtection_model->getDataPerpetratorChronology_Perpetrator($val['perpetrator_id']);
+
+								$dataperpetratorphoto 		= $this->AndroidRMIProtection_model->getDataPerpetratorPhoto_Perpetrator($val['perpetrator_id']);
+
+								$perpetrator_status_name	= $perpetratorstatus[$val['perpetrator_status']];
+								
+								$dataperpetrator[$key]['perpetrator_id'] 						= $val['perpetrator_id'];
+								$dataperpetrator[$key]['region_id'] 							= $val['region_id'];
+								$dataperpetrator[$key]['region_name'] 							= $val['region_name'];
+								$dataperpetrator[$key]['branch_id'] 							= $val['branch_id'];
+								$dataperpetrator[$key]['branch_name'] 							= $val['branch_name'];
+								$dataperpetrator[$key]['vendor_id'] 							= $val['vendor_id'];
+								$dataperpetrator[$key]['vendor_name'] 							= $val['vendor_name'];
+								$dataperpetrator[$key]['province_id'] 							= $val['province_id'];
+								$dataperpetrator[$key]['province_name'] 						= $val['province_name'];
+								$dataperpetrator[$key]['city_id'] 								= $val['city_id'];
+								$dataperpetrator[$key]['city_name'] 							= $val['city_name'];
+								$dataperpetrator[$key]['perpetrator_name'] 						= $val['perpetrator_name'];
+								$dataperpetrator[$key]['perpetrator_address'] 					= $val['perpetrator_address'];
+								$dataperpetrator[$key]['perpetrator_mobile_phone'] 				= $val['perpetrator_mobile_phone'];
+								$dataperpetrator[$key]['perpetrator_id_number'] 				= $val['perpetrator_id_number'];
+								$dataperpetrator[$key]['perpetrator_age'] 						= $val['perpetrator_age'];
+								$dataperpetrator[$key]['perpetrator_status_name'] 				= $perpetrator_status_name;
+								$dataperpetrator[$key]['perpetrator_chronology_id'] 			= $dataperpetratorchronology['perpetrator_chronology_id'];
+								$dataperpetrator[$key]['province_name_chronology'] 				= $dataperpetratorchronology['province_name'];
+								$dataperpetrator[$key]['city_name_chronology'] 					= $dataperpetratorchronology['city_name'];
+								$dataperpetrator[$key]['vendor_name_chronology'] 				= $dataperpetratorchronology['vendor_name'];
+								$dataperpetrator[$key]['perpetrator_chronology_date'] 			= $dataperpetratorchronology['perpetrator_chronology_date'];
+								$dataperpetrator[$key]['perpetrator_chronology_description'] 	= $dataperpetratorchronology['perpetrator_chronology_description'];
+								$dataperpetrator[$key]['perpetrator_chronology_created'] 		= $dataperpetratorchronology['created_on'];
+								$dataperpetrator[$key]['perpetrator_photo_url'] 				= $base_url.'img/'.$dataperpetratorphoto['perpetrator_photo_path'].'/'.$dataperpetratorphoto['perpetrator_photo_name'];
+							}
+						}
+						
+						$response['error'] 							= FALSE;
+						$response['error_msg_title'] 				= "Success";
+						$response['error_msg'] 						= "Data Exist";
+						$response['dataperpetrator'] 				= $dataperpetrator;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
+
+		public function getCoreProvince(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'coreprovince'			=> "",
+			);
+
+			if($response["error"] == FALSE){
+				$coreprovincelist = $this->AndroidRMIProtection_model->getCoreProvince();
+
+				if(!$coreprovincelist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($coreprovincelist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						foreach ($coreprovincelist as $key => $val) {
+							$coreprovince[$key]['province_id']		= $val['province_id'];
+							$coreprovince[$key]['province_name'] 	= $val['province_name'];
+						}
+						
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['coreprovince'] 			= $coreprovince;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
+
+
+		public function getCoreCity(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'corecity'				=> "",
+			);
+
+			$data = array(
+				'province_id'			=> $this->input->post('province_id',true),
+			);
+
+			if($response["error"] == FALSE){
+				$corecitylist = $this->AndroidRMIProtection_model->getCoreCity($data['province_id']);
+
+				if(!$corecitylist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($corecitylist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						foreach ($corecitylist as $key => $val) {
+							$corecity[$key]['province_id']		= $val['province_id'];
+							$corecity[$key]['province_name'] 	= $val['province_name'];
+							$corecity[$key]['city_id']			= $val['city_id'];
+							$corecity[$key]['city_name'] 		= $val['city_name'];
+						}
+						
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['corecity'] 				= $corecity;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
+
+		public function processAddDataPerpetrator(){
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'dataperpetrator'		=> "",
+			);
+
+			$perpetrator_chronology_description	= $this->input->post('perpetrator_chronology_description',true);
+			$vendor_id							= $this->input->post('vendor_id',true);
+
+			$corevendor 						= $this->AndroidRMIProtection_model->getCoreVendor_Detail($vendor_id);
+			
+			$data = array(
+				'region_id'						=> $this->input->post('region_id',true),
+				'branch_id'						=> $this->input->post('branch_id',true),
+				'vendor_id'						=> $this->input->post('vendor_id',true),
+				'province_id'					=> $corevendor['province_id'],
+				'city_id'						=> $corevendor['city_id'],
+				'province_perpetrator_id'		=> $this->input->post('province_perpetrator_id',true),
+				'city_perpetrator_id'			=> $this->input->post('city_perpetrator_id',true),
+				'perpetrator_name'				=> $this->input->post('perpetrator_name',true),
+				'perpetrator_mobile_phone'		=> $this->input->post('perpetrator_mobile_phone',true),
+				'perpetrator_id_number'			=> $this->input->post('perpetrator_id_number',true),
+				'perpetrator_date_of_birth' 	=> tgltodb($this->input->post('perpetrator_date_of_birth',true)),
+				'perpetrator_address'			=> $this->input->post('perpetrator_address',true),
+				'data_state' 					=> 0,
+				'created_id' 					=> $this->input->post('user_id',true),
+				'created_on' 					=> date('Y-m-d H:i:s'),
+			);
+
+			if (empty($data)){
+				$response['error'] 				= TRUE;
+				$response['error_msg_title'] 	= "No Data";
+				$response['error_msg'] 			= "Data Jemaat is Empty";
+			} else {
+				if($response["error"] == FALSE){
+					if ($this->AndroidRMIProtection_model->insertDataPerpetrator($data)){
+						$perpetrator_id = $this->AndroidRMIProtection_model->getPerpetratorID($data['created_id']);
+
+						$data_perpetratorchronology = array (
+							'perpetrator_id'						=> $perpetrator_id,
+							'province_id'							=> $data['province_id'],
+							'city_id'								=> $data['city_id'],
+							'vendor_id'								=> $data['vendor_id'],
+							'perpetrator_chronology_description' 	=> $perpetrator_chronology_description,
+							'perpetrator_chronology_date'			=> date("Y-m-d"),
+							'data_state'							=> 0,
+							'created_id'							=> $data['created_id'],
+							'created_on'							=> date("Y-m-d H:i:s")
+						);
+
+						if ($this->AndroidRMIProtection_model->insertDataPerpetratorChronology($data_perpetratorchronology)){
+
+						}
+
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['dataperpetrator'] 		= $dataperpetrator;
+
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Error Query Data";
+					}
+				}
+			}
+
+			echo json_encode($response);
+		}
 
 
 
@@ -2051,61 +2336,7 @@
 			echo json_encode($response);
 		}
 
-		public function getTransVehicleRental_Update(){
-			$base_url = base_url();
-
-			$response = array(
-				'error'							=> FALSE,
-				'error_msg'						=> "",
-				'error_msg_title'				=> "",
-				'transvehiclerentalupdate'		=> "",
-			);
-
-			$data = array(
-				'vendor_id'			=> $this->input->post('vendor_id',true),
-			);
-
-			if($response["error"] == FALSE){
-				$transvehiclerentallist 	= $this->AndroidRMIProtection_model->getTransVehicleRental_Update($data['vendor_id']);
-
-				if(!$transvehiclerentallist){
-					$response['error'] 				= TRUE;
-					$response['error_msg_title'] 	= "No Data";
-					$response['error_msg'] 			= "Error Query Data";
-				}else{
-					if (empty($transvehiclerentallist)){
-						$response['error'] 				= TRUE;
-						$response['error_msg_title'] 	= "No Data";
-						$response['error_msg'] 			= "Data Does Not Exist";
-					} else {
-						if (!empty($transvehiclerentallist)){
-							foreach ($transvehiclerentallist as $key => $val) {
-								$tenantstatus 		= $this->configuration->TenantStatus();
-								$tenant_status_name = $tenantstatus[$val['tenant_status']];
-
-								$transvehiclerentalupdate[$key]['vehicle_rental_id'] 			= $val['vehicle_rental_id'];
-								$transvehiclerentalupdate[$key]['vehicle_id'] 					= 0;
-								$transvehiclerentalupdate[$key]['vehicle_police_number'] 		= "Belum Ada Motor";
-								$transvehiclerentalupdate[$key]['tenant_id'] 					= $val['tenant_id'];
-								$transvehiclerentalupdate[$key]['tenant_name'] 					= $val['tenant_name'];
-								$transvehiclerentalupdate[$key]['tenant_mobile_phone'] 			= $val['tenant_mobile_phone'];
-								$transvehiclerentalupdate[$key]['tenant_address'] 				= $val['tenant_address'];
-								$transvehiclerentalupdate[$key]['tenant_nik'] 					= $val['tenant_nik'];
-								$transvehiclerentalupdate[$key]['tenant_status_name'] 			= $tenant_status_name;
-								$transvehiclerentalupdate[$key]['vehicle_rental_date'] 			= tgltoview($val['vehicle_rental_date']);
-								$transvehiclerentalupdate[$key]['vehicle_rental_return_date'] 	= tgltoview($val['vehicle_rental_return_date']);
-							}
-						}
-						
-						$response['error'] 							= FALSE;
-						$response['error_msg_title'] 				= "Success";
-						$response['error_msg'] 						= "Data Exist";
-						$response['transvehiclerentalupdate'] 		= $transvehiclerentalupdate;
-					}
-				}
-			}
-			echo json_encode($response);
-		}
+		
 
 	}
 ?>

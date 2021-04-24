@@ -17,7 +17,11 @@ class Configuration {
 		return $tenantstatus;
 	}
 
+	public function PerpetratorStatus(){
+		$perpetratorstatus = array ( 0 => 'Buronan', 1 => 'Tertangkap', 2 => 'Tersangka');
 
+		return $perpetratorstatus;
+	}
 
 
 
