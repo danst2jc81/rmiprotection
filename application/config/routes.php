@@ -119,3 +119,20 @@ $route['user/process-edit'] 	        = 'SystemUser/processEditSystemUser';
 $route['user/get-branch']   	        = 'SystemUser/getCoreBranch';
 $route['user/get-vendor']   	        = 'SystemUser/getCoreVendor';
 $route['user/elements-add']   	        = 'SystemUser/function_elements_add';
+
+
+/* DATA PERPETRATOR */
+$route['perpetrator'] 				            = 'DataPerpetrator';
+$route['perpetrator/filter'] 		            = 'DataPerpetrator/filter';
+$route['perpetrator/reset-search'] 		    = 'DataPerpetrator/reset_search';
+$route['perpetrator/get-city']   	        = 'DataPerpetrator/getCoreCity';
+
+$route['perpetrator/reset-add'] 		        = 'DataPerpetrator/reset_add';
+$route['perpetrator/add'] 			            = 'DataPerpetrator/addDataPerpetrator';
+$route['perpetrator/edit/(:num)']	            = 'DataPerpetrator/editDataPerpetrator/$1';
+$route['perpetrator/delete/(:num)']	        = 'DataPerpetrator/deleteDataPerpetrator/$1';
+$route['perpetrator/process-add'] 	            = 'DataPerpetrator/processAddDataPerpetrator';
+$route['perpetrator/process-edit'] 	        = 'DataPerpetrator/processEditDataPerpetrator';
+
+$route['perpetrator/get-vendor']   	        = 'DataPerpetrator/getCoreVendor';
+$route['perpetrator/elements-add']   	        = 'DataPerpetrator/function_elements_add';
