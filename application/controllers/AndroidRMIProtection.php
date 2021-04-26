@@ -568,6 +568,8 @@
 								$dataperpetrator[$key]['branch_name'] 							= $val['branch_name'];
 								$dataperpetrator[$key]['vendor_id'] 							= $val['vendor_id'];
 								$dataperpetrator[$key]['vendor_name'] 							= $val['vendor_name'];
+								$dataperpetrator[$key]['vendor_contact_person'] 				= $val['vendor_contact_person'];
+								$dataperpetrator[$key]['vendor_phone'] 							= $val['vendor_phone'];
 								$dataperpetrator[$key]['province_id'] 							= $val['province_id'];
 								$dataperpetrator[$key]['province_name'] 						= $val['province_name'];
 								$dataperpetrator[$key]['city_id'] 								= $val['city_id'];
@@ -738,6 +740,8 @@
 
 						}
 
+						$dataperpetrator[0]['perpetrator_id']				= $perpetrator_id;
+
 						$response['error'] 					= FALSE;
 						$response['error_msg_title'] 		= "Success";
 						$response['error_msg'] 				= "Data Exist";
@@ -754,11 +758,325 @@
 			echo json_encode($response);
 		}
 
+		public function processUploadDataPerpetratorPhoto(){
+			$base_url = base_url();
+			
+			$response = array(
+				'error'						=> FALSE,
+				'error_msg'					=> "",
+				'error_msg_title'			=> "",
+				'dataperpetratorphoto'		=> "",
+			);
+
+			$vendor_id 						= $this->input->post('vendor_id',true);
+
+			$vendor_code 					= $this->AndroidRMIProtection_model->getVendorCode($vendor_id);
+
+			$target_path 					= get_root_path();
+
+			$perpetrator_photo_image		= $_REQUEST['perpetrator_photo_image'];
+
+			$perpetrator_photo_image 		= "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";
+
+			$data = array(
+				'perpetrator_id'				=> $this->input->post('region_id',true),
+				'vendor_id'						=> $this->input->post('vendor_id',true),
+				'perpetrator_photo_name'		=> $this->input->post('perpetrator_photo_name',true),
+				'perpetrator_photo_image'		=> $this->input->post('perpetrator_photo_image',true),
+			);
+
+			print_r("data ");
+			print_r($data);
+			print_r("<BR> ");
+			print_r("<BR> ");
+
+			if (empty($data)){
+				$response['error'] 				= TRUE;
+				$response['error_msg_title'] 	= "No Data";
+				$response['error_msg'] 			= "Data Jemaat is Empty";
+			} else {
+				if($response["error"] == FALSE){
+					$data_photo = array(
+						'perpetrator_id'			=> $data['perpetrator_id'],
+						'perpetrator_photo_name'	=> $data['perpetrator_photo_name'],
+					);
+
+					/* $fileName 			= $_FILES['perpetrator_photo_image']['name'];
+					$fileSize 			= $_FILES['perpetrator_photo_image']['size'];
+					$fileError 			= $_FILES['perpetrator_photo_image']['error'];
+					
+					if($fileSize > 0){
+						$parse		= explode('.',$fileName);
+						$image_types = array('jpg');
+						if (!in_array($parse[count($parse)-1], $image_types)){
+							$message = "<div class='alert alert-danger alert-dismissable'>  
+											<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                        
+									filetype <b>".$parse[count($parse)-1]."</b> not allowed !!!
+								</div> ";
+							$this->session->set_userdata('message',$message);
+							redirect('worship-weekly');
+						}
+					}
+					
+					if (round($fileSize / 1024, 2) > 1024){
+						$message = "<div class='alert alert-danger alert-dismissable'>  
+										<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                 
+								filesize not allowed, max file 1024 Kb!!!
+							</div> ";
+						$this->session->set_userdata('message',$message);
+						redirect('worship-weekly');
+					}
+
+					if($fileSize > 0 || $fileError == 0){
+						try {
+							$newfilename 				= $_FILES['perpetrator_photo_image'];
+							$config['upload_path'] 		= get_root_path()."/img/";
+							$config['allowed_types'] 	= 'jpg';
+							$config['overwrite'] 		= false;
+							$config['remove_spaces'] 	= true;
+							$config['file_name'] 		= $newfilename;	
+							
+							print_r("config ");
+							print_r($config);
+							print_r("<BR> ");
+							print_r("<BR> ");
+
+							$this->load->library('upload', $config);
+	
+							if ( ! $this->upload->do_upload('perpetrator_photo_image')){
+							
+								$msg = "<div class='alert alert-danger alert-dismissable'>  
+											<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                   
+										".$this->upload->display_errors('', '')."
+									</div> ";
+								$this->session->set_userdata('message',$msg);
+								print_r("Error 1");
+							} else {
+								$config['source_image'] 	= $this->upload->upload_path.$this->upload->file_name;
+								$config['maintain_ratio'] 	= TRUE;
+					
+								$this->load->library('image_lib', $config);
+	
+								if ( ! $this->image_lib->resize()){
+									$msg = "<div class='alert alert-danger alert-dismissable'>  
+												<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                      
+										".$this->upload->display_errors('', '')."
+									</div> ";
+									$this->session->set_userdata('message',$msg);
+									print_r("Error 2");
+								} else {
+									$data['perpetrator_photo_image'] = $this->upload->file_name;
+									
+									if($this->ScheduleWorshipWeekly_model->updateScheduleWorshipWeekly($data)){
+										$auth = $this->session->userdata('auth');
+	
+										$this->fungsi->set_log($auth['user_id'], $data['worship_weekly_id'], '2141', 'ScheduleWorshipWeekly.processEditScheduleWorshipWeekly', 'Edit Schedule Worship Weekly');
+	
+										$this->fungsi->set_change_log($auth['user_id'], $data['worship_weekly_id'], '2143', 'ScheduleWorshipWeekly.processEditScheduleWorshipWeekly', 'Edit Schedule Worship Weekly', $old_data, $data);
+	
+										$msg = "<div class='alert alert-success alert-dismissable'>  
+												<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>
+													Ubah Data Ibadah Mingguan Berhasil
+												</div> ";
+										$this->session->set_userdata('message',$msg);
+										print_r("Error 3");
+									}else{
+										$msg = "<div class='alert alert-danger alert-dismissable'>
+													<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>              
+													Ubah Data Ibadah Mingguan Gagal
+												</div> ";
+										$this->session->set_userdata('message',$msg);
+										$this->session->set_userdata('addfleet',$data);
+										print_r("Error 4");
+									}
+								}
+							}
+						} catch (Exception $msg){
+							$message = "<div class='alert alert-danger alert-dismissable'>  
+										button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                    
+									Error in uploading due".$msg->getMessage()."
+								</div> ";
+							$this->session->set_userdata('message',$message);
+							print_r("Error 5");
+						}
+					} */
+
+					if ($this->AndroidRMIProtection_model->insertDataPerpetratorPhoto($data_photo)){
 
 
+						$binary 	= base64_decode($perpetrator_photo_image);
+						header('Content-Type: bitmap; charset=utf-8');
+						$file 		= fopen($target_path.$data_photo['perpetrator_photo_name'], 'wb');
+						fwrite($file, $binary);
+						fclose($file);
+
+						$response['error'] 						= FALSE;
+						$response['error_msg_title'] 			= "Success";
+						$response['error_msg'] 					= "Data Exist";
+						$response['dataperpetratorphoto'] 		= $dataperpetratorphoto;
+
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Error Query Data";
+					}
+				}
+			}
+
+			echo json_encode($response);
+		}
+
+		/*DATA PERPETRATOR PHOTO*/
+		public function getDataPerpetratorPhoto(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'						=> FALSE,
+				'error_msg'					=> "",
+				'error_msg_title'			=> "",
+				'dataperpetratorphoto'		=> "",
+			);
+
+			$data = array(
+				'perpetrator_id'				=> $this->input->post('perpetrator_id',true),
+			);
+
+			
+			if($response["error"] == FALSE){
+				$dataperpetratorphotolist = $this->AndroidRMIProtection_model->getDataPerpetratorPhoto_Detail($data['perpetrator_id']);
 
 
+				if(!$dataperpetratorphotolist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($dataperpetratorphotolist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						foreach ($dataperpetratorphotolist as $key => $val) {
+							$dataperpetratorphoto[$key]['perpetrator_photo_name'] 		= $val['perpetrator_photo_name'];
+							$dataperpetratorphoto[$key]['perpetrator_photo_name_url']	= $base_url.'img/'.$val['perpetrator_photo_path'].'/'.$val['perpetrator_photo_name'];
+						}
+						
+						/*print_r("salespromotion ");
+						print_r($salespromotion);*/
+						
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['dataperpetratorphoto'] 	= $dataperpetratorphoto;
+					}
+				}
+			}
+			
 
+			echo json_encode($response);
+		}
+
+
+		/*DATA PERPETRATOR CHRONOLOGY*/
+		public function getDataPerpetratorChronology(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'dataperpetratorchronology'		=> "",
+			);
+
+			$data = array(
+				'perpetrator_id'				=> $this->input->post('perpetrator_id',true),
+			);
+
+			
+			if($response["error"] == FALSE){
+				$dataperpetratorchronologylist = $this->AndroidRMIProtection_model->getDataPerpetratorChronology_Detail($data['perpetrator_id']);
+
+
+				if(!$dataperpetratorchronologylist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($dataperpetratorchronologylist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						foreach ($dataperpetratorchronologylist as $key => $val) {
+							$dataperpetratorchronology[$key]['perpetrator_id'] 						= $val['perpetrator_id'];
+							$dataperpetratorchronology[$key]['perpetrator_chronology_id'] 			= $val['perpetrator_chronology_id'];
+							$dataperpetratorchronology[$key]['perpetrator_chronology_description']	= $val['perpetrator_chronology_description'];
+							$dataperpetratorchronology[$key]['created_on']							= $val['created_on'];
+							$dataperpetratorchronology[$key]['created_name']						= $val['vendor_name'];
+						}
+						
+						/*print_r("salespromotion ");
+						print_r($salespromotion);*/
+						
+						$response['error'] 						= FALSE;
+						$response['error_msg_title'] 			= "Success";
+						$response['error_msg'] 					= "Data Exist";
+						$response['dataperpetratorchronology'] 	= $dataperpetratorchronology;
+					}
+				}
+			}
+			
+
+			echo json_encode($response);
+		}
+
+		public function processAddDataPerpetratorChronology(){
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'dataperpetratorchronology'		=> "",
+			);
+
+			$vendor_id							= $this->input->post('vendor_id',true);
+
+			$corevendor 						= $this->AndroidRMIProtection_model->getCoreVendor_Detail($vendor_id);
+			
+			$data = array(
+				'perpetrator_id'						=> $this->input->post('perpetrator_id',true),
+				'vendor_id'								=> $this->input->post('vendor_id',true),
+				'province_id'							=> $corevendor['province_id'],
+				'city_id'								=> $corevendor['city_id'],
+				'perpetrator_chronology_description'	=> $this->input->post('perpetrator_chronology_description',true),
+				'perpetrator_chronology_date'			=> date("Y-m-d"),
+				'data_state' 							=> 0,
+				'created_id' 							=> $this->input->post('user_id',true),
+				'created_on' 							=> date('Y-m-d H:i:s'),
+			);
+
+			if (empty($data)){
+				$response['error'] 				= TRUE;
+				$response['error_msg_title'] 	= "No Data";
+				$response['error_msg'] 			= "Data Jemaat is Empty";
+			} else {
+				if($response["error"] == FALSE){
+					if ($this->AndroidRMIProtection_model->insertDataPerpetratorChronology($data)){
+						
+						$response['error'] 							= FALSE;
+						$response['error_msg_title'] 				= "Success";
+						$response['error_msg'] 						= "Data Exist";
+						$response['dataperpetratorchronology'] 		= $dataperpetratorchronology;
+
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Error Query Data";
+					}
+				}
+			}
+
+			echo json_encode($response);
+		}
 
 
 
