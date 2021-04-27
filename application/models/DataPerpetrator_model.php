@@ -97,6 +97,57 @@
 			return $this->db->insert('data_perpetrator_photo',$data);
 		}
 
+		public function getDataPerpetrator_Detail($perpetrator_id){
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.vendor_id, core_vendor.vendor_name, core_vendor.vendor_code, core_vendor.province_id, core_vendor.city_id, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.province_perpetrator_id, core_province.province_name, data_perpetrator.city_perpetrator_id, core_city.city_name');
+			$this->db->from('data_perpetrator');
+			$this->db->join('core_vendor', 'data_perpetrator.vendor_id = core_vendor.vendor_id');
+			$this->db->join('core_province', 'data_perpetrator.province_perpetrator_id = core_province.province_id');
+			$this->db->join('core_city', 'data_perpetrator.city_perpetrator_id = core_city.city_id');
+			$this->db->where('data_perpetrator.data_state', 0);
+			$this->db->where('data_perpetrator.perpetrator_id', $perpetrator_id);
+			$result = $this->db->get()->row_array();
+			return $result;
+		}
+
+		public function getDataPerpetratorPhoto_Detail($perpetrator_id){
+			$this->db->select('data_perpetrator_photo.perpetrator_photo_id, data_perpetrator_photo.perpetrator_id, data_perpetrator_photo.perpetrator_photo_path, data_perpetrator_photo.perpetrator_photo_name');
+			$this->db->from('data_perpetrator_photo');
+			$this->db->where('data_perpetrator_photo.data_state', 0);
+			$this->db->where('data_perpetrator_photo.perpetrator_id', $perpetrator_id);
+			$result = $this->db->get()->result_array();
+			return $result;
+		}
+
+		public function deleteDataPerpetratorPhoto($data){
+			$this->db->where('data_perpetrator_photo.perpetrator_photo_id', $data['perpetrator_photo_id']);
+			$query = $this->db->update('data_perpetrator_photo', $data);
+			if($query){
+				return true;
+			}else{
+				return false;
+			}
+		}
+
+		public function getDataPerpetratorChronology_Detail($perpetrator_id){
+			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_id, data_perpetrator_chronology.perpetrator_id, data_perpetrator_chronology.perpetrator_chronology_date, data_perpetrator_chronology.perpetrator_chronology_description');
+			$this->db->from('data_perpetrator_chronology');
+			$this->db->where('data_perpetrator_chronology.data_state', 0);
+			$this->db->where('data_perpetrator_chronology.perpetrator_id', $perpetrator_id);
+			$this->db->order_by('data_perpetrator_chronology.perpetrator_chronology_id', 'DESC');
+			$result = $this->db->get()->result_array();
+			return $result;
+		}
+		
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -134,7 +185,7 @@
 			return $this->db->insert('church_perpetrator_history',$data);
 		}
 
-		public function getDataPerpetrator_Detail($perpetrator_id){
+		public function getDataPerpetrator_Detail2($perpetrator_id){
 			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.cell_group_id, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_phone, data_perpetrator.perpetrator_email, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.perpetrator_registration_date, data_perpetrator.perpetrator_status');
 			$this->db->from('data_perpetrator');
 			$this->db->where('data_perpetrator.perpetrator_id', $perpetrator_id);

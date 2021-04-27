@@ -223,8 +223,8 @@
 													<a href='".$this->config->item('base_url').'perpetrator/chronology/'.$val['perpetrator_id']."' class='btn default btn-xs blue'>
 														<i class='fa fa-plus'></i> Kronologi
 													</a>
-													<a href='".$this->config->item('base_url').'perpetrator/photo/'.$val['perpetrator_id']."' class='btn default btn-xs grey-gallery'>
-														<i class='fa fa-photo'></i> Edit
+													<a href='".$this->config->item('base_url').'perpetrator/photo/'.$val['perpetrator_id']."' class='btn default btn-xs yellow'>
+														<i class='fa fa-photo'></i> Photo
 													</a>
 												</td>
 											</tr>
