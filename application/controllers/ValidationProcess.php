@@ -88,7 +88,10 @@
 									'username'					=> $systemuser['username'],
 									'password'					=> $systemuser['password'],
 									'user_group_level'			=> $systemuser['user_group_id'],
-									'user_level'				=> $systemuser['user_level']
+									'user_level'				=> $systemuser['user_level'],
+									'region_id'					=> $systemuser['region_id'],
+									'branch_id'					=> $systemuser['branch_id'],
+									'vendor_id'					=> $systemuser['vendor_id'],
 								)
 							);
 					redirect('MainPage');
