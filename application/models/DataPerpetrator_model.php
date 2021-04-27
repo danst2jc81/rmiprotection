@@ -53,7 +53,7 @@
 		}
 
 		public function getCoreVendor_Detail($vendor_id){
-			$this->db->select('core_vendor.vendor_id, core_vendor.vendor_name, core_vendor.vendor_code');
+			$this->db->select('core_vendor.vendor_id, core_vendor.vendor_name, core_vendor.vendor_code, core_vendor.province_id, core_vendor.city_id');
 			$this->db->from('core_vendor');
 			$this->db->where('core_vendor.data_state', 0);
 			$this->db->where('core_vendor.vendor_id', $vendor_id);

@@ -92,10 +92,7 @@
 			</div>
 			<div class="portlet-body display-hide">
 				<div class="form-body">
-					<?php
-						echo $this->session->userdata('message');
-						$this->session->unset_userdata('message');
-					?>
+					
 					
 					<div class="row">			
 						<div class = "col-md-4">
@@ -179,6 +176,10 @@
 			</div>
 			<div class="portlet-body">
 				<div class="form-body">
+					<?php
+						echo $this->session->userdata('message');
+						$this->session->unset_userdata('message');
+					?>
 					<table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
 						<thead>
 							<tr>
@@ -218,6 +219,12 @@
 													</a>
 													<a href='".$this->config->item('base_url').'perpetrator/delete/'.$val['perpetrator_id']."' onClick='javascript:return confirm(\"Are you sure you want to delete this entry ?\")' class='btn default btn-xs red'>
 														<i class='fa fa-trash-o'></i> Delete
+													</a>
+													<a href='".$this->config->item('base_url').'perpetrator/chronology/'.$val['perpetrator_id']."' class='btn default btn-xs blue'>
+														<i class='fa fa-plus'></i> Kronologi
+													</a>
+													<a href='".$this->config->item('base_url').'perpetrator/photo/'.$val['perpetrator_id']."' class='btn default btn-xs grey-gallery'>
+														<i class='fa fa-photo'></i> Edit
 													</a>
 												</td>
 											</tr>

@@ -155,7 +155,7 @@
 			$vendor_id							= $auth['vendor_id'];
 			$corevendor 						= $this->DataPerpetrator_model->getCoreVendor_Detail($vendor_id);
 
-			$data= array (
+			$data = array (
 				'region_id'							=> $auth['region_id'],
 				'branch_id'							=> $auth['branch_id'],
 				'vendor_id'							=> $auth['vendor_id'],
@@ -173,6 +173,12 @@
 				'created_id'						=> $auth['user_id'],
 				'created_on' 						=> date('Ymdhis'),
 			);
+
+			/* print_r("data ");
+			print_r($data);
+			print_r("<BR> ");
+			print_r("<BR> ");
+			exit; */
 
 			
 			$this->form_validation->set_rules('perpetrator_name', 'Nama Pelaku', 'required');
