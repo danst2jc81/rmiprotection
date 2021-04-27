@@ -1078,7 +1078,82 @@
 			echo json_encode($response);
 		}
 
+		public function getSearchDataPerpetrator(){
+			$base_url = base_url();
 
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'datasearchperpetrator'			=> "",
+			);
+
+			$data = array(
+				'perpetrator_name'			=> $this->input->post('perpetrator_name',true),
+			);
+
+			$perpetratorstatus 		= $this->configuration->PerpetratorStatus();
+
+			if($response["error"] == FALSE){
+				$datasearchperpetratorlist 	= $this->AndroidRMIProtection_model->getSearchDataPerpetrator($data['perpetrator_name']);
+
+				if(!$datasearchperpetratorlist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($datasearchperpetratorlist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						if (!empty($datasearchperpetratorlist)){
+							foreach ($datasearchperpetratorlist as $key => $val) {
+								$dataperpetratorchronology 	= $this->AndroidRMIProtection_model->getDataPerpetratorChronology_Perpetrator($val['perpetrator_id']);
+
+								$dataperpetratorphoto 		= $this->AndroidRMIProtection_model->getDataPerpetratorPhoto_Perpetrator($val['perpetrator_id']);
+
+								$perpetrator_status_name	= $perpetratorstatus[$val['perpetrator_status']];
+								
+								$datasearchperpetrator[$key]['perpetrator_id'] 						= $val['perpetrator_id'];
+								$datasearchperpetrator[$key]['region_id'] 							= $val['region_id'];
+								$datasearchperpetrator[$key]['region_name'] 						= $val['region_name'];
+								$datasearchperpetrator[$key]['branch_id'] 							= $val['branch_id'];
+								$datasearchperpetrator[$key]['branch_name'] 						= $val['branch_name'];
+								$datasearchperpetrator[$key]['vendor_id'] 							= $val['vendor_id'];
+								$datasearchperpetrator[$key]['vendor_name'] 						= $val['vendor_name'];
+								$datasearchperpetrator[$key]['vendor_contact_person'] 				= $val['vendor_contact_person'];
+								$datasearchperpetrator[$key]['vendor_phone'] 						= $val['vendor_phone'];
+								$datasearchperpetrator[$key]['province_id'] 						= $val['province_id'];
+								$datasearchperpetrator[$key]['province_name'] 						= $val['province_name'];
+								$datasearchperpetrator[$key]['city_id'] 							= $val['city_id'];
+								$datasearchperpetrator[$key]['city_name'] 							= $val['city_name'];
+								$datasearchperpetrator[$key]['perpetrator_name'] 					= $val['perpetrator_name'];
+								$datasearchperpetrator[$key]['perpetrator_address'] 				= $val['perpetrator_address'];
+								$datasearchperpetrator[$key]['perpetrator_mobile_phone'] 			= $val['perpetrator_mobile_phone'];
+								$datasearchperpetrator[$key]['perpetrator_id_number'] 				= $val['perpetrator_id_number'];
+								$datasearchperpetrator[$key]['perpetrator_age'] 					= $val['perpetrator_age'];
+								$datasearchperpetrator[$key]['perpetrator_status_name'] 			= $perpetrator_status_name;
+								$datasearchperpetrator[$key]['perpetrator_chronology_id'] 			= $dataperpetratorchronology['perpetrator_chronology_id'];
+								$datasearchperpetrator[$key]['province_name_chronology'] 			= $dataperpetratorchronology['province_name'];
+								$datasearchperpetrator[$key]['city_name_chronology'] 				= $dataperpetratorchronology['city_name'];
+								$datasearchperpetrator[$key]['vendor_name_chronology'] 				= $dataperpetratorchronology['vendor_name'];
+								$datasearchperpetrator[$key]['perpetrator_chronology_date'] 		= $dataperpetratorchronology['perpetrator_chronology_date'];
+								$datasearchperpetrator[$key]['perpetrator_chronology_description'] 	= $dataperpetratorchronology['perpetrator_chronology_description'];
+								$datasearchperpetrator[$key]['perpetrator_chronology_created'] 		= $dataperpetratorchronology['created_on'];
+								$datasearchperpetrator[$key]['perpetrator_photo_url'] 				= $base_url.'img/'.$dataperpetratorphoto['perpetrator_photo_path'].'/'.$dataperpetratorphoto['perpetrator_photo_name'];
+							}
+						}
+						
+						$response['error'] 							= FALSE;
+						$response['error_msg_title'] 				= "Success";
+						$response['error_msg'] 						= "Data Exist";
+						$response['datasearchperpetrator'] 			= $datasearchperpetrator;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
 
 
 

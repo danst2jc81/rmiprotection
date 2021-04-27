@@ -245,7 +245,34 @@
 			return $result;
 		}	
 
-		
+		public function getSearchDataPerpetrator($perpetrator_name){
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.region_id, core_region.region_name, data_perpetrator.branch_id, core_branch.branch_name, data_perpetrator.vendor_id, core_vendor.vendor_name, core_vendor.vendor_contact_person, core_vendor.vendor_phone, data_perpetrator.province_id, core_province.province_name, data_perpetrator.city_id, core_city.city_name, data_perpetrator.province_perpetrator_id, data_perpetrator.city_perpetrator_id, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_age, data_perpetrator.perpetrator_status');
+			$this->db->from('data_perpetrator');
+			$this->db->join('core_region', 'data_perpetrator.region_id = core_region.region_id');
+			$this->db->join('core_branch', 'data_perpetrator.branch_id = core_branch.branch_id');
+			$this->db->join('core_vendor', 'data_perpetrator.vendor_id = core_vendor.vendor_id');
+			$this->db->join('core_province', 'data_perpetrator.province_id = core_province.province_id');
+			$this->db->join('core_city', 'data_perpetrator.city_id = core_city.city_id');
+			$this->db->where('data_perpetrator.data_state', 0);
+			$this->db->like('data_perpetrator.perpetrator_name', $perpetrator_name);
+			$this->db->order_by('data_perpetrator.perpetrator_id', 'DESC');
+			$result = $this->db->get()->result_array();
+			return $result;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
