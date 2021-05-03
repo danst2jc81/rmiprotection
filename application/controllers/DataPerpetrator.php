@@ -463,7 +463,33 @@
 			}
 		}
 	
-		
+		public function deleteDataPerpetrator(){
+			$auth 				= $this->session->userdata('auth');
+			$perpetrator_id 	= $this->uri->segment(3);
+
+			$data = array(
+				'perpetrator_id'		=> $perpetrator_id,
+				'deleted_id'			=> $auth['user_id'],
+				'deleted_on'			=> date("Y-m-d H:i:s"),
+				'data_state'			=> 2
+			);
+
+			if($this->DataPerpetrator_model->deleteDataPerpetrator($data)){
+				$this->fungsi->set_log($auth['user_id'], $perpetrator_id, '3204','DataPerpetrator.deleteDataPerpetrator', 'Delete Data Perpetrator');
+
+				$msg = "<div class='alert alert-success alert-dismissable'>                 
+							Hapus Data Pelaku Berhasil
+						</div> ";
+				$this->session->set_userdata('message',$msg);
+				redirect('perpetrator');
+			}else{
+				$msg = "<div class='alert alert-danger alert-dismissable'>                
+						Hapus Data Pelaku Gagal
+						</div> ";
+				$this->session->set_userdata('message',$msg);
+				redirect('perpetrator');
+			}
+		}		
 
 
 
@@ -571,32 +597,6 @@
 			}
 		}
 
-		public function deleteDataPerpetrator(){
-			$auth 				= $this->session->userdata('auth');
-			$perpetrator_id 	= $this->uri->segment(3);
-
-			$data = array(
-				'perpetrator_id'		=> $perpetrator_id,
-				'deleted_id'			=> $auth['user_id'],
-				'deleted_on'			=> date("Y-m-d H:i:s"),
-				'data_state'			=> 2
-			);
-
-			if($this->DataPerpetrator_model->deleteDataPerpetrator($data)){
-				$this->fungsi->set_log($auth['user_id'], $perpetrator_id, '3204','DataPerpetrator.deleteDataPerpetrator', 'Delete Data Perpetrator');
-
-				$msg = "<div class='alert alert-success alert-dismissable'>                 
-							Hapus Data Pelaku Berhasil
-						</div> ";
-				$this->session->set_userdata('message',$msg);
-				redirect('perpetrator');
-			}else{
-				$msg = "<div class='alert alert-danger alert-dismissable'>                
-						Hapus Data Pelaku Gagal
-						</div> ";
-				$this->session->set_userdata('message',$msg);
-				redirect('perpetrator');
-			}
-		}
+		
 	}
 ?>
