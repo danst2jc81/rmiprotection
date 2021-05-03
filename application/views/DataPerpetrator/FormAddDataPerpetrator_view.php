@@ -195,6 +195,16 @@
 							</div>
 						</div>
 
+						<div class = "row">
+							<div class="col-md-6">
+								<div class="form-group form-md-line-input">
+									<input class="form-control form-control-inline input-medium date-picker" data-date-format="dd-mm-yyyy" type="text" name="perpetrator_description_date" id="perpetrator_description_date" onChange="function_elements_add(this.name, this.value);" value="<?php echo tgltoview($data['perpetrator_description_date']);?>" autocomplete="off"/>
+									<label class="control-label">Tanggal Kronologi</label>
+									
+								</div>
+							</div>
+						</div>
+
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-group form-md-line-input">

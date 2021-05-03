@@ -129,9 +129,17 @@ $route['perpetrator/get-city']   	        = 'DataPerpetrator/getCoreCity';
 
 $route['perpetrator/reset-add'] 		        = 'DataPerpetrator/reset_add';
 $route['perpetrator/add'] 			            = 'DataPerpetrator/addDataPerpetrator';
+$route['perpetrator/process-add'] 	            = 'DataPerpetrator/processAddDataPerpetrator';
+
+$route['perpetrator/photo/(:num)']	            = 'DataPerpetrator/addDataPerpetratorPhoto/$1';
+$route['perpetrator/process-add-photo'] 	            = 'DataPerpetrator/processAddDataPerpetratorPhoto';
+$route['perpetrator/delete-photo/(:num)/(:num)']	            = 'DataPerpetrator/deleteDataPerpetratorPhoto/$1/$1';
+$route['perpetrator/chronology/(:num)']	            = 'DataPerpetrator/addDataPerpetratorChronology/$1';
+$route['perpetrator/process-add-chronology'] 	            = 'DataPerpetrator/processAddDataPerpetratorChronology';
+
+
 $route['perpetrator/edit/(:num)']	            = 'DataPerpetrator/editDataPerpetrator/$1';
 $route['perpetrator/delete/(:num)']	        = 'DataPerpetrator/deleteDataPerpetrator/$1';
-$route['perpetrator/process-add'] 	            = 'DataPerpetrator/processAddDataPerpetrator';
 $route['perpetrator/process-edit'] 	        = 'DataPerpetrator/processEditDataPerpetrator';
 
 $route['perpetrator/get-vendor']   	        = 'DataPerpetrator/getCoreVendor';

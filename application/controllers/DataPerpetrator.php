@@ -32,6 +32,7 @@
 
 			$this->session->unset_userdata('addDataPerpetrator-'.$unique['unique']);
 			$this->session->unset_userdata('DataPerpetratorToken-'.$unique['unique']);
+			$this->session->unset_userdata('DataPerpetratorPhotoToken-'.$unique['unique']);
 
 			$data['main_view']['dataperpetrator']			= $this->DataPerpetrator_model->getDataPerpetrator($sesi['vendor_id'], $sesi['province_perpetrator_id'], $sesi['city_perpetrator_id']);
 
@@ -243,7 +244,7 @@
 
 										$perpetrator_id = $this->DataPerpetrator_model->getPerpetratorID($data['created_id']);
 
-										$this->fungsi->set_log($auth['user_id'], $daily_preaching_id, '2141', 'DataPerpetrator.processAddDataPerpetrator', 'Add New Data Perpetrator');
+										$this->fungsi->set_log($auth['user_id'], $perpetrator_id, '2141', 'DataPerpetrator.processAddDataPerpetrator', 'Add New Data Perpetrator');
 
 										$data_perpetratorchronology = array (
 											'perpetrator_id'						=> $perpetrator_id,
@@ -374,7 +375,7 @@
 
 									$perpetrator_id = $this->DataPerpetrator_model->getPerpetratorID($data['created_id']);
 
-									$this->fungsi->set_log($auth['user_id'], $daily_preaching_id, '2141', 'DataPerpetrator.processAddDataPerpetrator', 'Add New Data Perpetrator');
+									$this->fungsi->set_log($auth['user_id'], $perpetrator_id, '2141', 'DataPerpetrator.processAddDataPerpetrator', 'Add New Data Perpetrator');
 
 									$data_perpetratorchronology = array (
 										'perpetrator_id'						=> $perpetrator_id,
@@ -463,37 +464,261 @@
 			}
 		}
 	
-		public function deleteDataPerpetrator(){
+		function addDataPerpetratorPhoto(){
+			$unique 	= $this->session->userdata('unique');
+
+			$this->session->unset_userdata('DataPerpetratorPhotoToken-'.$unique['unique']);
+
+			$perpetrator_photo_token		= $this->session->userdata('DataPerpetratorPhotoToken-'.$unique['unique']);
+
+			if(empty($perpetrator_photo_token)){
+				$perpetrator_photo_token = md5(rand());
+				$this->session->set_userdata('DataPerpetratorPhotoToken-'.$unique['unique'], $perpetrator_photo_token);
+			}
+
+			$perpetrator_id 								= $this->uri->segment(3);
+
+			$data['main_view']['dataperpetrator']			= $this->DataPerpetrator_model->getDataPerpetrator_Detail($perpetrator_id);
+
+			$data['main_view']['dataperpetratorphoto']		= $this->DataPerpetrator_model->getDataPerpetratorPhoto_Detail($perpetrator_id);
+
+			$data['main_view']['content']					= 'DataPerpetrator/FormAddDataPerpetratorPhoto_view';		
+
+			$this->load->view('MainPage_view',$data);
+		}
+
+		function processAddDataPerpetratorPhoto(){
 			$auth 				= $this->session->userdata('auth');
-			$perpetrator_id 	= $this->uri->segment(3);
+			$unique 			= $this->session->userdata('unique');
+			
+			$fileName 			= $_FILES['perpetrator_photo_name']['name'];
+			$fileSize 			= $_FILES['perpetrator_photo_name']['size'];
+			$fileError 			= $_FILES['perpetrator_photo_name']['error'];
 
 			$data = array(
-				'perpetrator_id'		=> $perpetrator_id,
-				'deleted_id'			=> $auth['user_id'],
-				'deleted_on'			=> date("Y-m-d H:i:s"),
-				'data_state'			=> 2
+				'perpetrator_id'		 	=> $this->input->post('perpetrator_id',true),
+				'perpetrator_photo_path' 	=> $this->input->post('vendor_code',true),
+				'perpetrator_photo_token' 	=> $this->input->post('perpetrator_photo_token',true),
+				'data_state'				=> 0,
+				'created_id' 				=> $auth['user_id'],
+				'created_on' 				=> date('Y-m-d h:i:s'),
+			);
+			
+			if($fileSize > 0){
+				$parse			= explode('.',$fileName);
+				$image_types 	= array('jpg');
+
+				if (!in_array($parse[count($parse)-1], $image_types)){
+					$message = "<div class='alert alert-danger alert-dismissable'>  
+									<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                        
+							filetype <b>".$parse[count($parse)-1]."</b> not allowed !!!
+						</div> ";
+					$this->session->set_userdata('message',$message);
+					redirect('perpetrator/photo/'.$data['perpetrator_id']);
+				}
+			}
+			
+			if (round($fileSize / 1024, 2) > 1024){
+				$message = "<div class='alert alert-danger alert-dismissable'>  
+								<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                 
+						filesize not allowed, max file 1024 Kb!!!
+					</div> ";
+				$this->session->set_userdata('message',$message);
+				redirect('perpetrator/photo/'.$data['perpetrator_id']);
+			}
+			
+			$this->form_validation->set_rules('perpetrator_id', 'Nama Pelaku', 'required');
+
+			$perpetrator_photo_token = $this->DataPerpetrator_model->getPerpetratorPhotoToken($data['perpetrator_photo_token']);
+			
+			if($this->form_validation->run()==true){
+				if($fileSize > 0 || $fileError == 0){
+					try {
+						$newfilename 				= $_FILES['perpetrator_photo_name']['name'];
+						$config['upload_path'] 		= get_root_path()."/img/".$data['perpetrator_photo_path'];
+						$config['allowed_types'] 	= 'jpg';
+						$config['overwrite'] 		= false;
+						$config['remove_spaces'] 	= true;
+						$config['file_name'] 		= $newfilename;						
+						
+						$this->load->library('upload', $config);
+						if ( ! $this->upload->do_upload('perpetrator_photo_name')){
+
+							$msg = "<div class='alert alert-danger alert-dismissable'>  
+										<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                   
+									".$this->upload->display_errors('', '')."
+								</div> ";
+							$this->session->set_userdata('message',$msg);
+							redirect('perpetrator/photo/'.$data['perpetrator_id']);
+						} else {
+						
+							$config['source_image'] = $this->upload->upload_path.$this->upload->file_name;
+
+							$config['maintain_ratio'] = TRUE;
+
+							$this->load->library('image_lib', $config);
+
+							if ( ! $this->image_lib->resize()){
+								$msg = "<div class='alert alert-danger alert-dismissable'>  
+											<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                      
+									".$this->upload->display_errors('', '')."
+								</div> ";
+								$this->session->set_userdata('message',$msg);
+								redirect('perpetrator/photo/'.$data['perpetrator_id']);
+							} else {
+								$data['perpetrator_photo_name']	= $this->upload->file_name;
+
+								if ($perpetrator_photo_token == 0){
+									$this->DataPerpetrator_model->insertDataPerpetratorPhoto($data);
+									
+									$this->fungsi->set_log($auth['user_id'], $data['perpetrator_id'], '2141', 'DataPerpetrator.processAddDataPerpetratorPhoto', 'Add New Data Perpetrator');
+
+									$msg = "<div class='alert alert-success alert-dismissable'>  
+												<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>               
+												Add Content Event Album Photo Success
+											</div> ";
+									$this->session->set_userdata('message',$msg);
+									$this->session->unset_userdata('DataPerpetratorPhotoToken-'.$unique['unique']);
+									redirect('perpetrator/photo/'.$data['perpetrator_id']);
+								}
+							}
+						}
+					} catch (Exception $msg){
+						$message = "<div class='alert alert-danger alert-dismissable'>  
+									button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                    
+								Error in uploading due".$msg->getMessage()."
+							</div> ";
+						$this->session->set_userdata('message',$message);
+						redirect('perpetrator/photo/'.$data['perpetrator_id']);
+					}
+				} else {
+					$msg = "<div class='alert alert-danger alert-dismissable'>
+								<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>              
+								Add Content Event Album Photo Fail
+							</div> ";
+					$this->session->set_userdata('message',$msg);
+					$this->session->set_userdata('addfleet',$data);
+					redirect('perpetrator/photo/'.$data['perpetrator_id']);
+				}
+			}else{
+				$msg = validation_errors("<div class='alert alert-danger'>", "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button></div>");
+				$this->session->set_userdata('message',$msg);
+				redirect('perpetrator/photo/'.$data['perpetrator_id']);
+			}
+		}
+
+		public function deleteDataPerpetratorPhoto(){
+			$perpetrator_photo_id 			= $this->uri->segment(3);
+			$perpetrator_id 				= $this->uri->segment(4);
+
+			$data = array(
+				'perpetrator_photo_id'		=> $perpetrator_photo_id,
+				'data_state'				=> 1
 			);
 
-			if($this->DataPerpetrator_model->deleteDataPerpetrator($data)){
-				$this->fungsi->set_log($auth['user_id'], $perpetrator_id, '3204','DataPerpetrator.deleteDataPerpetrator', 'Delete Data Perpetrator');
+			if($this->DataPerpetrator_model->deleteDataPerpetratorPhoto($data)){
+				$auth = $this->session->userdata('auth');
 
-				$msg = "<div class='alert alert-success alert-dismissable'>                 
-							Hapus Data Pelaku Berhasil
+				$this->fungsi->set_log($auth['user_id'], $data['perpetrator_photo_id'], '2141', 'DataPerpetrator.deleteDataPerpetratorPhoto', 'Delete Data Perpetrator Photo');
+
+				$msg = "<div class='alert alert-success alert-dismissable'>                  
+									<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                
+							Delete Data Content Event Album Photo Success
 						</div> ";
 				$this->session->set_userdata('message',$msg);
-				redirect('perpetrator');
+				redirect('perpetrator/photo/'.$perpetrator_id);
 			}else{
-				$msg = "<div class='alert alert-danger alert-dismissable'>                
-						Hapus Data Pelaku Gagal
+				$msg = "<div class='alert alert-danger alert-dismissable'>    
+									<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                
+							Delete Data Content Event Album Photo Fail
 						</div> ";
 				$this->session->set_userdata('message',$msg);
-				redirect('perpetrator');
+				redirect('perpetrator/photo/'.$perpetrator_id);
 			}
-		}		
+		}
 
+		function addDataPerpetratorChronology(){
+			$unique 	= $this->session->userdata('unique');
 
+			$this->session->unset_userdata('DataPerpetratorChronologyToken-'.$unique['unique']);
 
+			$perpetrator_chronology_token		= $this->session->userdata('DataPerpetratorChronologyToken-'.$unique['unique']);
 
+			if(empty($perpetrator_chronology_token)){
+				$perpetrator_chronology_token = md5(rand());
+				$this->session->set_userdata('DataPerpetratorChronologyToken-'.$unique['unique'], $perpetrator_chronology_token);
+			}
+
+			$perpetrator_id 									= $this->uri->segment(3);
+
+			$data['main_view']['dataperpetrator']				= $this->DataPerpetrator_model->getDataPerpetrator_Detail($perpetrator_id);
+
+			$data['main_view']['dataperpetratorchronology']		= $this->DataPerpetrator_model->getDataPerpetratorChronology_Detail($perpetrator_id);
+
+			$data['main_view']['content']						= 'DataPerpetrator/FormAddDataPerpetratorChronology_view';		
+
+			$this->load->view('MainPage_view',$data);
+		}
+
+		public function processAddDataPerpetratorChronology(){
+			$auth = $this->session->userdata('auth');
+
+			$data= array (
+				'perpetrator_id'						=> $this->input->post('perpetrator_id',true),
+				'province_id'							=> $this->input->post('province_id',true),
+				'city_id'								=> $this->input->post('city_id',true),
+				'vendor_id'								=> $this->input->post('vendor_id',true),
+				'perpetrator_chronology_date'			=> tgltodb($this->input->post('perpetrator_chronology_date',true)),
+				'perpetrator_chronology_description'	=> $this->input->post('perpetrator_chronology_description',true),
+				'perpetrator_chronology_token'			=> $this->input->post('perpetrator_chronology_token',true),
+				'data_state'							=> 0,
+				'created_id'							=> $auth['user_id'],
+				'created_on' 							=> date('Ymdhis'),
+			);
+
+			$this->form_validation->set_rules('perpetrator_chronology_date', 'Tanggal Kronologi', 'required');
+			$this->form_validation->set_rules('perpetrator_chronology_description', 'Deskripsi Kronologi', 'required');
+
+			$perpetrator_chronology_token 				= $this->DataPerpetrator_model->getPerpetratorChronologyToken($data['perpetrator_chronology_token']);
+			
+			if($this->form_validation->run()==true){
+				if ($region_perpetrator_chronology_tokentoken == 0){
+					if($this->DataPerpetrator_model->insertDataPerpetratorChronology($data)){
+						$auth = $this->session->userdata('auth');
+
+						$this->fungsi->set_log($auth['user_id'], $data['perpetrator_id'], '2141', 'DataPerpetrator.processAddDataPerpetratorChronology', 'Add New Data Perpetrator Chronology');
+
+						$msg = "<div class='alert alert-success alert-dismissable'>  
+								<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>					
+									Tambah Data Kronologi Berhasil
+								</div> ";
+						$this->session->unset_userdata('DataPerpetratorChronologyToken-'.$unique['unique']);
+						$this->session->set_userdata('message',$msg);
+						redirect('perpetrator/chronology/'.$data['perpetrator_id']);
+					}else{
+						$this->session->set_userdata('addCoreRegion',$data);
+						$msg = "<div class='alert alert-danger alert-dismissable'>
+								<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>					
+									Tambah Data Kronologi Gagal
+								</div> ";
+						$this->session->set_userdata('message',$msg);
+						redirect('perpetrator/chronology/'.$data['perpetrator_id']);
+					}
+				} else {
+					$msg = "<div class='alert alert-danger alert-dismissable'>
+							<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>					
+								Data Kronologi Ada
+							</div> ";
+					$this->session->set_userdata('message',$msg);
+					redirect('perpetrator/chronology/'.$data['perpetrator_id']);
+				}
+			}else{
+				$this->session->set_userdata('addCoreRegion',$data);
+				$msg = validation_errors("<div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>", '</div>');
+				$this->session->set_userdata('message',$msg);
+				redirect('perpetrator/chronology/'.$data['perpetrator_id']);
+			}
+		}
 
 
 
