@@ -89,6 +89,16 @@
 			return $result['vendor_id'];
 		}
 
+		public function getCoreVendor_Last($created_id){
+			$this->db->select('core_vendor.vendor_id, core_vendor.vendor_code');
+			$this->db->from('core_vendor');
+			$this->db->where('core_vendor.created_id', $created_id);
+			$this->db->order_by('core_vendor.vendor_id', 'DESC');
+			$this->db->limit(1);
+			$result = $this->db->get()->row_array();
+			return $result;
+		}
+
 		public function getCorevendor_Detail($vendor_id){
 			$this->db->select('core_vendor.vendor_id, core_vendor.region_id, core_region.region_name, core_vendor.branch_id, core_branch.branch_name, core_vendor.province_id, core_province.province_name, core_vendor.city_id, core_city.city_name, core_vendor.vendor_code, core_vendor.vendor_name, core_vendor.vendor_address, core_vendor.vendor_contact_person, core_vendor.vendor_phone');
 			$this->db->from('core_vendor');

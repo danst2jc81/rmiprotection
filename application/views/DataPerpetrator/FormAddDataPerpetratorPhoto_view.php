@@ -51,7 +51,7 @@
 <!-- END PAGE TITLE & BREADCRUMB-->
 <div class="row">
 	<div class="col-md-12">	
-		<div class="portlet box blue">
+		<div class="portlet box red">
 			<div class="portlet-title">
 				<div class="caption">
 					Form Tambah
@@ -77,6 +77,9 @@
 						$unique	= $this->session->userdata('unique');
 						$auth	= $this->session->userdata('auth');
 						$perpetrator_photo_token 	= $this->session->userdata('DataPerpetratorPhotoToken-'.$unique['unique']);
+
+						print_r("dataperpetrator ");
+						print_r($dataperpetrator);
 					?>
 
 					<div class = "row">
@@ -84,11 +87,11 @@
 							<div class="form-group form-md-line-input">
 								<input type="text" class="form-control" name="perpetrator_name" id="perpetrator_name" value="<?php echo set_value('perpetrator_name',$dataperpetrator['perpetrator_name']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
-								<input type="text" class="form-control" name="vendor_code" id="vendor_code" value="<?php echo set_value('vendor_code',$dataperpetrator['vendor_code']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
+								<input type="hidden" class="form-control" name="vendor_code" id="vendor_code" value="<?php echo set_value('vendor_code',$dataperpetrator['vendor_code']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
-								<input type="text" class="form-control" name="perpetrator_id" id="perpetrator_id" value="<?php echo set_value('perpetrator_id',$dataperpetrator['perpetrator_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
+								<input type="hidden" class="form-control" name="perpetrator_id" id="perpetrator_id" value="<?php echo set_value('perpetrator_id',$dataperpetrator['perpetrator_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
-								<input type="text" class="form-control" name="perpetrator_photo_token" id="perpetrator_photo_token" value="<?php echo set_value('perpetrator_photo_token', $perpetrator_photo_token);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
+								<input type="hidden" class="form-control" name="perpetrator_photo_token" id="perpetrator_photo_token" value="<?php echo set_value('perpetrator_photo_token', $perpetrator_photo_token);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
 								<label class="control-label">Nama Pelaku<span class="required">*</span></label>
 							</div>
@@ -96,7 +99,7 @@
 
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input">
-								<input class="form-control form-control-inline input-medium date-picker" data-date-format="dd-mm-yyyy" type="text" name="perpetrator_date_of_birth" id="perpetrator_date_of_birth" onChange="function_elements_add(this.name, this.value);" value="<?php echo tgltoview($dataperpetrator['perpetrator_date_of_birth']);?>" autocomplete="off" readonly/>
+								<input type="text" class="form-control" name="perpetrator_date_of_birth" id="perpetrator_date_of_birth" value="<?php echo set_value('perpetrator_date_of_birth', tgltoview($dataperpetrator['perpetrator_date_of_birth']));?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 								<label class="control-label">Tanggal Lahir</label>
 								
 							</div>
@@ -187,7 +190,7 @@
 
 <div class="row">
 	<div class="col-md-12">
-		<div class="portlet box blue">
+		<div class="portlet box red">
 			<div class="portlet-title">
 				<div class="caption">
 					Daftar

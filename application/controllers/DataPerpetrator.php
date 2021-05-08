@@ -154,6 +154,7 @@
 			$unique 							= $this->session->userdata('unique');
 
 			$vendor_id							= $auth['vendor_id'];
+
 			$corevendor 						= $this->DataPerpetrator_model->getCoreVendor_Detail($vendor_id);
 
 			$data = array (
@@ -201,6 +202,10 @@
 							$config['overwrite'] 		= false;
 							$config['remove_spaces'] 	= true;
 							$config['file_name'] 		= $newfilename;		
+
+							/* if (!is_dir(get_root_path()."/img/".$corevendor['vendor_code'])) {
+								mkdir(get_root_path()."/img/".$corevendor['vendor_code'], 0777, TRUE);	
+							} */
 
 							/* print_r("vendor_code ");
 							print_r($corevendor['vendor_code']);
@@ -575,7 +580,7 @@
 
 									$msg = "<div class='alert alert-success alert-dismissable'>  
 												<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>               
-												Add Content Event Album Photo Success
+												Tambah Foto Pelaku Berhasil
 											</div> ";
 									$this->session->set_userdata('message',$msg);
 									$this->session->unset_userdata('DataPerpetratorPhotoToken-'.$unique['unique']);
@@ -594,7 +599,7 @@
 				} else {
 					$msg = "<div class='alert alert-danger alert-dismissable'>
 								<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>              
-								Add Content Event Album Photo Fail
+								Tambah Foto Pelaku Gagal
 							</div> ";
 					$this->session->set_userdata('message',$msg);
 					$this->session->set_userdata('addfleet',$data);
@@ -623,14 +628,14 @@
 
 				$msg = "<div class='alert alert-success alert-dismissable'>                  
 									<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                
-							Delete Data Content Event Album Photo Success
+							Hapus Foto Pelaku Berhasil
 						</div> ";
 				$this->session->set_userdata('message',$msg);
 				redirect('perpetrator/photo/'.$perpetrator_id);
 			}else{
 				$msg = "<div class='alert alert-danger alert-dismissable'>    
 									<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>                
-							Delete Data Content Event Album Photo Fail
+									Hapus Foto Pelaku Gagal
 						</div> ";
 				$this->session->set_userdata('message',$msg);
 				redirect('perpetrator/photo/'.$perpetrator_id);

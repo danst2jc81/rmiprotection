@@ -77,7 +77,6 @@
 		public function getSystemUserGroup(){
 			$this->db->select('system_user_group.user_group_level, system_user_group.user_group_name');
 			$this->db->from('system_user_group');
-			$this->db->where('system_user_group.user_group_level !=', '1');
 			$result = $this->db->get()->result_array();
 			return $result;
 		}

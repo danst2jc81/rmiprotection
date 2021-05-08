@@ -144,4 +144,3 @@ $route['perpetrator/process-edit'] 	        = 'DataPerpetrator/processEditDataPe
 
 $route['perpetrator/get-vendor']   	        = 'DataPerpetrator/getCoreVendor';
 $route['perpetrator/elements-add']   	        = 'DataPerpetrator/function_elements_add';
-$route['perpetrator/photo/(:num)']   	        = 'DataPerpetrator/function_elements_add';

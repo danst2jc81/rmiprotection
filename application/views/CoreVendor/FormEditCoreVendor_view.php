@@ -176,7 +176,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group form-md-line-input">
-										<input type="text" class="form-control" name="vendor_code" id="vendor_code"  onChange="function_elements_add(this.name, this.value);" value="<?php echo set_value('vendor_code', $corevendor['vendor_code']);?>" autocomplete="off"/>
+										<input type="text" class="form-control" name="vendor_code" id="vendor_code"  onChange="function_elements_add(this.name, this.value);" value="<?php echo set_value('vendor_code', $corevendor['vendor_code']);?>" autocomplete="off" readonly/>
 										<label class="control-label">Kode Vendor<span class="required">*</span></label>
 									</div>
 								</div>

@@ -184,14 +184,6 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group form-md-line-input">
-									<input type="text" class="form-control" name="vendor_code" id="vendor_code" value="<?php echo set_value('vendor_code',$data['vendor_code']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off"/>
-
-									<label class="control-label">Kode Vendor<span class="required">*</span></label>
-								</div>
-							</div>
-
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input">
 									<input type="text" class="form-control" name="vendor_name" id="vendor_name" value="<?php echo set_value('vendor_name',$data['vendor_name']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off"/>
 
 									<input type="hidden" class="form-control" name="vendor_token" id="vendor_token" value="<?php echo set_value('vendor_token',$vendor_token);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off"/>

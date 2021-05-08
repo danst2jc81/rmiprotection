@@ -70,7 +70,7 @@
 <!-- END PAGE TITLE & BREADCRUMB-->
 <div class="row">
 	<div class="col-md-12">	
-		<div class="portlet box blue">
+		<div class="portlet box red">
 			<div class="portlet-title">
 				<div class="caption">
 					Form Tambah
@@ -107,15 +107,15 @@
 							<div class="form-group form-md-line-input">
 								<input type="text" class="form-control" name="perpetrator_name" id="perpetrator_name" value="<?php echo set_value('perpetrator_name',$dataperpetrator['perpetrator_name']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
-								<input type="text" class="form-control" name="vendor_id" id="vendor_id" value="<?php echo set_value('vendor_id',$dataperpetrator['vendor_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
+								<input type="hidden" class="form-control" name="vendor_id" id="vendor_id" value="<?php echo set_value('vendor_id',$dataperpetrator['vendor_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
-								<input type="text" class="form-control" name="province_id" id="province_id" value="<?php echo set_value('province_id',$dataperpetrator['province_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
+								<input type="hidden" class="form-control" name="province_id" id="province_id" value="<?php echo set_value('province_id',$dataperpetrator['province_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
-								<input type="text" class="form-control" name="city_id" id="city_id" value="<?php echo set_value('city_id',$dataperpetrator['city_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
+								<input type="hidden" class="form-control" name="city_id" id="city_id" value="<?php echo set_value('city_id',$dataperpetrator['city_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
-								<input type="text" class="form-control" name="perpetrator_id" id="perpetrator_id" value="<?php echo set_value('perpetrator_id',$dataperpetrator['perpetrator_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
+								<input type="hidden" class="form-control" name="perpetrator_id" id="perpetrator_id" value="<?php echo set_value('perpetrator_id',$dataperpetrator['perpetrator_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
-								<input type="text" class="form-control" name="perpetrator_chronology_token" id="perpetrator_chronology_token" value="<?php echo set_value('perpetrator_chronology_token', $perpetrator_chronology_token);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
+								<input type="hidden" class="form-control" name="perpetrator_chronology_token" id="perpetrator_chronology_token" value="<?php echo set_value('perpetrator_chronology_token', $perpetrator_chronology_token);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off" readonly/>
 
 								<label class="control-label">Nama Pelaku<span class="required">*</span></label>
 							</div>
@@ -207,7 +207,7 @@
 
 <div class="row">
 	<div class="col-md-12">
-		<div class="portlet box blue">
+		<div class="portlet box red">
 			<div class="portlet-title">
 				<div class="caption">
 					Daftar

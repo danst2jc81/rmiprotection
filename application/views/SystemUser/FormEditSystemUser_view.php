@@ -202,7 +202,7 @@
 										<input type="password" class="form-control" name="password" id="password" value="<?php echo set_value('password',$systemuser['password']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off"/>
 
 										<input type="hidden" class="form-control" name="user_id" id="user_id" value="<?php echo set_value('user_id', $systemuser['user_id']);?>" onChange="function_elements_add(this.name, this.value);" autocomplete="off"/>
-										<label class="control-label">Nama Vendor<span class="required">*</span></label>
+										<label class="control-label">Password<span class="required">*</span></label>
 									</div>
 								</div>
 							</div>

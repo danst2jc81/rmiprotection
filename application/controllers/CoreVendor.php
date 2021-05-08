@@ -136,7 +136,6 @@
 				'branch_id'					=> $this->input->post('branch_id',true),
 				'province_id'				=> $this->input->post('province_id',true),
 				'city_id'					=> $this->input->post('city_id',true),
-				'vendor_code'				=> $this->input->post('vendor_code',true),
 				'vendor_name'				=> $this->input->post('vendor_name',true),
 				'vendor_address'			=> $this->input->post('vendor_address',true),
 				'vendor_contact_person'		=> $this->input->post('vendor_contact_person',true),
@@ -151,7 +150,6 @@
 			$this->form_validation->set_rules('branch_id', 'Nama Vendor', 'required');
 			$this->form_validation->set_rules('province_id', 'Nama Provinsi', 'required');
 			$this->form_validation->set_rules('city_id', 'Nama Kota', 'required');
-			$this->form_validation->set_rules('vendor_code', 'Kode Vendor', 'required');
 			$this->form_validation->set_rules('vendor_name', 'Nama Vendor', 'required');
 			$this->form_validation->set_rules('vendor_address', 'Alamat Vendor', 'required');
 			$this->form_validation->set_rules('vendor_contact_person', 'Kontak Vendor', 'required');
@@ -165,7 +163,19 @@
 					if($this->CoreVendor_model->insertCoreVendor($data)){
 						$auth = $this->session->userdata('auth');
 
-						$vendor_id = $this->CoreVendor_model->getVendorID($data['created_id']);
+						$corevendor 	= $this->CoreVendor_model->getCoreVendor_Last($data['created_id']);	
+
+						$vendor_id 		= $corevendor['vendor_id'];
+
+						if (!is_dir(get_root_path()."/img/".$corevendor['vendor_code'])) {
+							print_r("folder tidak ada");
+			
+							mkdir(get_root_path()."/img/".$corevendor['vendor_code'], 0777);	
+
+							
+						}
+
+						/* exit; */
 
 						$this->fungsi->set_log($auth['user_id'], $vendor_id, '2141', 'CoreVendor.processAddCoreVendor', 'Add New Core Vendor');
 
@@ -238,7 +248,6 @@
 			$this->form_validation->set_rules('branch_id', 'Nama Cabang', 'required');
 			$this->form_validation->set_rules('province_id', 'Nama Provinsi', 'required');
 			$this->form_validation->set_rules('city_id', 'Nama Kota', 'required');
-			$this->form_validation->set_rules('vendor_code', 'Kode Vendor', 'required');
 			$this->form_validation->set_rules('vendor_name', 'Nama Vendor', 'required');
 			$this->form_validation->set_rules('vendor_address', 'Alamat Vendor', 'required');
 			$this->form_validation->set_rules('vendor_contact_person', 'Kontak Vendor', 'required');
