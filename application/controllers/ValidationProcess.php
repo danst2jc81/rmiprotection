@@ -94,6 +94,12 @@
 									'vendor_id'					=> $systemuser['vendor_id'],
 								)
 							);
+
+					$_SESSION['KCFINDER']				= array();
+					$_SESSION['KCFINDER']['disabled'] 	= false;
+					$_SESSION['KCFINDER']['uploadURL'] 	= "";
+					$_SESSION['KCFINDER']['uploadDir'] 	= "../../../../img";
+
 					redirect('MainPage');
 				}else{
 					$msg = "<div class='alert alert-danger alert-dismissable'>

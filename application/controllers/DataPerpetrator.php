@@ -264,9 +264,11 @@
 											'created_on'							=> date("Y-m-d H:i:s")
 										);
 
-										$perperator_chronology_token 				= $this->DataPerpetrator_model->getPerpetratorChronologyToken($data_perpetratorchronology['perperator_chronology_token']);
+										
 
-										if ($perperator_chronology_token == 0){
+										$perpetrator_chronology_token 				= $this->DataPerpetrator_model->getPerpetratorChronologyToken($data_perpetratorchronology['perpetrator_chronology_token']);
+
+										if ($perpetrator_chronology_token == 0){
 											$this->DataPerpetrator_model->insertDataPerpetratorChronology($data_perpetratorchronology);
 										}
 
@@ -318,6 +320,29 @@
 							$auth = $this->session->userdata('auth');
 
 							$perpetrator_id = $this->DataPerpetrator_model->getPerpetratorID($data['created_id']);
+
+							$this->fungsi->set_log($auth['user_id'], $perpetrator_id, '2141', 'DataPerpetrator.processAddDataPerpetrator', 'Add New Data Perpetrator');
+
+							$data_perpetratorchronology = array (
+								'perpetrator_id'						=> $perpetrator_id,
+								'province_id'							=> $corevendor['province_id'],
+								'city_id'								=> $corevendor['city_id'],
+								'vendor_id'								=> $auth['vendor_id'],
+								'perpetrator_chronology_date'			=> date("Y-m-d"),
+								'perpetrator_chronology_description' 	=> $this->input->post('perpetrator_chronology_description',true),
+								'perpetrator_chronology_token'			=> $data['perpetrator_token'].$perpetrator_id,
+								'data_state'							=> 0,
+								'created_id'							=> $auth['user_id'],
+								'created_on'							=> date("Y-m-d H:i:s")
+							);
+
+							
+
+							$perpetrator_chronology_token 				= $this->DataPerpetrator_model->getPerpetratorChronologyToken($data_perpetratorchronology['perpetrator_chronology_token']);
+
+							if ($perpetrator_chronology_token == 0){
+								$this->DataPerpetrator_model->insertDataPerpetratorChronology($data_perpetratorchronology);
+							}
 
 							$this->fungsi->set_log($auth['user_id'], $perpetrator_id, '2141', 'DataPerpetrator.processAddDataPerpetrator', 'Add New Data Perpetrator');
 
@@ -395,9 +420,9 @@
 										'created_on'							=> date("Y-m-d H:i:s")
 									);
 
-									$perperator_chronology_token 				= $this->DataPerpetrator_model->getPerpetratorChronologyToken($data_perpetratorchronology['perperator_chronology_token']);
+									$perpetrator_chronology_token 				= $this->DataPerpetrator_model->getPerpetratorChronologyToken($data_perpetratorchronology['perpetrator_chronology_token']);
 
-									if ($perperator_chronology_token == 0){
+									if ($perpetrator_chronology_token == 0){
 										$this->DataPerpetrator_model->insertDataPerpetratorChronology($data_perpetratorchronology);
 									}
 
@@ -440,6 +465,29 @@
 							$auth = $this->session->userdata('auth');
 
 							$perpetrator_id = $this->DataPerpetrator_model->getPerpetratorID($data['created_id']);
+
+							$this->fungsi->set_log($auth['user_id'], $perpetrator_id, '2141', 'DataPerpetrator.processAddDataPerpetrator', 'Add New Data Perpetrator');
+
+							$data_perpetratorchronology = array (
+								'perpetrator_id'						=> $perpetrator_id,
+								'province_id'							=> $corevendor['province_id'],
+								'city_id'								=> $corevendor['city_id'],
+								'vendor_id'								=> $auth['vendor_id'],
+								'perpetrator_chronology_date'			=> date("Y-m-d"),
+								'perpetrator_chronology_description' 	=> $this->input->post('perpetrator_chronology_description',true),
+								'perpetrator_chronology_token'			=> $data['perpetrator_token'].$perpetrator_id,
+								'data_state'							=> 0,
+								'created_id'							=> $auth['user_id'],
+								'created_on'							=> date("Y-m-d H:i:s")
+							);
+
+							
+
+							$perpetrator_chronology_token 				= $this->DataPerpetrator_model->getPerpetratorChronologyToken($data_perpetratorchronology['perpetrator_chronology_token']);
+
+							if ($perpetrator_chronology_token == 0){
+								$this->DataPerpetrator_model->insertDataPerpetratorChronology($data_perpetratorchronology);
+							}
 
 							$this->fungsi->set_log($auth['user_id'], $perpetrator_id, '2141', 'DataPerpetrator.processAddDataPerpetrator', 'Add New Data Perpetrator');
 

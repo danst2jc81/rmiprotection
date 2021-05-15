@@ -30,6 +30,15 @@
             });
         });
     });
+	
+	
+	$(function () {
+			CKEDITOR.replace('ckeditor',{
+				filebrowserImageBrowseUrl : '<?php echo base_url('assets/global/plugins/kcfinder/browse.php');?>',
+				height: '400px'             
+			});
+		});
+  
 </script>
 		
 <!-- BEGIN PAGE TITLE & BREADCRUMB-->
@@ -208,7 +217,7 @@
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-group form-md-line-input">
-									<textarea rows="45" name="perpetrator_chronology_description" id="perpetrator_chronology_description" class="ckeditor form-control" placeholder="" onChange="function_elements_add(this.name, this.value);"><?php echo $data['perpetrator_chronology_description'];?></textarea>
+									<textarea rows="45" name="perpetrator_chronology_description" id="ckeditor" class="ckeditor form-control" placeholder="" onChange="function_elements_add(this.name, this.value);"><?php echo $data['perpetrator_chronology_description'];?></textarea>
 									<label class="control-label">Kronologi Kejadian</label>
 								</div>
 							</div>
