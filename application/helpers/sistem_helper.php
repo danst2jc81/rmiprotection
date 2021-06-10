@@ -166,6 +166,28 @@ if (! function_exists('tgltoview')){
 	}
 }
 
+if (! function_exists('datetimetoview')){
+	function datetimetoview($data){
+		if($data==""||$data=="0000-00-00"){
+		return "-";	
+		}else{
+		$hasil=Date('d M Y H:i:s', strtotime($data));
+		return $hasil;	
+		}
+	}
+}
+
+if (! function_exists('tgltostring')){
+	function tgltostring($data){
+		if($data==""||$data=="0000-00-00"){
+		return "-";	
+		}else{
+		$hasil=Date('d M Y', strtotime($data));
+		return $hasil;	
+		}
+	}
+}
+
 if(! function_exists('get_root_path')){
 	function get_root_path(){
 		$posisition = str_replace('\'', '/', realpath(dirname(__FILE__))) . '/';
