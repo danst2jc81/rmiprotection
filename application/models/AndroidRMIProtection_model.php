@@ -271,7 +271,7 @@
 
 		/*CONTENT NEWS*/
 		public function getContentNewsList(){
-			$this->db->select('content_news.news_id, content_news.news_title, content_news.news_description, content_news.news_image');
+			$this->db->select('content_news.news_id, content_news.news_title, content_news.news_description, content_news.news_image, content_news.news_date');
 			$this->db->from('content_news');
 			$this->db->where('content_news.data_state', 0);
 			$this->db->order_by('content_news.news_id', 'DESC');
@@ -292,7 +292,14 @@
 			return $result;
 		}
 
-
+		/*CORE GENDER*/
+		public function getCoreGender(){
+			$this->db->select('core_gender.gender_id, core_gender.gender_name');
+			$this->db->from('core_gender');
+			$this->db->where('core_gender.data_state', 0);
+			$result = $this->db->get()->result_array();
+			return $result;
+		}
 
 
 

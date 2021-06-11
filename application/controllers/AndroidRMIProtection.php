@@ -705,6 +705,7 @@
 				'city_id'						=> $corevendor['city_id'],
 				'province_perpetrator_id'		=> $this->input->post('province_perpetrator_id',true),
 				'city_perpetrator_id'			=> $this->input->post('city_perpetrator_id',true),
+				'gender_id'						=> $this->input->post('gender_id',true),
 				'perpetrator_name'				=> $this->input->post('perpetrator_name',true),
 				'perpetrator_mobile_phone'		=> $this->input->post('perpetrator_mobile_phone',true),
 				'perpetrator_id_number'			=> $this->input->post('perpetrator_id_number',true),
@@ -1170,13 +1171,21 @@
 					} else {
 						if (!empty($dataperpetratorupdatelist)){
 							foreach ($dataperpetratorupdatelist as $key => $val) {
-								$dataperpetratorupdate[$key]['perpetrator_id'] 						= $val['perpetrator_id'];
-								$dataperpetratorupdate[$key]['province_id'] 						= $val['province_id'];
-								$dataperpetratorupdate[$key]['province_name'] 						= $val['province_name'];
-								$dataperpetratorupdate[$key]['city_id'] 							= $val['city_id'];
-								$dataperpetratorupdate[$key]['city_name'] 							= $val['city_name'];
-								$dataperpetratorupdate[$key]['perpetrator_name'] 					= $val['perpetrator_name'];
-								$dataperpetratorupdate[$key]['perpetrator_chronology_created'] 		= datetimetoview($val['created_on']);
+								$city_name = $val['city_name'];
+
+								$city_name = str_replace("KOTA", "", $city_name);
+
+								$city_name = str_replace("KABUPATEN", "", $city_name);
+
+								$city_name = ucwords(strtolower($city_name));
+								
+								$dataperpetratorupdate[$key]['perpetrator_id'] 		= $val['perpetrator_id'];
+								$dataperpetratorupdate[$key]['province_id'] 		= $val['province_id'];
+								$dataperpetratorupdate[$key]['province_name'] 		= ucwords(strtolower($val['province_name']));
+								$dataperpetratorupdate[$key]['city_id'] 			= $val['city_id'];
+								$dataperpetratorupdate[$key]['city_name'] 			= $city_name;
+								$dataperpetratorupdate[$key]['perpetrator_name'] 	= $val['perpetrator_name'];
+								$dataperpetratorupdate[$key]['created_on'] 			= simpledatetime($val['created_on']);
 							}
 						}
 						
@@ -1190,7 +1199,43 @@
 			echo json_encode($response);
 		}
 
+		public function getCoreGender(){
+			$base_url = base_url();
 
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'coregender'			=> "",
+			);
+
+			if($response["error"] == FALSE){
+				$coregenderlist = $this->AndroidRMIProtection_model->getCoreGender();
+
+				if(!$coregenderlist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($coregenderlist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						foreach ($coregenderlist as $key => $val) {
+							$coregender[$key]['gender_id']		= $val['gender_id'];
+							$coregender[$key]['gender_name'] 	= $val['gender_name'];
+						}
+						
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['coregender'] 			= $coregender;
+					}
+				}
+			}
+			echo json_encode($response);
+		}
 
 
 
