@@ -292,8 +292,8 @@
 		public function processUpdateSystemUserToken(){
 
 			$data = array(
-				'user_id'						=> $this->input->post('user_id',true),
-				'user_token'					=> $this->input->post('user_token',true),
+				'customer_id'						=> $this->input->post('customer_id',true),
+				'customer_token'					=> $this->input->post('customer_token',true),
 			);
 		
 			$response = array(
@@ -703,8 +703,8 @@
 				'vendor_id'						=> $this->input->post('vendor_id',true),
 				'province_id'					=> $corevendor['province_id'],
 				'city_id'						=> $corevendor['city_id'],
-				'province_perpetrator_id'		=> $this->input->post('province_perpetrator_id',true),
-				'city_perpetrator_id'			=> $this->input->post('city_perpetrator_id',true),
+				'province_id_perpetrator'		=> $this->input->post('province_id_perpetrator',true),
+				'city_id_perpetrator'			=> $this->input->post('city_id_perpetrator',true),
 				'gender_id'						=> $this->input->post('gender_id',true),
 				'perpetrator_name'				=> $this->input->post('perpetrator_name',true),
 				'perpetrator_mobile_phone'		=> $this->input->post('perpetrator_mobile_phone',true),
@@ -977,14 +977,90 @@
 				'datasearchperpetrator'			=> "",
 			);
 
+		/* 	perpetrator_name=null&province_id=&city_id=&province_id_perpetrator=&city_id_perpetrator=&sort_status=&perpetrator_not_caught=&perpetrator_already_caught=&perpetrator_been_processed=&province_perpetrator_id=&province_vendor_id=&bundle_status=0 */
+
 			$data = array(
-				'perpetrator_name'			=> $this->input->post('perpetrator_name',true),
+				'perpetrator_name'				=> $this->input->post('perpetrator_name',true),
+				'province_id'					=> $this->input->post('province_id',true),
+				'city_id'						=> $this->input->post('city_id',true),
+				'province_id_perpetrator'		=> $this->input->post('province_id_perpetrator',true),
+				'city_id_perpetrator'			=> $this->input->post('city_id_perpetrator',true),
+				'sort_status'					=> $this->input->post('sort_status',true),
+				'province_perpetrator_id'		=> $this->input->post('province_perpetrator_id',true),
+				'province_vendor_id'			=> $this->input->post('province_vendor_id',true),
+				'bundle_status'					=> $this->input->post('bundle_status',true),
 			);
 
 			$perpetratorstatus 		= $this->configuration->PerpetratorStatus();
 
+			$data_status = array(
+				'perpetrator_not_caught'		=> $this->input->post('perpetrator_not_caught',true),
+				'perpetrator_already_caught'	=> $this->input->post('perpetrator_already_caught',true),
+				'perpetrator_been_processed'	=> $this->input->post('perpetrator_been_processed',true),
+			);
+
+			/* perpetrator_name=&province_id=1&city_id=7&province_id_perpetrator=1&city_id_perpetrator=7&sort_status=3&perpetrator_not_caught=&perpetrator_already_caught=&perpetrator_been_processed=&province_perpetrator_id=0&province_vendor_id=0&bundle_status=1 */
+
+			/* $data = array(
+				'perpetrator_name'				=> "",
+				'province_id'					=> 1,
+				'city_id'						=> 7,
+				'province_id_perpetrator'		=> 1,
+				'city_id_perpetrator'			=> 7,
+				'sort_status'					=> 3,
+				'province_perpetrator_id'		=> 0,
+				'province_vendor_id'			=> 0,
+				'bundle_status'					=> 1,
+			); */
+
+			$perpetratorstatus 		= $this->configuration->PerpetratorStatus();
+
+			/* $data_status = array(
+				'perpetrator_not_caught'		=> "",
+				'perpetrator_already_caught'	=> "",
+				'perpetrator_been_processed'	=> "",
+			); */
+
+			/* $data_status = array(
+				'perpetrator_not_caught'		=> 1,
+				'perpetrator_already_caught'	=> 2,
+				'perpetrator_been_processed'	=> "",
+			); */
+
+			$perpetrator_status1 				= array_values($data_status);
+
+			$perpetrator_status 				= array_filter($perpetrator_status1);
+
+			/* $data['bundle_status']				= 1;
+
+			$data['perpetrator_name']			= "doe"; */
+
+			/* $datasearchperpetratorlist 			= $this->AndroidRMIProtection_model->getSearchDataPerpetrator($data['perpetrator_name'], $data['province_id'], $data['city_id'], $data['province_id_perpetrator'], $data['city_id_perpetrator'], $data['sort_status'], $data['province_perpetrator_id'], $data['province_vendor_id'], $data['bundle_status'], $perpetrator_status); */
+
+			/* print_r("data_status ");
+			print_r($data_status);
+			print_r("<BR>");
+			print_r("<BR>");
+			print_r("perpetrator_status1 ");
+			print_r($perpetrator_status1);
+			print_r("<BR>");
+			print_r("<BR>");
+			print_r("perpetrator_status ");
+			print_r($perpetrator_status);
+			print_r("<BR>");
+			print_r("<BR>");
+			print_r("datasearchperpetratorlist 2 ");
+			print_r($datasearchperpetratorlist);
+			print_r("<BR>");
+			print_r("<BR>");
+			exit; */
+
 			if($response["error"] == FALSE){
-				$datasearchperpetratorlist 	= $this->AndroidRMIProtection_model->getSearchDataPerpetrator($data['perpetrator_name']);
+				/* $perpetrator_status = array(
+
+				); */
+
+				$datasearchperpetratorlist 			= $this->AndroidRMIProtection_model->getSearchDataPerpetrator($data['perpetrator_name'], $data['province_id'], $data['city_id'], $data['province_id_perpetrator'], $data['city_id_perpetrator'], $data['sort_status'], $data['province_perpetrator_id'], $data['province_vendor_id'], $data['bundle_status'], $perpetrator_status);
 
 				if(!$datasearchperpetratorlist){
 					$response['error'] 				= TRUE;
@@ -1237,13 +1313,413 @@
 			echo json_encode($response);
 		}
 
+		/*SALES CUSTOMER*/
+		public function processAddSalesCustomer(){
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'data_salescustomer'	=> "",
+			);
 
+			$unique 					= $this->session->userdata('unique');
+			$auth						= $this->session->userdata('auth');	
+			$customer_verification_code = rand(100001, 999999);
+			/* $customer_verification_code = "123456"; */
+			
+			$data = array(
+				'province_id'						=> $this->input->post('province_id',true),
+				'city_id'							=> $this->input->post('city_id',true),
+				'package_id'						=> $this->input->post('package_id',true),
+				'package_price_id'					=> $this->input->post('package_price_id',true),
+				'customer_name'						=> $this->input->post('customer_name',true),
+				'customer_email'					=> $this->input->post('customer_email',true),
+				'customer_mobile_phone'				=> $this->input->post('customer_mobile_phone',true),
+				'customer_password'					=> md5($this->input->post('customer_password',true)),
+				'customer_token'					=> $this->input->post('customer_token',true),
+				'customer_verification_code'		=> $customer_verification_code,
+				'verified'							=> 0,
+				'data_state' 						=> 0,
+				'created_id' 						=> date("YmdHis"),
+				'created_on' 						=> date('Y-m-d H:i:s'),
+			);
 
+			/* $data = array(
+				'customer_name'						=> 'Daniel Setiawan',
+				'customer_email'					=> 'danst2jc@gmail.com',
+				'customer_mobile_phone'				=> '808181311311',
+				'customer_password'					=> md5('123456'),
+				'customer_token'					=> 'cY2Z_mF9shM%3AAPA91bF30JQN1_tee3ijtHtOsmxDCLbxHfd2KyFg2qRR4_sC1zZ0Kcq6Km6Da40hEhpGi8GzFLZ9YmpKjWBbIU2HkgK-BFGgLwbwGKdLL39AYoiDQ7TGSjF74tUiJwc8ChZlOtN7eRkP',
+				'customer_verification_code'		=> $customer_verification_code,
+				'verified'							=> 0,
+				'data_state' 						=> 0,
+				'created_id' 						=> date("YmdHis"),
+				'created_on' 						=> date('Y-m-d H:i:s'),
+			); */
 
+			/*print_r("data_salescustomer ");
+			print_r($data);
+			print_r("<BR>");
+			print_r("user_level ");
+			print_r($user_level);
+			print_r("<BR>");
+			exit;*/
 
+			if (empty($data)){
+				$response['error'] 				= TRUE;
+				$response['error_msg_title'] 	= "No Data";
+				$response['error_msg'] 			= "Data Pelanggan is Empty";
+			} else {
+				if($response["error"] == FALSE){
+					
+					if ($this->AndroidRMIProtection_model->getCustomerMobilePhone($data['customer_mobile_phone'])){
+						if ($this->AndroidRMIProtection_model->getCustomerEmail($data['customer_email'])){
+							$data_customer = array (
+								'province_id'						=> $data['province_id'],
+								'city_id'							=> $data['city_id'],
+								'package_id'						=> $data['package_id'],
+								'package_price_id'					=> $data['package_price_id'],
+								'customer_name'						=> $data['customer_name'],
+								'customer_email'					=> $data['customer_email'],
+								'customer_mobile_phone'				=> $data['customer_mobile_phone'],
+								'customer_password'					=> md5($data['customer_password']),
+								'customer_token'					=> $data['customer_token'],
+								'customer_verification_code'		=> $customer_verification_code,
+								'customer_address'					=> "",
+								'customer_registration_date'		=> date('Y-m-d'),
+								'customer_status'					=> 1,
+								'verified'							=> 0,
+								'data_state' 						=> 0,
+								'created_id' 						=> date("YmdHis"),
+								'created_on' 						=> date('Y-m-d H:i:s'),
+							);
 
+							
+							if ($this->AndroidRMIProtection_model->insertSalesCustomer($data_customer)){
+								$salescustomer = $this->AndroidRMIProtection_model->getSalesCustomer_Last($data_customer['created_id']);
 
+								/*print_r("salescustomer ");
+								print_r($salescustomer);*/
 
+								$data_systemuser = array (
+									'user_group_id'					=> 2,
+									'customer_id'					=> $salescustomer['customer_id'],
+									'package_id'					=> $data['package_id'],
+									'package_price_id'				=> $data['package_price_id'],
+									'customer_name'					=> $data_customer['customer_name'],
+									'customer_email'				=> $data_customer['customer_email'],
+									'customer_mobile_phone'			=> $data_customer['customer_mobile_phone'],
+									'customer_password'				=> $data_customer['customer_password'],
+									'customer_token'				=> $data_customer['customer_token'],
+									'customer_verification_code'	=> $data_customer['customer_verification_code'],
+									'user_level'					=> 0,
+									'verified'						=> 0,
+								);
+
+								if ($this->AndroidRMIProtection_model->insertSystemUser($data_systemuser)){
+									$data_salescustomer[0]['customer_id']					= $salescustomer['customer_id'];
+									$data_salescustomer[0]['customer_name']					= $salescustomer['customer_name'];
+									$data_salescustomer[0]['customer_email']				= $salescustomer['customer_email'];
+									$data_salescustomer[0]['customer_mobile_phone']			= $salescustomer['customer_mobile_phone'];
+									$data_salescustomer[0]['customer_verification_code']	= $salescustomer['customer_verification_code'];
+									$data_salescustomer[0]['customer_status']				= $salescustomer['customer_status'];
+
+									$response['error'] 					= FALSE;
+									$response['error_msg_title'] 		= "Success";
+									$response['error_msg'] 				= "Registrasi Berhasil";
+									$response['data_salescustomer'] 	= $data_salescustomer;
+								} else {
+									$response['error'] 					= TRUE;
+									$response['error_msg_title'] 		= "No Data";
+									$response['error_msg'] 				= "Error Query Data";
+								}
+
+							} else {
+								$response['error'] 				= TRUE;
+								$response['error_msg_title'] 	= "No Data";
+								$response['error_msg'] 			= "Error Query Data";
+							}
+						} else {
+							$response['error'] 				= TRUE;
+							$response['error_msg_title'] 	= "Registrasi Gagal";
+							$response['error_msg'] 			= "Data Email Pelanggan Sudah Ada";
+						}
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "Registrasi Gagal";
+						$response['error_msg'] 			= "Data No Handphone Pelanggan Sudah Ada";
+					}
+				}
+			}
+
+			echo json_encode($response);
+		}
+
+		public function processUpdateCustomerVerificationCode(){
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'verificationcode'		=> "",
+			);
+
+			$user_level 				= $this->input->post('user_level',true);
+
+			$data = array(
+				'customer_id'					=> $this->input->post('customer_id',true),
+				'customer_verification_code'	=> $this->input->post('customer_verification_code',true),
+			);
+
+			/*$data = array(
+				'customer_id'					=> 1,
+				'customer_verification_code'	=> '123456',
+			);	*/		
+
+			if (empty($data)){
+				$response['error'] 				= TRUE;
+				$response['error_msg_title'] 	= "No Data";
+				$response['error_msg'] 			= "Data is Empty";
+			} else {
+				if($response["error"] == FALSE){
+					
+					$customerverificationcode 	= $this->AndroidRMIProtection_model->getCustomerVerificationCode($data);	
+					
+
+					if($customerverificationcode == false){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Error Query Data";
+					}else{
+						if (empty($customerverificationcode)){
+							$response['error'] 				= TRUE;
+							$response['error_msg_title'] 	= "No Data";
+							$response['error_msg'] 			= "Data Does Not Exist";
+						} else {
+							
+							$verificationcode[0]['customer_id'] 				= $customerverificationcode['customer_id'];
+							$verificationcode[0]['customer_verification_code']	= $customerverificationcode['customer_verification_code'];
+
+							$dataupdate = array (
+								'customer_id'		=> $data['customer_id'],
+								'verified'			=> 1,
+								'verified_on'		=> date("Y-m-d H:i:s"),
+								'customer_status'	=> 1,
+							);
+
+							if ($this->AndroidRMIProtection_model->updateSalesCustomer($dataupdate)){
+								$dataupdate = array (
+									'customer_id'		=> $data['customer_id'],
+									'verified'			=> 1,
+									'verified_on'		=> date("Y-m-d H:i:s"),
+									'customer_status'	=> 1,
+								);
+								$this->AndroidRMIProtection_model->updateSystemUser($dataupdate);
+							}
+							
+							
+							$response['error'] 				= FALSE;
+							$response['error_msg_title'] 	= "Success";
+							$response['error_msg'] 			= "Data Exist";
+							$response['verificationcode'] 	= $verificationcode;
+						}
+					}
+				}
+			}
+
+			echo json_encode($response);
+		}
+
+		public function processUpdateCustomerEmail(){
+			$data = array(
+				'customer_email'				=> $this->input->post('customer_email', true),
+				'customer_id'					=> $this->input->post('customer_id', true),
+				'customer_name'					=> $this->input->post('customer_name', true),
+			);
+
+			$user_level 	= $this->input->post('user_level', true);
+
+			/*print_r("data ");
+			print_r($data);
+			print_r("<BR> ");*/
+			
+			$customer_verification_code = rand(100001, 999999);
+		
+			$response = array(
+				'error'								=> FALSE,
+				'error_customeremail'				=> FALSE,
+				'error_msg_title_customeremail'		=> "",
+				'error_msg_customeremail'			=> "",
+			);
+
+			if($response["error_customeremail"] == FALSE){
+				if(!empty($data)){
+					
+					$dataupdate = array(
+						'customer_id'					=>	$data['customer_id'],
+						'customer_email'				=>	$data['customer_email'],
+						'customer_verification_code'	=>	$customer_verification_code,
+					);
+
+					if ($this->AndroidRMIProtection_model->updateSalesCustomer($dataupdate)){
+						if ($this->AndroidRMIProtection_model->updateSystemUser($dataupdate)){
+							$this->sendEmailFirst($data['customer_id'], $data['customer_email'], $data['customer_name'], $customer_verification_code);
+						}
+
+						$response['error'] 				= FALSE;
+						$response['error_msg_title'] 	= "Ganti Email Verifikasi Berhasil";
+						$response['error_msg'] 			= "Data Berhasil";		
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "Ganti Email Verifikasi Gagal";
+						$response['error_msg'] 			= "Data Gagal";		
+					}
+				}
+
+			} 
+			
+			echo json_encode($response);
+		}
+
+		public function sendEmailFirst($customer_id, $customer_email, $customer_name, $customer_verification_code){
+			/*public function sendEmailFirst(){*/
+				$config['protocol'] = 'sendmail';
+				$config['mailpath'] = '/usr/sbin/sendmail';
+				$config['charset'] 	= 'iso-8859-1';
+				$config['wordwrap'] = TRUE;
+				$config['mailtype'] = 'html';
+	
+				/*$customer_email = "danst2jc@gmail.com";
+				$customer_name = "Daniel Setiawan";
+				$customer_verification_code = "123456";*/
+	
+				$this->email->initialize($config);
+				$this->email->from('no-reply@oasisindo.org', 'Loker Sukses');
+				$this->email->to($customer_email);
+				
+				$this->email->subject('Halo '.$customer_name.' Berikut Kode Verifikasi Anda');
+				$base_url = base_url();
+	
+				$body = "
+					<!DOCTYPE html>
+					<html>
+						<head>
+								<meta charset=\"utf-8\" />
+								<title>Loker Sukses</title>
+								<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+						</head>
+						<body>
+							<div>
+								div align=\"center\" >
+									<img src=\"".$base_url."assets/img/logo_loker_sukses.png\" alt=\"\" width=\"50%\" height=\"50%\" alt=\"\">
+								</div>
+								<hr>
+								<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px\">Halo	".$customer_name.",
+								</p>
+								<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px\"> Berikut ini adalah kode verifikasi Anda </a> 
+								</p>
+								<div align=\"center\" >
+									<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 48px;line-height: 25px;Margin-bottom: 25px\"> ".$customer_verification_code." </a> 
+									</p>
+								</div>
+								<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px\">Jika Anda memiliki pertanyaan mengenai kode verifikasi, silakan mengirimkan surel ke <a href=\"mailto:info@oasisindo.org\">info@oasisindo.org</a>.
+								</p>
+							</div>
+						</body>
+					</html>
+				";
+	
+				$this->email->message($body);
+	
+	
+	
+				if ($this->email->send()){
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			public function getCorePackage(){
+				$base_url = base_url();
+	
+				$response = array(
+					'error'					=> FALSE,
+					'error_msg'				=> "",
+					'error_msg_title'		=> "",
+					'corepackage'			=> "",
+				);
+	
+				if($response["error"] == FALSE){
+					$corepackagelist = $this->AndroidRMIProtection_model->getCorePackage();
+	
+					if(!$corepackagelist){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Error Query Data";
+					}else{
+						if (empty($corepackagelist)){
+							$response['error'] 				= TRUE;
+							$response['error_msg_title'] 	= "No Data";
+							$response['error_msg'] 			= "Data Does Not Exist";
+						} else {
+							foreach ($corepackagelist as $key => $val) {
+								$corepackage[$key]['package_id']		= $val['package_id'];
+								$corepackage[$key]['package_name'] 		= $val['package_name'];
+							}
+							
+							$response['error'] 					= FALSE;
+							$response['error_msg_title'] 		= "Success";
+							$response['error_msg'] 				= "Data Exist";
+							$response['corepackage'] 			= $corepackage;
+						}
+					}
+				}
+				echo json_encode($response);
+			}
+	
+	
+			public function getCorePackagePrice(){
+				$base_url = base_url();
+	
+				$response = array(
+					'error'					=> FALSE,
+					'error_msg'				=> "",
+					'error_msg_title'		=> "",
+					'corepackageprice'		=> "",
+				);
+	
+				$data = array(
+					'package_id'			=> $this->input->post('package_id',true),
+				);
+	
+				if($response["error"] == FALSE){
+					$corepackagepricelist = $this->AndroidRMIProtection_model->getCorePackagePrice($data['package_id']);
+	
+					if(!$corepackagepricelist){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Error Query Data";
+					}else{
+						if (empty($corepackagepricelist)){
+							$response['error'] 				= TRUE;
+							$response['error_msg_title'] 	= "No Data";
+							$response['error_msg'] 			= "Data Does Not Exist";
+						} else {
+							foreach ($corepackagepricelist as $key => $val) {
+								$corepackageprice[$key]['package_id']			= $val['package_id'];
+								$corepackageprice[$key]['package_price_id'] 	= $val['package_price_id'];
+								$corepackageprice[$key]['package_price_name']	= $val['package_price_name'];
+							}
+							
+							$response['error'] 					= FALSE;
+							$response['error_msg_title'] 		= "Success";
+							$response['error_msg'] 				= "Data Exist";
+							$response['corepackageprice'] 		= $corepackageprice;
+						}
+					}
+				}
+				echo json_encode($response);
+			}
 		
 
 		

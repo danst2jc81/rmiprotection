@@ -144,3 +144,70 @@ $route['perpetrator/process-edit'] 	        = 'DataPerpetrator/processEditDataPe
 
 $route['perpetrator/get-vendor']   	        = 'DataPerpetrator/getCoreVendor';
 $route['perpetrator/elements-add']   	        = 'DataPerpetrator/function_elements_add';
+
+
+/* CONTENT NEWS */
+$route['content-news'] 				        = 'ContentNews';
+$route['content-news/filter'] 		        = 'ContentNews/filter';
+$route['content-news/reset-search'] 		        = 'ContentNews/reset_search';
+$route['content-news/add'] 			        = 'ContentNews/addContentNews';
+$route['content-news/edit/(:num)']	        = 'ContentNews/editContentNews/$1';
+$route['content-news/delete/(:num)']	        = 'ContentNews/deleteContentNews/$1';
+$route['content-news/process-add'] 	        = 'ContentNews/processAddContentNews';
+$route['content-news/process-edit'] 	        = 'ContentNews/processEditContentNews';
+
+
+/* CONTENT EVENT */
+$route['content-event'] 				        = 'ContentEvent';
+$route['content-event/filter'] 		        = 'ContentEvent/filter';
+$route['content-event/reset-search'] 		        = 'ContentEvent/reset_search';
+$route['content-event/add'] 			        = 'ContentEvent/addContentEvent';
+$route['content-event/edit/(:num)']	        = 'ContentEvent/editContentEvent/$1';
+$route['content-event/delete/(:num)']	        = 'ContentEvent/deleteContentEvent/$1';
+$route['content-event/process-add'] 	        = 'ContentEvent/processAddContentEvent';
+$route['content-event/process-edit'] 	        = 'ContentEvent/processEditContentEvent';
+
+
+/* CORE PACKAGE */
+$route['package'] 				        = 'CorePackage';
+$route['package/add'] 			        = 'CorePackage/addCorePackage';
+$route['package/reset-add'] 		        = 'CorePackage/reset_add';
+$route['package/edit/(:num)']	        = 'CorePackage/editCorePackage/$1';
+$route['package/reset-edit/(:num)'] 		        = 'CorePackage/reset_edit/$1';
+$route['package/delete/(:num)']	    = 'CorePackage/deleteCorePackage/$1';
+$route['package/process-add'] 	        = 'CorePackage/processAddCorePackage';
+$route['package/process-edit'] 	    = 'CorePackage/processEditCorePackage';
+
+
+/* CORE PACKAGE PRICE */
+$route['package-price'] 				        = 'CorePackagePrice';
+$route['package-price/filter'] 		        = 'CorePackagePrice/filter';
+$route['package-price/reset-search'] 		        = 'CorePackagePrice/reset_search';
+$route['package-price/add'] 			        = 'CorePackagePrice/addCorePackagePrice';
+$route['package-price/reset-add'] 		        = 'CorePackagePrice/reset_add';
+$route['package-price/edit/(:num)']	        = 'CorePackagePrice/editCorePackagePrice/$1';
+$route['package-price/reset-edit/(:num)'] 		        = 'CorePackagePrice/reset_edit/$1';
+$route['package-price/delete/(:num)']	    = 'CorePackagePrice/deleteCorePackagePrice/$1';
+$route['package-price/process-add'] 	        = 'CorePackagePrice/processAddCorePackagePrice';
+$route['package-price/process-edit'] 	    = 'CorePackagePrice/processEditCorePackagePrice';
+
+/* ACCT BANK ACCOUNT*/
+$route['bank-account'] 				    = 'AcctBankAccount';
+$route['bank-account/add'] 			    = 'AcctBankAccount/addAcctBankAccount';
+$route['bank-account/reset-add'] 			    = 'AcctBankAccount/reset_add';
+$route['bank-account/edit/(:num)']	    = 'AcctBankAccount/editAcctBankAccount/$1';
+$route['bank-account/delete/(:num)']	    = 'AcctBankAccount/deleteAcctBankAccount/$1';
+$route['bank-account/process-add'] 	    = 'AcctBankAccount/processAddAcctBankAccount';
+$route['bank-account/process-edit'] 	    = 'AcctBankAccount/processEditAcctBankAccount';
+$route['bank-account/reset-add']  	    = 'AcctBankAccount/reset_add';
+$route['bank-account/elements-add']  	    = 'AcctBankAccount/function_elements_add';
+
+
+/* SALES CUSTOMER */
+$route['customer'] 				        = 'SalesCustomer';
+$route['customer/filter'] 			        = 'SalesCustomer/filter';
+$route['customer/detail/(:num)']	    = 'SalesCustomer/detailSalesCustomer/$1';
+$route['customer/reset-search'] 			        = 'SalesCustomer/reset_search';
+$route['customer/customer-unpaid'] 			        = 'SalesCustomer/getSalesCustomerUnPaid';
+$route['customer/collection/(:num)']	    = 'SalesCustomer/getSalesCustomerUnPaid_Detail/$1';
+$route['customer/process-edit']	    = 'SalesCustomer/processUpdateSalesCustomer_Collection';

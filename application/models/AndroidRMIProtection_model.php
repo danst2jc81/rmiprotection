@@ -1,6 +1,7 @@
 <?php
 	class AndroidRMIProtection_model extends CI_Model {
-		var $table = "acct_account";
+		var $table 			= "acct_account";
+		var $column_search 	= array('perpetrator_name', 'perpetrator_address');
 		
 		public function AndroidRMIProtection_model(){
 			parent::__construct();
@@ -22,6 +23,7 @@
 			if ($tenant_status != ''){
 				$this->db->where('registration_tenant.tenant_status', $tenant_status);
 			}
+
 			$this->db->order_by('registration_tenant.tenant_id', 'DESC');
 			$result = $this->db->get()->result_array();
 			return $result;
@@ -70,7 +72,7 @@
 		}
 
 		public function updateSystemUser($data){
-			$this->db->where('system_user.user_id', $data['user_id']);
+			$this->db->where('system_user.customer_id', $data['customer_id']);
 			$query = $this->db->update('system_user', $data);
 			if($query){
 				return true;
@@ -245,18 +247,78 @@
 			return $result;
 		}	
 
-		public function getSearchDataPerpetrator($perpetrator_name){
-			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.region_id, core_region.region_name, data_perpetrator.branch_id, core_branch.branch_name, data_perpetrator.vendor_id, core_vendor.vendor_name, core_vendor.vendor_contact_person, core_vendor.vendor_phone, data_perpetrator.province_id, core_province.province_name, data_perpetrator.city_id, core_city.city_name, data_perpetrator.province_perpetrator_id, data_perpetrator.city_perpetrator_id, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_age, data_perpetrator.perpetrator_status');
+		public function getSearchDataPerpetrator($perpetrator_name, $province_id, $city_id, $province_id_perpetrator, $city_id_perpetrator, $sort_status, $province_perpetrator_id, $province_vendor_id, $bundle_status, $perpetrator_status){
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.region_id, core_region.region_name, data_perpetrator.branch_id, core_branch.branch_name, data_perpetrator.vendor_id, core_vendor.vendor_name, core_vendor.vendor_contact_person, core_vendor.vendor_phone, data_perpetrator.province_id, core_province.province_name, data_perpetrator.city_id, core_city.city_name, data_perpetrator.province_id_perpetrator, data_perpetrator.city_id_perpetrator, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_age, data_perpetrator.perpetrator_status');
 			$this->db->from('data_perpetrator');
 			$this->db->join('core_region', 'data_perpetrator.region_id = core_region.region_id');
 			$this->db->join('core_branch', 'data_perpetrator.branch_id = core_branch.branch_id');
 			$this->db->join('core_vendor', 'data_perpetrator.vendor_id = core_vendor.vendor_id');
 			$this->db->join('core_province', 'data_perpetrator.province_id = core_province.province_id');
 			$this->db->join('core_city', 'data_perpetrator.city_id = core_city.city_id');
+
+			if ($bundle_status == 1){
+				if ($province_perpetrator_id == 1){
+					$this->db->where('data_perpetrator.province_id', $province_id);	
+					$this->db->where('data_perpetrator.city_id', $city_id);	
+				}
+	
+				if ($province_vendor_id == 1){
+					$this->db->where('data_perpetrator.province_id_perpetrator', $province_id_perpetrator);	
+					$this->db->where('data_perpetrator.city_id_perpetrator', $city_id_perpetrator);	
+				}
+
+				if (!empty($perpetrator_status)){
+					$this->db->where_in('data_perpetrator.perpetrator_status', $perpetrator_status);
+				}
+			}
+			
 			$this->db->where('data_perpetrator.data_state', 0);
-			$this->db->like('data_perpetrator.perpetrator_name', $perpetrator_name);
-			$this->db->order_by('data_perpetrator.perpetrator_id', 'DESC');
+
+			$i = 0;
+
+
+			foreach ($this->column_search as $item) // looping awal
+			{
+				if($perpetrator_name) // jika datatable mengirimkan pencarian dengan metode POST
+				{
+					
+					if($i===0) // looping awal
+					{
+						$this->db->group_start(); 
+						$this->db->like($item, $perpetrator_name);
+					}
+					else
+					{
+						$this->db->or_like($item, $perpetrator_name);
+					}
+	
+					if(count($this->column_search) - 1 == $i) 
+						$this->db->group_end(); 
+				}
+				$i++;
+			}
+
+
+			if ($bundle_status == 1){
+				if ($sort_status == 1){
+					$this->db->order_by('data_perpetrator.province_id_perpetrator', 'ASC');
+					$this->db->order_by('data_perpetrator.city_id_perpetrator', 'ASC');
+				} else if ($sort_status == 2){
+					$this->db->order_by('data_perpetrator.province_id', 'ASC');
+					$this->db->order_by('data_perpetrator.city_id', 'ASC');
+				} else if ($sort_status == 3){
+					$this->db->order_by('data_perpetrator.perpetrator_name', 'ASC');
+				}
+			}
+
+			if ($bundle_status == 0){
+				$this->db->order_by('data_perpetrator.perpetrator_id', rand());
+			}
+
 			$result = $this->db->get()->result_array();
+			/* print_r($this->db->last_query());
+			print_r("<BR>");
+			print_r("<BR>"); */
 			return $result;
 		}
 
@@ -301,9 +363,96 @@
 			return $result;
 		}
 
+		/*SALES CUSTOMER*/
+		public function getCustomerMobilePhone($customer_mobile_phone){
+			$this->db->select('system_user.customer_id');
+			$this->db->from('system_user');
+			$this->db->where('system_user.data_state', 0);
+			$this->db->where('system_user.customer_mobile_phone', $customer_mobile_phone);
+			$result = $this->db->get()->num_rows();
+			if ($result == 0){
+				return true;
+			} else {
+				return false;
+			}
+		}
 
+		public function getCustomerEmail($customer_email){
+			$this->db->select('system_user.customer_id');
+			$this->db->from('system_user');
+			$this->db->where('system_user.data_state', 0);
+			$this->db->where('system_user.customer_email', $customer_email);
+			$result = $this->db->get()->num_rows();
+			if ($result == 0){
+				return true;
+			} else {
+				return false;
+			}
+		}
 
+		public function insertSalesCustomer($data){
+			if($this->db->insert('sales_customer', $data)){
+				return true;
+			}else{
+				return false;
+			}
+		}
 
+		public function getSalesCustomer_Last($created_id){
+			$this->db->select('sales_customer.customer_id, sales_customer.customer_name, sales_customer.customer_email, sales_customer.customer_mobile_phone, sales_customer.customer_verification_code, sales_customer.verified, sales_customer.customer_status');
+			$this->db->from('sales_customer');
+			$this->db->where('sales_customer.data_state', 0);
+			$this->db->where('sales_customer.created_id', $created_id);
+			$this->db->order_by('sales_customer.customer_id', 'DESC');
+			$this->db->limit(1);
+			$result = $this->db->get()->row_array();
+			return $result;
+		}
+
+		public function insertSystemUser($data){
+			if($this->db->insert('system_user', $data)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+
+		public function getCustomerVerificationCode($data){
+			$this->db->select('sales_customer.customer_id, sales_customer.customer_verification_code');
+			$this->db->from('sales_customer');
+			$this->db->where('sales_customer.data_state', 0);
+			$this->db->where('sales_customer.customer_id', $data['customer_id']);
+			$this->db->where('sales_customer.customer_verification_code', $data['customer_verification_code']);
+			$result = $this->db->get()->row_array();
+			return $result;
+		}
+
+		public function updateSalesCustomer($data){
+			$this->db->where('sales_customer.customer_id', $data['customer_id']);
+			$query = $this->db->update('sales_customer', $data);
+			if($query){
+				return true;
+			}else{
+				return false;
+			}
+		}
+
+		public function getCorePackage(){
+			$this->db->select('core_package.package_id, core_package.package_name');
+			$this->db->from('core_package');
+			$this->db->order_by('core_package.package_name', 'ASC');
+			$result = $this->db->get()->result_array();
+			return $result;
+		}	
+
+		public function getCorePackagePrice($package_id){
+			$this->db->select('core_package_price.package_id, core_package_price.package_price_id, core_package_price.package_price_name');
+			$this->db->from('core_package_price');
+			$this->db->where('core_package_price.package_id', $package_id);
+			$this->db->order_by('core_package_price.package_price_name', 'ASC');
+			$result = $this->db->get()->result_array();
+			return $result;
+		}	
 
 
 

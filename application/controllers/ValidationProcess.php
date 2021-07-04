@@ -70,12 +70,12 @@
 
 		public function loginValidate(){
 			$data = array(
-				'username' => $this->input->post('username',true),
-				'password' => md5($this->input->post('password',true))
+				'customer_email' 	=> $this->input->post('customer_email',true),
+				'customer_password' => md5($this->input->post('customer_password',true))
 			);
 			
-			$this->form_validation->set_rules('password', 'Password', 'required');
-			$this->form_validation->set_rules('username', 'Username', 'required');
+			$this->form_validation->set_rules('customer_password', 'Password User', 'required');
+			$this->form_validation->set_rules('customer_email', 'Email User', 'required');
 			
 			if($this->form_validation->run()==true){
 				$systemuser 	= $this->ValidationProcess_model->getSystemUser($data);
@@ -130,60 +130,72 @@
 			$this->load->view('warning');
 		}
 
-		public function loginValidateUser(){
+		public function loginValidateCustomer(){
 			$response = array(
 				'error'					=> FALSE,
 				'error_msg'				=> "",
 				'error_msg_title'		=> "",
-				'systemuser'			=> "",
+				'customerlogin'			=> "",
 			);
 
 			$data = array(
-				'username' 	=> $this->input->post('username',true),
-				'password' 	=> md5($this->input->post('password',true))
+				'customer_email'		=> $this->input->post('customer_email',true),
+				'customer_password'		=> md5($this->input->post('customer_password',true)),
 			);
 
-			if (empty($data)){
+			/* $data = array(
+				'customer_email'		=> "admin@gmail.com",
+				'customer_password'		=> md5("123456"),
+			); */
+
+
+			if (empty($data['customer_email']) || empty($data['customer_password'])){
 				$response['error'] 				= TRUE;
 				$response['error_msg_title'] 	= "No Data";
-				$response['error_msg'] 			= "Data Login is Empty";
+				$response['error_msg'] 			= "Email or Password is Empty";
 			} else {
 				if($response["error"] == FALSE){
-					$systemuserlist 	= $this->ValidationProcess_model->getSystemUser($data);
+					$systemuser = $this->ValidationProcess_model->getSystemUser_Detail($data);
 
-					if($systemuserlist == false){
+
+					if($systemuser == false){
 						$response['error'] 				= TRUE;
 						$response['error_msg_title'] 	= "No Data";
 						$response['error_msg'] 			= "Error Query Data";
 					}else{
-						if (empty($systemuserlist)){
+						if (empty($systemuser)){
 							$response['error'] 				= TRUE;
 							$response['error_msg_title'] 	= "No Data";
 							$response['error_msg'] 			= "Data Does Not Exist";
 						} else {
-							$corevendor = $this->ValidationProcess_model->getCoreVendor_Detail($systemuserlist['vendor_id']);
-
-							$systemuser[0]['user_id'] 			= $systemuserlist['user_id'];
-							$systemuser[0]['username'] 			= $systemuserlist['username'];
-							$systemuser[0]['region_id'] 		= $systemuserlist['region_id'];
-							$systemuser[0]['branch_id'] 		= $systemuserlist['branch_id'];
-							$systemuser[0]['vendor_id'] 		= $systemuserlist['vendor_id'];
-							$systemuser[0]['vendor_code'] 		= $systemuserlist['vendor_code'];
-							$systemuser[0]['vendor_name'] 		= $systemuserlist['vendor_name'];
-							$systemuser[0]['vendor_address'] 	= $systemuserlist['vendor_address'];
-							$systemuser[0]['vendor_phone'] 		= $systemuserlist['vendor_phone'];
+							$customerlogin[0]['customer_id'] 			= $systemuser['customer_id'];
+							$customerlogin[0]['customer_name']			= $systemuser['customer_name'];
+							$customerlogin[0]['customer_email']			= $systemuser['customer_email'];
+							$customerlogin[0]['customer_mobile_phone']	= $systemuser['customer_mobile_phone'];
+							$customerlogin[0]['user_level']				= $systemuser['user_level'];
+							$customerlogin[0]['customer_status']		= $systemuser['customer_status'];
+							$customerlogin[0]['log_state']				= $systemuser['log_state'];
 							
+
+							/*if ($systemuser['log_state'] == 0){
+								$dataupdate = array (
+									'customer_id'		=> $systemuser['customer_id'],
+									'log_state'			=> 1
+								);
+
+								$this->ValidationProcess_model->updateSystemUser_LogState($dataupdate);
+							}*/
+
 							$response['error'] 				= FALSE;
 							$response['error_msg_title'] 	= "Success";
 							$response['error_msg'] 			= "Data Exist";
-							$response['systemuser'] 		= $systemuser;
+							$response['customerlogin'] 		= $customerlogin;
 						}
 					}
 				}
 			}
 
 			echo json_encode($response);
-
 		}
 	}
 ?>

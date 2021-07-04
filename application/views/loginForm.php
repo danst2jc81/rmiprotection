@@ -71,11 +71,11 @@ License: You must have a valid license purchased only from themeforest(the above
                 </div>
                 <div class="form-group">
                     <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-                    <label class="control-label visible-ie8 visible-ie9">Username</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="Username" name="username" /> </div>
+                    <label class="control-label visible-ie8 visible-ie9">Email</label>
+                    <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="customer_email" /> </div>
                 <div class="form-group">
                     <label class="control-label visible-ie8 visible-ie9">Password</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" /> </div>
+                    <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="customer_password" /> </div>
                 <div class="form-actions">
                     <button type="submit" class="btn red btn-block uppercase">Login</button>
                 </div>

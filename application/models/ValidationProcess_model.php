@@ -8,10 +8,10 @@
 		}
 		
 		public function getSystemUser($data){
-			$this->db->select('user_id, username, password, user_group_id, log_state, user_level, region_id, branch_id, vendor_id');
+			$this->db->select('system_user.user_id, system_user.customer_id, system_user.customer_email, system_user.customer_password, system_user.user_group_id, system_user.log_state, system_user.user_level');
 			$this->db->from('system_user');
-			$this->db->where('username', $data['username']);
-			$this->db->where('password', $data['password']);
+			$this->db->where('system_user.customer_email', $data['customer_email']);
+			$this->db->where('system_user.customer_password', $data['customer_password']);
 			$result = $this->db->get()->row_array();
 			return $result;
 		}
@@ -33,7 +33,7 @@
 		}
 		
 		function getLogout($data){
-			$hasil = $this->db->query("UPDATE system_user SET log_state = 0 WHERE username='$data[username]' AND password='$data[password]'");
+			$hasil = $this->db->query("UPDATE system_user SET log_state = 0 WHERE customer_email = '$data[customer_email]' AND password='$data[customer_password]'");
 			if($hasil){
 				return true;
 			}else{
@@ -60,5 +60,14 @@
 			$result = $this->db->get()->row_array();
 			return $result;
 		}	
+
+		public function getSystemUser_Detail($data){
+			$this->db->select('system_user.customer_id, system_user.customer_name, system_user.customer_email, system_user.customer_mobile_phone, system_user.user_level, system_user.customer_status, system_user.log_state');
+			$this->db->from('system_user');
+			$this->db->where('system_user.customer_email', $data['customer_email']);
+			$this->db->where('system_user.customer_password', $data['customer_password']);
+			$result = $this->db->get()->row_array();
+			return $result;
+		}
 	}
 ?>

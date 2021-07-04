@@ -24,12 +24,22 @@ class Configuration {
 	}
 
 	public function PerpetratorStatus(){
-		$perpetratorstatus = array ( 0 => 'Buronan', 1 => 'Tertangkap', 2 => 'Tersangka');
+		$perpetratorstatus = array ( 1 => 'Belum Tertangkap', 2 => 'Sudah Tertangkap', 3 => 'Sudah Di Proses');
 
 		return $perpetratorstatus;
 	}
 
+	public function PackageStatus(){
+		$packagestatus = array ( 0 => 'Gratis', 1 => 'Berbayar');
 
+		return $packagestatus;
+	}
+
+	public function CustomerStatus(){
+		$customerstatus = array ( 9 => 'All', 0 => 'Non Aktif', 1 => 'Aktif');
+
+		return $customerstatus;
+	}
 
 	function Unpush($pesan,$key){//$key >= 0 or <=25
 		$msg = str_split($pesan);
