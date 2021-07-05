@@ -137,9 +137,9 @@
 		}
 
 		public function getDataPerpetratorChronology_Perpetrator($perpetrator_id){
-			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_id, data_perpetrator_chronology.province_id, core_province.province_name, data_perpetrator_chronology.city_id, core_city.city_name, data_perpetrator_chronology.vendor_id, core_vendor.vendor_name, data_perpetrator_chronology.perpetrator_id, data_perpetrator_chronology.perpetrator_chronology_date, data_perpetrator_chronology.perpetrator_chronology_description, data_perpetrator_chronology.created_on');
+			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_id, data_perpetrator_chronology.province_id, core_province.province_name, data_perpetrator_chronology.city_id, core_city.city_name, data_perpetrator_chronology.customer_id, sales_customer.customer_name, data_perpetrator_chronology.perpetrator_id, data_perpetrator_chronology.perpetrator_chronology_date, data_perpetrator_chronology.perpetrator_chronology_description, data_perpetrator_chronology.created_on');
 			$this->db->from('data_perpetrator_chronology');
-			$this->db->join('core_vendor', 'data_perpetrator_chronology.vendor_id = core_vendor.vendor_id');
+			$this->db->join('sales_customer', 'data_perpetrator_chronology.customer_id = sales_customer.customer_id');
 			$this->db->join('core_province', 'data_perpetrator_chronology.province_id = core_province.province_id');
 			$this->db->join('core_city', 'data_perpetrator_chronology.city_id = core_city.city_id');
 			$this->db->where('data_perpetrator_chronology.data_state', 0);
@@ -204,6 +204,14 @@
 			return $result['perpetrator_id'];
 		}
 
+		public function getSalesCustomer_Detail($customer_id){
+			$this->db->select('sales_customer.province_id, sales_customer.city_id');
+			$this->db->from('sales_customer');
+			$this->db->where('sales_customer.customer_id', $customer_id);
+			$result = $this->db->get()->row_array();
+			return $result;
+		}
+
 		public function insertDataPerpetratorChronology($data){
 			if($this->db->insert('data_perpetrator_chronology', $data)){
 				return true;
@@ -238,31 +246,29 @@
 		}	
 
 		public function getDataPerpetratorChronology_Detail($perpetrator_id){
-			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_id, data_perpetrator_chronology.perpetrator_id, data_perpetrator_chronology.perpetrator_chronology_description, data_perpetrator_chronology.created_on, core_vendor.vendor_name');
+			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_id, data_perpetrator_chronology.perpetrator_id, data_perpetrator_chronology.perpetrator_chronology_description, data_perpetrator_chronology.created_on, sales_customer.customer_name');
 			$this->db->from('data_perpetrator_chronology');
-			$this->db->join('core_vendor', 'data_perpetrator_chronology.vendor_id = core_vendor.vendor_id');
+			$this->db->join('sales_customer', 'data_perpetrator_chronology.customer_id = sales_customer.customer_id');
 			$this->db->where('data_perpetrator_chronology.perpetrator_id', $perpetrator_id);
 			$this->db->order_by('data_perpetrator_chronology.perpetrator_chronology_id', 'DESC');
 			$result = $this->db->get()->result_array();
 			return $result;
 		}	
 
-		public function getSearchDataPerpetrator($perpetrator_name, $province_id, $city_id, $province_id_perpetrator, $city_id_perpetrator, $sort_status, $province_perpetrator_id, $province_vendor_id, $bundle_status, $perpetrator_status){
-			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.region_id, core_region.region_name, data_perpetrator.branch_id, core_branch.branch_name, data_perpetrator.vendor_id, core_vendor.vendor_name, core_vendor.vendor_contact_person, core_vendor.vendor_phone, data_perpetrator.province_id, core_province.province_name, data_perpetrator.city_id, core_city.city_name, data_perpetrator.province_id_perpetrator, data_perpetrator.city_id_perpetrator, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_age, data_perpetrator.perpetrator_status');
+		public function getSearchDataPerpetrator($perpetrator_name, $province_id, $city_id, $province_id_perpetrator, $city_id_perpetrator, $sort_status, $province_perpetrator_id, $province_customer_id, $bundle_status, $perpetrator_status){
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.customer_id, sales_customer.customer_name, sales_customer.customer_contact_person, sales_customer.customer_mobile_phone, data_perpetrator.province_id, core_province.province_name, data_perpetrator.city_id, core_city.city_name, data_perpetrator.province_id_perpetrator, data_perpetrator.city_id_perpetrator, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_age, data_perpetrator.perpetrator_status');
 			$this->db->from('data_perpetrator');
-			$this->db->join('core_region', 'data_perpetrator.region_id = core_region.region_id');
-			$this->db->join('core_branch', 'data_perpetrator.branch_id = core_branch.branch_id');
-			$this->db->join('core_vendor', 'data_perpetrator.vendor_id = core_vendor.vendor_id');
+			$this->db->join('sales_customer', 'data_perpetrator.customer_id = sales_customer.customer_id');
 			$this->db->join('core_province', 'data_perpetrator.province_id = core_province.province_id');
 			$this->db->join('core_city', 'data_perpetrator.city_id = core_city.city_id');
 
 			if ($bundle_status == 1){
-				if ($province_perpetrator_id == 1){
+				if ($province_customer_id == 1){
 					$this->db->where('data_perpetrator.province_id', $province_id);	
 					$this->db->where('data_perpetrator.city_id', $city_id);	
 				}
 	
-				if ($province_vendor_id == 1){
+				if ($province_perpetrator_id == 1){
 					$this->db->where('data_perpetrator.province_id_perpetrator', $province_id_perpetrator);	
 					$this->db->where('data_perpetrator.city_id_perpetrator', $city_id_perpetrator);	
 				}
@@ -417,6 +423,14 @@
 			}
 		}
 
+		public function insertSalesCustomerPackage($data){
+			if($this->db->insert('sales_customer_package', $data)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+
 		public function getCustomerVerificationCode($data){
 			$this->db->select('sales_customer.customer_id, sales_customer.customer_verification_code');
 			$this->db->from('sales_customer');
@@ -438,7 +452,7 @@
 		}
 
 		public function getCorePackage(){
-			$this->db->select('core_package.package_id, core_package.package_name');
+			$this->db->select('core_package.package_id, core_package.package_name, core_package.package_status');
 			$this->db->from('core_package');
 			$this->db->order_by('core_package.package_name', 'ASC');
 			$result = $this->db->get()->result_array();
@@ -446,7 +460,7 @@
 		}	
 
 		public function getCorePackagePrice($package_id){
-			$this->db->select('core_package_price.package_id, core_package_price.package_price_id, core_package_price.package_price_name');
+			$this->db->select('core_package_price.package_id, core_package_price.package_price_id, core_package_price.package_price_name, core_package_price.package_price_amount, core_package_price.package_price_month, core_package_price.package_price_status');
 			$this->db->from('core_package_price');
 			$this->db->where('core_package_price.package_id', $package_id);
 			$this->db->order_by('core_package_price.package_price_name', 'ASC');
@@ -454,7 +468,13 @@
 			return $result;
 		}	
 
-
+		public function getCustomerPackage($customer_id){
+			$this->db->select('sales_customer.customer_id, sales_customer.package_id, sales_customer.package_price_id, sales_customer.package_status, sales_customer.customer_last_date, sales_customer.customer_package_search_balance, sales_customer.customer_package_add_balance, sales_customer.package_status, sales_customer.customer_last_date');
+			$this->db->from('sales_customer');
+			$this->db->where('sales_customer.customer_id', $customer_id);
+			$result = $this->db->get()->row_array();
+			return $result;
+		}	
 
 
 

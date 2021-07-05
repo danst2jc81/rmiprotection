@@ -30,7 +30,7 @@ class Configuration {
 	}
 
 	public function PackageStatus(){
-		$packagestatus = array ( 0 => 'Gratis', 1 => 'Berbayar');
+		$packagestatus = array ( 1 => 'Gratis', 2 => 'Berbayar');
 
 		return $packagestatus;
 	}

@@ -211,3 +211,13 @@ $route['customer/reset-search'] 			        = 'SalesCustomer/reset_search';
 $route['customer/customer-unpaid'] 			        = 'SalesCustomer/getSalesCustomerUnPaid';
 $route['customer/collection/(:num)']	    = 'SalesCustomer/getSalesCustomerUnPaid_Detail/$1';
 $route['customer/process-edit']	    = 'SalesCustomer/processUpdateSalesCustomer_Collection';
+
+
+/* SALES CUSTOMER PACKAGE */
+$route['customer-package'] 				        = 'SalesCustomerPackage';
+$route['customer-package/filter'] 			        = 'SalesCustomerPackage/filter';
+$route['customer-package/detail/(:num)']	    = 'SalesCustomerPackage/detailSalesCustomerPackage/$1';
+$route['customer-package/reset-search'] 			        = 'SalesCustomerPackage/reset_search';
+$route['customer-package/customer-package-unpaid'] 			        = 'SalesCustomerPackage/getSalesCustomerPackageUnPaid';
+$route['customer-package/collection/(:num)']	    = 'SalesCustomerPackage/getSalesCustomerPackageUnPaid_Detail/$1';
+$route['customer-package/process-edit']	    = 'SalesCustomerPackage/processUpdateSalesCustomerPackage_Collection';

@@ -144,7 +144,7 @@
 			);
 
 			/* $data = array(
-				'customer_email'		=> "admin@gmail.com",
+				'customer_email'		=> "daniel@gmail.com",
 				'customer_password'		=> md5("123456"),
 			); */
 
@@ -157,6 +157,9 @@
 				if($response["error"] == FALSE){
 					$systemuser = $this->ValidationProcess_model->getSystemUser_Detail($data);
 
+					/* print_r("systemuser ");
+					print_r($systemuser);
+					print_r("<BR> "); */
 
 					if($systemuser == false){
 						$response['error'] 				= TRUE;
