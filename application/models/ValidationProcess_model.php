@@ -62,7 +62,7 @@
 		}	
 
 		public function getSystemUser_Detail($data){
-			$this->db->select('system_user.customer_id, system_user.customer_name, system_user.customer_email, system_user.customer_mobile_phone, system_user.user_level, system_user.customer_status, system_user.log_state');
+			$this->db->select('system_user.customer_id, system_user.customer_name, system_user.customer_email, system_user.customer_mobile_phone, system_user.user_level, system_user.customer_status, system_user.log_state, system_user.province_id, system_user.city_id');
 			$this->db->from('system_user');
 			$this->db->where('system_user.customer_email', $data['customer_email']);
 			$this->db->where('system_user.customer_password', $data['customer_password']);

@@ -694,17 +694,30 @@
 
 			$perpetrator_chronology_description	= $this->input->post('perpetrator_chronology_description',true);
 			$vendor_id							= $this->input->post('vendor_id',true);
-
-			$corevendor 						= $this->AndroidRMIProtection_model->getCoreVendor_Detail($vendor_id);
 			
 			$data = array(
-				'region_id'						=> $this->input->post('region_id',true),
-				'branch_id'						=> $this->input->post('branch_id',true),
-				'vendor_id'						=> $this->input->post('vendor_id',true),
-				'province_id'					=> $corevendor['province_id'],
-				'city_id'						=> $corevendor['city_id'],
+				'customer_id'					=> $this->input->post('customer_id',true),
+				'province_id'					=> $this->input->post('province_id',true),
+				'city_id'						=> $this->input->post('city_id',true),
 				'province_id_perpetrator'		=> $this->input->post('province_id_perpetrator',true),
 				'city_id_perpetrator'			=> $this->input->post('city_id_perpetrator',true),
+				'gender_id'						=> $this->input->post('gender_id',true),
+				'perpetrator_name'				=> $this->input->post('perpetrator_name',true),
+				'perpetrator_mobile_phone'		=> $this->input->post('perpetrator_mobile_phone',true),
+				'perpetrator_id_number'			=> $this->input->post('perpetrator_id_number',true),
+				'perpetrator_date_of_birth' 	=> tgltodb($this->input->post('perpetrator_date_of_birth',true)),
+				'perpetrator_address'			=> $this->input->post('perpetrator_address',true),
+				'data_state' 					=> 0,
+				'created_id' 					=> $this->input->post('user_id',true),
+				'created_on' 					=> date('Y-m-d H:i:s'),
+			);
+
+			$data = array(
+				'customer_id'					=> 12,
+				'province_id'					=> 1,
+				'city_id'						=> 218,
+				'province_id_perpetrator'		=> 1,
+				'city_id_perpetrator'			=> 218,
 				'gender_id'						=> $this->input->post('gender_id',true),
 				'perpetrator_name'				=> $this->input->post('perpetrator_name',true),
 				'perpetrator_mobile_phone'		=> $this->input->post('perpetrator_mobile_phone',true),
@@ -729,7 +742,7 @@
 							'perpetrator_id'						=> $perpetrator_id,
 							'province_id'							=> $data['province_id'],
 							'city_id'								=> $data['city_id'],
-							'vendor_id'								=> $data['vendor_id'],
+							'customer_id'							=> $data['customer_id'],
 							'perpetrator_chronology_description' 	=> $perpetrator_chronology_description,
 							'perpetrator_chronology_date'			=> date("Y-m-d"),
 							'data_state'							=> 0,
@@ -738,7 +751,30 @@
 						);
 
 						if ($this->AndroidRMIProtection_model->insertDataPerpetratorChronology($data_perpetratorchronology)){
+							$customer_package_opening_balance 	= $this->AndroidRMIProtection_model->getCustomerPackageAddBalance($data['customer_id']);
 
+							$customer_package_last_balance		= $customer_package_opening_balance - 1;
+							
+							$data_customerpackage = array(
+								'customer_id'									=> $data['customer_id'],
+								'package_id'									=> $data['package_id'],
+								'package_price_id'								=> $data['package_price_id'],
+								'customer_package_history_status'				=> 1,
+								'customer_package_history_date'					=> date("Y-m-d"),
+								'customer_package_history_opening_balance'		=> $customer_package_opening_balance,
+								'customer_package_history_last_balance'			=> $customer_package_last_balance,
+							);
+
+							if ($this->AndroidRMIProtection_model->insertSalesCustomerPackageHistory($data_customerpackage)){
+								$data_updatecustomer = array(
+									'customer_id'								=> $data['customer_id'],
+									'customer_package_add_balance'				=> $customer_package_last_balance
+								);
+
+								if ($this->AndroidRMIProtection_model->updateSalesCustomer($data_updatecustomer)){
+
+								}
+							}
 						}
 
 						$dataperpetrator[0]['perpetrator_id']				= $perpetrator_id;
@@ -979,7 +1015,12 @@
 
 		/* 	perpetrator_name=null&province_id=&city_id=&province_id_perpetrator=&city_id_perpetrator=&sort_status=&perpetrator_not_caught=&perpetrator_already_caught=&perpetrator_been_processed=&province_perpetrator_id=&province_customer_id=&bundle_status=0 */
 
+		/* customer_id=12&perpetrator_name=&province_id=&city_id=&province_id_perpetrator=&city_id_perpetrator=&sort_status=&perpetrator_not_caught=&perpetrator_already_caught=&perpetrator_been_processed=&province_perpetrator_id=&province_customer_id=&bundle_status=0&package_id=3&package_price_id=4 */
+
 			$data = array(
+				'customer_id'					=> $this->input->post('customer_id',true),
+				'package_id'					=> $this->input->post('package_id',true),
+				'package_price_id'				=> $this->input->post('package_price_id',true),
 				'perpetrator_name'				=> $this->input->post('perpetrator_name',true),
 				'province_id'					=> $this->input->post('province_id',true),
 				'city_id'						=> $this->input->post('city_id',true),
@@ -991,12 +1032,27 @@
 				'bundle_status'					=> $this->input->post('bundle_status',true),
 			);
 
+			/* $data = array(
+				'customer_id'					=> 12,
+				'package_id'					=> 3,
+				'package_price_id'				=> 4,
+				'perpetrator_name'				=> "",
+				'province_id'					=> "",
+				'city_id'						=> "",
+				'province_id_perpetrator'		=> "",
+				'city_id_perpetrator'			=> "",
+				'sort_status'					=> "",
+				'province_perpetrator_id'		=> "",
+				'province_customer_id'			=> "",
+				'bundle_status'					=> 0,
+			); */
+
 			$perpetratorstatus 		= $this->configuration->PerpetratorStatus();
 
 			$data_status = array(
-				'perpetrator_not_caught'		=> $this->input->post('perpetrator_not_caught',true),
-				'perpetrator_already_caught'	=> $this->input->post('perpetrator_already_caught',true),
-				'perpetrator_been_processed'	=> $this->input->post('perpetrator_been_processed',true),
+				'perpetrator_not_caught'		=> "",
+				'perpetrator_already_caught'	=> "",
+				'perpetrator_been_processed'	=> "",
 			);
 
 			/* perpetrator_name=&province_id=1&city_id=7&province_id_perpetrator=1&city_id_perpetrator=7&sort_status=3&perpetrator_not_caught=&perpetrator_already_caught=&perpetrator_been_processed=&province_perpetrator_id=0&province_customer_id=0&bundle_status=1 */
@@ -1073,6 +1129,36 @@
 						$response['error_msg'] 			= "Data Does Not Exist";
 					} else {
 						if (!empty($datasearchperpetratorlist)){
+							$customer_package_opening_balance 	= $this->AndroidRMIProtection_model->getCustomerPackageSearchBalance($data['customer_id']);
+
+							if ($data['bundle_status'] == 1){
+								$customer_package_last_balance		= $customer_package_opening_balance - 1;
+								
+								$data_customerpackage = array(
+									'customer_id'									=> $data['customer_id'],
+									'package_id'									=> $data['package_id'],
+									'package_price_id'								=> $data['package_price_id'],
+									'customer_package_history_status'				=> 2,
+									'customer_package_history_date'					=> date("Y-m-d"),
+									'customer_package_history_opening_balance'		=> $customer_package_opening_balance,
+									'customer_package_history_last_balance'			=> $customer_package_last_balance,
+								);
+
+								if ($this->AndroidRMIProtection_model->insertSalesCustomerPackageHistory($data_customerpackage)){
+									$data_updatecustomer = array(
+										'customer_id'								=> $data['customer_id'],
+										'customer_package_search_balance'			=> $customer_package_last_balance
+									);
+
+									if ($this->AndroidRMIProtection_model->updateSalesCustomer($data_updatecustomer)){
+
+									}
+								}
+							} else {
+								$customer_package_last_balance	= $customer_package_opening_balance;
+							}
+
+
 							foreach ($datasearchperpetratorlist as $key => $val) {
 								$dataperpetratorchronology 	= $this->AndroidRMIProtection_model->getDataPerpetratorChronology_Perpetrator($val['perpetrator_id']);
 
@@ -1103,7 +1189,12 @@
 								$datasearchperpetrator[$key]['perpetrator_chronology_description'] 	= $dataperpetratorchronology['perpetrator_chronology_description'];
 								$datasearchperpetrator[$key]['perpetrator_chronology_created'] 		= $dataperpetratorchronology['created_on'];
 								$datasearchperpetrator[$key]['perpetrator_photo_url'] 				= $base_url.'img/'.$dataperpetratorphoto['perpetrator_photo_path'].'/'.$dataperpetratorphoto['perpetrator_photo_name'];
+								$datasearchperpetrator[$key]['customer_package_search_balance'] 	= $customer_package_last_balance;
+
+								
 							}
+
+							
 						}
 						
 						$response['error'] 							= FALSE;
@@ -1508,6 +1599,8 @@
 									$data_salescustomer[0]['customer_mobile_phone']			= $salescustomer['customer_mobile_phone'];
 									$data_salescustomer[0]['customer_verification_code']	= $salescustomer['customer_verification_code'];
 									$data_salescustomer[0]['customer_status']				= $salescustomer['customer_status'];
+									$data_salescustomer[0]['province_id']					= $salescustomer['province_id'];
+									$data_salescustomer[0]['city_id']						= $salescustomer['city_id'];
 									
 									$data_customerpackage = array(
 										'customer_id'				=> $salescustomer['customer_id'],

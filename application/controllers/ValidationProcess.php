@@ -178,6 +178,8 @@
 							$customerlogin[0]['user_level']				= $systemuser['user_level'];
 							$customerlogin[0]['customer_status']		= $systemuser['customer_status'];
 							$customerlogin[0]['log_state']				= $systemuser['log_state'];
+							$customerlogin[0]['province_id']			= $systemuser['province_id'];
+							$customerlogin[0]['city_id']				= $systemuser['city_id'];
 							
 
 							/*if ($systemuser['log_state'] == 0){

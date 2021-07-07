@@ -405,7 +405,7 @@
 		}
 
 		public function getSalesCustomer_Last($created_id){
-			$this->db->select('sales_customer.customer_id, sales_customer.customer_name, sales_customer.customer_email, sales_customer.customer_mobile_phone, sales_customer.customer_verification_code, sales_customer.verified, sales_customer.customer_status');
+			$this->db->select('sales_customer.customer_id, sales_customer.customer_name, sales_customer.customer_email, sales_customer.customer_mobile_phone, sales_customer.customer_verification_code, sales_customer.verified, sales_customer.customer_status, sales_customer.province_id, sales_customer.city_id');
 			$this->db->from('sales_customer');
 			$this->db->where('sales_customer.data_state', 0);
 			$this->db->where('sales_customer.created_id', $created_id);
@@ -476,10 +476,30 @@
 			return $result;
 		}	
 
+		public function getCustomerPackageAddBalance($customer_id){
+			$this->db->select('sales_customer.customer_package_add_balance');
+			$this->db->from('sales_customer');
+			$this->db->where('sales_customer.customer_id', $customer_id);
+			$result = $this->db->get()->row_array();
+			return $result['customer_package_add_balance'];
+		}	
 
+		public function insertSalesCustomerPackageHistory($data){
+			if($this->db->insert('sales_customer_package_history', $data)){
+				return true;
+			}else{
+				return false;
+			}
+		}
 
-
-
+		public function getCustomerPackageSearchBalance($customer_id){
+			$this->db->select('sales_customer.customer_package_search_balance');
+			$this->db->from('sales_customer');
+			$this->db->where('sales_customer.customer_id', $customer_id);
+			$result = $this->db->get()->row_array();
+			return $result['customer_package_search_balance'];
+		}	
+		
 
 
 
