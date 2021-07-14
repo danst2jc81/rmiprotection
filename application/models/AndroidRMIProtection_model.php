@@ -1,7 +1,7 @@
 <?php
 	class AndroidRMIProtection_model extends CI_Model {
 		var $table 			= "acct_account";
-		var $column_search 	= array('perpetrator_name', 'perpetrator_address');
+		var $column_search 	= array('perpetrator_name', 'perpetrator_address', 'perpetrator_id_number');
 		
 		public function AndroidRMIProtection_model(){
 			parent::__construct();
@@ -256,11 +256,12 @@
 		}	
 
 		public function getSearchDataPerpetrator($perpetrator_name, $province_id, $city_id, $province_id_perpetrator, $city_id_perpetrator, $sort_status, $province_perpetrator_id, $province_customer_id, $bundle_status, $perpetrator_status){
-			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.customer_id, sales_customer.customer_name, sales_customer.customer_contact_person, sales_customer.customer_mobile_phone, data_perpetrator.province_id, core_province.province_name, data_perpetrator.city_id, core_city.city_name, data_perpetrator.province_id_perpetrator, data_perpetrator.city_id_perpetrator, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_age, data_perpetrator.perpetrator_status');
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.customer_id, sales_customer.customer_name, sales_customer.customer_contact_person, sales_customer.customer_mobile_phone, data_perpetrator.province_id, core_province.province_name, data_perpetrator.city_id, core_city.city_name, data_perpetrator.gender_id, core_gender.gender_name, data_perpetrator.province_id_perpetrator, data_perpetrator.city_id_perpetrator, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.perpetrator_status, data_perpetrator.created_on');
 			$this->db->from('data_perpetrator');
 			$this->db->join('sales_customer', 'data_perpetrator.customer_id = sales_customer.customer_id');
 			$this->db->join('core_province', 'data_perpetrator.province_id = core_province.province_id');
 			$this->db->join('core_city', 'data_perpetrator.city_id = core_city.city_id');
+			$this->db->join('core_gender', 'data_perpetrator.gender_id = core_gender.gender_id');
 
 			if ($bundle_status == 1){
 				if ($province_customer_id == 1){
@@ -318,7 +319,7 @@
 			}
 
 			if ($bundle_status == 0){
-				$this->db->order_by('data_perpetrator.perpetrator_id', rand());
+				$this->db->order_by('data_perpetrator.perpetrator_id', 'DESC');
 			}
 
 			$result = $this->db->get()->result_array();
@@ -339,7 +340,7 @@
 
 		/*CONTENT NEWS*/
 		public function getContentNewsList(){
-			$this->db->select('content_news.news_id, content_news.news_title, content_news.news_description, content_news.news_image, content_news.news_date');
+			$this->db->select('content_news.news_id, content_news.news_title, content_news.news_description, content_news.news_image, content_news.news_date, content_news.created_on, content_news.created_id');
 			$this->db->from('content_news');
 			$this->db->where('content_news.data_state', 0);
 			$this->db->order_by('content_news.news_id', 'DESC');
@@ -349,10 +350,12 @@
 		}
 
 		public function getDataPerpetratorUpdateList(){
-			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.province_id, core_province.province_name, data_perpetrator.city_id, core_city.city_name, data_perpetrator.perpetrator_name, data_perpetrator.created_on');
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.customer_id, sales_customer.customer_name, sales_customer.customer_contact_person, sales_customer.customer_mobile_phone, data_perpetrator.gender_id, core_gender.gender_name, data_perpetrator.province_id_perpetrator, core_province.province_name, data_perpetrator.city_id_perpetrator, core_city.city_name, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_status, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.created_on');
 			$this->db->from('data_perpetrator');
-			$this->db->join('core_province', 'data_perpetrator.province_id = core_province.province_id');
-			$this->db->join('core_city', 'data_perpetrator.city_id = core_city.city_id');
+			$this->db->join('core_province', 'data_perpetrator.province_id_perpetrator = core_province.province_id');
+			$this->db->join('core_city', 'data_perpetrator.city_id_perpetrator = core_city.city_id');
+			$this->db->join('sales_customer', 'data_perpetrator.customer_id = sales_customer.customer_id');
+			$this->db->join('core_gender', 'data_perpetrator.gender_id = core_gender.gender_id');
 			$this->db->where('data_perpetrator.data_state', 0);
 			$this->db->order_by('data_perpetrator.perpetrator_id', 'DESC');
 			$this->db->limit('10');
@@ -500,10 +503,29 @@
 			return $result['customer_package_search_balance'];
 		}	
 		
+		public function getProvinceName($province_id){
+			$this->db->select('core_province.province_name');
+			$this->db->from('core_province');
+			$this->db->where('core_province.province_id', $province_id);
+			$result = $this->db->get()->row_array();
+			return $result['province_name'];
+		}	
 
+		public function getCityName($city_id){
+			$this->db->select('core_city.city_name');
+			$this->db->from('core_city');
+			$this->db->where('core_city.city_id', $city_id);
+			$result = $this->db->get()->row_array();
+			return $result['city_name'];
+		}	
 
-
-
+		public function getCreatedName($created_id){
+			$this->db->select('system_user.customer_email');
+			$this->db->from('system_user');
+			$this->db->where('system_user.user_id', $created_id);
+			$result = $this->db->get()->row_array();
+			return $result['customer_email'];
+		}	
 
 		
 		

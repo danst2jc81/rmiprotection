@@ -41,6 +41,12 @@ class Configuration {
 		return $customerstatus;
 	}
 
+	public function PerpetratorGender(){
+		$perpetratorgender = array ( 1 => 'Laki Laki', 0 => 'Perempuan');
+
+		return $perpetratorgender;
+	}
+
 	function Unpush($pesan,$key){//$key >= 0 or <=25
 		$msg = str_split($pesan);
 		$dresult = '';

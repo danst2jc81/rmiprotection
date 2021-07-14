@@ -712,7 +712,7 @@
 				'created_on' 					=> date('Y-m-d H:i:s'),
 			);
 
-			$data = array(
+			/* $data = array(
 				'customer_id'					=> 12,
 				'province_id'					=> 1,
 				'city_id'						=> 218,
@@ -727,7 +727,7 @@
 				'data_state' 					=> 0,
 				'created_id' 					=> $this->input->post('user_id',true),
 				'created_on' 					=> date('Y-m-d H:i:s'),
-			);
+			); */
 
 			if (empty($data)){
 				$response['error'] 				= TRUE;
@@ -936,8 +936,8 @@
 							$dataperpetratorchronology[$key]['perpetrator_id'] 						= $val['perpetrator_id'];
 							$dataperpetratorchronology[$key]['perpetrator_chronology_id'] 			= $val['perpetrator_chronology_id'];
 							$dataperpetratorchronology[$key]['perpetrator_chronology_description']	= $val['perpetrator_chronology_description'];
-							$dataperpetratorchronology[$key]['created_on']							= $val['created_on'];
-							$dataperpetratorchronology[$key]['created_name']						= $val['vendor_name'];
+							$dataperpetratorchronology[$key]['created_on']							= simpledatetime($val['created_on']);
+							$dataperpetratorchronology[$key]['created_name']						= $val['customer_name'];
 						}
 						
 						/*print_r("salespromotion ");
@@ -1160,11 +1160,22 @@
 
 
 							foreach ($datasearchperpetratorlist as $key => $val) {
-								$dataperpetratorchronology 	= $this->AndroidRMIProtection_model->getDataPerpetratorChronology_Perpetrator($val['perpetrator_id']);
 
 								$dataperpetratorphoto 		= $this->AndroidRMIProtection_model->getDataPerpetratorPhoto_Perpetrator($val['perpetrator_id']);
 
 								$perpetrator_status_name	= $perpetratorstatus[$val['perpetrator_status']];
+
+								$province_name_perpetrator	= $this->AndroidRMIProtection_model->getProvinceName($val['province_id_perpetrator']);
+
+								$city_name_perpetrator		= $this->AndroidRMIProtection_model->getCityName($val['city_id_perpetrator']);
+
+								$perpetrator_date_of_birth 	= new DateTime($val['perpetrator_date_of_birth']);
+
+								$today 		 				= new DateTime(date("Y-m-d"));
+
+								$diff 						= $perpetrator_date_of_birth->diff($today);		
+
+								$perpetrator_age			= $diff->y;
 								
 								$datasearchperpetrator[$key]['perpetrator_id'] 						= $val['perpetrator_id'];
 								$datasearchperpetrator[$key]['customer_id'] 						= $val['customer_id'];
@@ -1179,18 +1190,18 @@
 								$datasearchperpetrator[$key]['perpetrator_address'] 				= $val['perpetrator_address'];
 								$datasearchperpetrator[$key]['perpetrator_mobile_phone'] 			= $val['perpetrator_mobile_phone'];
 								$datasearchperpetrator[$key]['perpetrator_id_number'] 				= $val['perpetrator_id_number'];
-								$datasearchperpetrator[$key]['perpetrator_age'] 					= $val['perpetrator_age'];
+								$datasearchperpetrator[$key]['perpetrator_age'] 					= $perpetrator_age;
+								$datasearchperpetrator[$key]['perpetrator_gender'] 					= $val['gender_name'];
 								$datasearchperpetrator[$key]['perpetrator_status_name'] 			= $perpetrator_status_name;
-								$datasearchperpetrator[$key]['perpetrator_chronology_id'] 			= $dataperpetratorchronology['perpetrator_chronology_id'];
-								$datasearchperpetrator[$key]['province_name_chronology'] 			= $dataperpetratorchronology['province_name'];
-								$datasearchperpetrator[$key]['city_name_chronology'] 				= $dataperpetratorchronology['city_name'];
-								$datasearchperpetrator[$key]['customer_name_chronology'] 			= $dataperpetratorchronology['customer_name'];
-								$datasearchperpetrator[$key]['perpetrator_chronology_date'] 		= $dataperpetratorchronology['perpetrator_chronology_date'];
-								$datasearchperpetrator[$key]['perpetrator_chronology_description'] 	= $dataperpetratorchronology['perpetrator_chronology_description'];
-								$datasearchperpetrator[$key]['perpetrator_chronology_created'] 		= $dataperpetratorchronology['created_on'];
+								$datasearchperpetrator[$key]['province_id_perpetrator'] 			= $val['province_id_perpetrator'];
+								$datasearchperpetrator[$key]['city_id_perpetrator'] 				= $val['city_id_perpetrator'];
+								$datasearchperpetrator[$key]['province_name_perpetrator'] 			= $province_name_perpetrator;
+								$datasearchperpetrator[$key]['city_name_perpetrator'] 				= $city_name_perpetrator;
 								$datasearchperpetrator[$key]['perpetrator_photo_url'] 				= $base_url.'img/'.$dataperpetratorphoto['perpetrator_photo_path'].'/'.$dataperpetratorphoto['perpetrator_photo_name'];
 								$datasearchperpetrator[$key]['customer_package_search_balance'] 	= $customer_package_last_balance;
+								$datasearchperpetrator[$key]['created_on'] 							= simpledatetime($val['created_on']);
 
+								
 								
 							}
 
@@ -1281,10 +1292,13 @@
 					} else {
 						foreach ($contentnewslist as $key => $val) {
 
+							$created_name 								= $this->AndroidRMIProtection_model->getCreatedName($val['created_id']);
+
 							$contentnews[$key]['news_id']				= $val['news_id'];
 							$contentnews[$key]['news_title']			= $val['news_title'];
 							$contentnews[$key]['news_description']		= $val['news_description'];
-							$contentnews[$key]['news_date']				= tgltostring($val['news_date']);
+							$contentnews[$key]['created_on']			= simpledatetime($val['created_on']);
+							$contentnews[$key]['created_name']			= $created_name;
 							$contentnews[$key]['news_image_url']		= $base_url.'img/news/'.$val['news_image'];
 						}
 						
@@ -1313,12 +1327,6 @@
 				'dataperpetrator'				=> "",
 			);
 
-			$data = array(
-				'region_id'			=> $this->input->post('region_id',true),
-				'branch_id'			=> $this->input->post('branch_id',true),
-				'vendor_id'			=> $this->input->post('vendor_id',true),
-			);
-
 			if($response["error"] == FALSE){
 				$dataperpetratorupdatelist 	= $this->AndroidRMIProtection_model->getDataPerpetratorUpdateList();
 
@@ -1334,21 +1342,73 @@
 					} else {
 						if (!empty($dataperpetratorupdatelist)){
 							foreach ($dataperpetratorupdatelist as $key => $val) {
-								$city_name = $val['city_name'];
+								$city_name_perpetrator 	= $val['city_name'];
 
-								$city_name = str_replace("KOTA", "", $city_name);
+								$city_name_perpetrator 	= str_replace("KOTA", "", $city_name_perpetrator);
 
-								$city_name = str_replace("KABUPATEN", "", $city_name);
+								$city_name_perpetrator 	= str_replace("KABUPATEN", "", $city_name_perpetrator);
 
-								$city_name = ucwords(strtolower($city_name));
+								$city_name_perpetrator 	= ucwords(strtolower($city_name_perpetrator));
+
+								$len_perpetrator_name	= strlen($val['perpetrator_name']);
+
+								if ($len_perpetrator_name > 18){
+									$perpetrator_name_list 	= substr(trim($val['perpetrator_name']), 0, 15).'...';
+								} else {
+									$perpetrator_name_list 	= substr(trim($val['perpetrator_name']), 0, 18);
+								}
+
+
+								$perpetratorstatus 			= $this->configuration->PerpetratorStatus();
+
+								$perpetrator_status_name	= $perpetratorstatus[$val['perpetrator_status']];
+
+								$perpetrator_date_of_birth 	= new DateTime($val['perpetrator_date_of_birth']);
+
+								$today 		 				= new DateTime(date("Y-m-d"));
+
+								$diff 						= $perpetrator_date_of_birth->diff($today);		
+
+								/* print_r("perpetrator_date_of_birth ");
+								print_r($perpetrator_date_of_birth);
+								print_r("<BR> ");
+								print_r("<BR> ");
+
+								print_r("today ");
+								print_r($today);
+								print_r("<BR> ");
+								print_r("<BR> ");
 								
-								$dataperpetratorupdate[$key]['perpetrator_id'] 		= $val['perpetrator_id'];
-								$dataperpetratorupdate[$key]['province_id'] 		= $val['province_id'];
-								$dataperpetratorupdate[$key]['province_name'] 		= ucwords(strtolower($val['province_name']));
-								$dataperpetratorupdate[$key]['city_id'] 			= $val['city_id'];
-								$dataperpetratorupdate[$key]['city_name'] 			= $city_name;
-								$dataperpetratorupdate[$key]['perpetrator_name'] 	= $val['perpetrator_name'];
-								$dataperpetratorupdate[$key]['created_on'] 			= simpledatetime($val['created_on']);
+								print_r("diff ");
+								print_r($diff);
+								print_r("<BR> ");
+								print_r("<BR> "); */
+
+								$perpetrator_age			= $diff->y;
+
+								/* print_r("perpetrator_age ");
+								print_r($perpetrator_age);
+								print_r("<BR> ");
+								print_r("<BR> "); */
+
+								
+								$dataperpetratorupdate[$key]['perpetrator_id'] 				= $val['perpetrator_id'];
+								$dataperpetratorupdate[$key]['perpetrator_name'] 			= $val['perpetrator_name'];
+								$dataperpetratorupdate[$key]['perpetrator_name_list'] 		= $perpetrator_name_list;
+								$dataperpetratorupdate[$key]['perpetrator_status_name'] 	= $perpetrator_status_name;
+								$dataperpetratorupdate[$key]['perpetrator_address'] 		= $val['perpetrator_address'];
+								$dataperpetratorupdate[$key]['perpetrator_mobile_phone'] 	= $val['perpetrator_mobile_phone'];
+								$dataperpetratorupdate[$key]['province_id_perpetrator'] 	= $val['province_id_perpetrator'];
+								$dataperpetratorupdate[$key]['province_name_perpetrator'] 	= ucwords(strtolower($val['province_name']));
+								$dataperpetratorupdate[$key]['city_id_perpetrator'] 		= $val['city_id_perpetrator'];
+								$dataperpetratorupdate[$key]['city_name_perpetrator'] 		= $city_name_perpetrator;
+								$dataperpetratorupdate[$key]['perpetrator_id_number'] 		= $val['perpetrator_id_number'];
+								$dataperpetratorupdate[$key]['perpetrator_age'] 			= $perpetrator_age;
+								$dataperpetratorupdate[$key]['perpetrator_gender'] 			= $val['gender_name'];
+								$dataperpetratorupdate[$key]['customer_name'] 				= $val['customer_name'];
+								$dataperpetratorupdate[$key]['customer_contact_person'] 	= $val['customer_contact_person'];
+								$dataperpetratorupdate[$key]['customer_mobile_phone'] 		= $val['customer_mobile_phone'];
+								$dataperpetratorupdate[$key]['created_on'] 					= simpledatetime($val['created_on']);
 							}
 						}
 						
@@ -2065,6 +2125,7 @@
 
 				echo json_encode($response);
 			}
+
 
 	}
 ?>
