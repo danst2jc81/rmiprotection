@@ -919,8 +919,9 @@
 
 			
 			if($response["error"] == FALSE){
-				$dataperpetratorchronologylist = $this->AndroidRMIProtection_model->getDataPerpetratorChronology_Detail($data['perpetrator_id']);
+				$dataperpetratorchronologylist 	= $this->AndroidRMIProtection_model->getDataPerpetratorChronology_Detail($data['perpetrator_id']);
 
+				$perpetratorstatus 				= $this->configuration->PerpetratorStatus();
 
 				if(!$dataperpetratorchronologylist){
 					$response['error'] 				= TRUE;
@@ -933,7 +934,11 @@
 						$response['error_msg'] 			= "Data Does Not Exist";
 					} else {
 						foreach ($dataperpetratorchronologylist as $key => $val) {
+
+
 							$dataperpetratorchronology[$key]['perpetrator_id'] 						= $val['perpetrator_id'];
+							$dataperpetratorchronology[$key]['perpetrator_status']					= $val['perpetrator_status'];
+							$dataperpetratorchronology[$key]['perpetrator_status_name']				= $perpetratorstatus[$val['perpetrator_status']];
 							$dataperpetratorchronology[$key]['perpetrator_chronology_id'] 			= $val['perpetrator_chronology_id'];
 							$dataperpetratorchronology[$key]['perpetrator_chronology_description']	= $val['perpetrator_chronology_description'];
 							$dataperpetratorchronology[$key]['created_on']							= simpledatetime($val['created_on']);
@@ -974,6 +979,7 @@
 				'city_id'								=> $salescustomer['city_id'],
 				'perpetrator_chronology_description'	=> $this->input->post('perpetrator_chronology_description',true),
 				'perpetrator_chronology_date'			=> date("Y-m-d"),
+				'perpetrator_status'					=> $this->input->post('perpetrator_status',true),
 				'data_state' 							=> 0,
 				'created_id' 							=> $this->input->post('user_id',true),
 				'created_on' 							=> date('Y-m-d H:i:s'),
@@ -1192,6 +1198,7 @@
 								$datasearchperpetrator[$key]['perpetrator_id_number'] 				= $val['perpetrator_id_number'];
 								$datasearchperpetrator[$key]['perpetrator_age'] 					= $perpetrator_age;
 								$datasearchperpetrator[$key]['perpetrator_gender'] 					= $val['gender_name'];
+								$datasearchperpetrator[$key]['perpetrator_status'] 					= $val['perpetrator_status'];
 								$datasearchperpetrator[$key]['perpetrator_status_name'] 			= $perpetrator_status_name;
 								$datasearchperpetrator[$key]['province_id_perpetrator'] 			= $val['province_id_perpetrator'];
 								$datasearchperpetrator[$key]['city_id_perpetrator'] 				= $val['city_id_perpetrator'];
@@ -1395,6 +1402,7 @@
 								$dataperpetratorupdate[$key]['perpetrator_id'] 				= $val['perpetrator_id'];
 								$dataperpetratorupdate[$key]['perpetrator_name'] 			= $val['perpetrator_name'];
 								$dataperpetratorupdate[$key]['perpetrator_name_list'] 		= $perpetrator_name_list;
+								$dataperpetratorupdate[$key]['perpetrator_status'] 			= $val['perpetrator_status'];
 								$dataperpetratorupdate[$key]['perpetrator_status_name'] 	= $perpetrator_status_name;
 								$dataperpetratorupdate[$key]['perpetrator_address'] 		= $val['perpetrator_address'];
 								$dataperpetratorupdate[$key]['perpetrator_mobile_phone'] 	= $val['perpetrator_mobile_phone'];

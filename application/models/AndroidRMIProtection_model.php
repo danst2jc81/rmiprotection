@@ -246,7 +246,7 @@
 		}	
 
 		public function getDataPerpetratorChronology_Detail($perpetrator_id){
-			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_id, data_perpetrator_chronology.perpetrator_id, data_perpetrator_chronology.perpetrator_chronology_description, data_perpetrator_chronology.created_on, sales_customer.customer_name');
+			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_id, data_perpetrator_chronology.perpetrator_id, data_perpetrator_chronology.perpetrator_status, data_perpetrator_chronology.perpetrator_chronology_description, data_perpetrator_chronology.created_on, sales_customer.customer_name');
 			$this->db->from('data_perpetrator_chronology');
 			$this->db->join('sales_customer', 'data_perpetrator_chronology.customer_id = sales_customer.customer_id');
 			$this->db->where('data_perpetrator_chronology.perpetrator_id', $perpetrator_id);
