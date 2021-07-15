@@ -1401,7 +1401,7 @@
 								
 								$dataperpetratorupdate[$key]['perpetrator_id'] 				= $val['perpetrator_id'];
 								$dataperpetratorupdate[$key]['perpetrator_name'] 			= $val['perpetrator_name'];
-								$dataperpetratorupdate[$key]['perpetrator_name_list'] 		= $perpetrator_name_list;
+								$dataperpetratorupdate[$key]['perpetrator_name_list'] 		= $val['perpetrator_name'];
 								$dataperpetratorupdate[$key]['perpetrator_status'] 			= $val['perpetrator_status'];
 								$dataperpetratorupdate[$key]['perpetrator_status_name'] 	= $perpetrator_status_name;
 								$dataperpetratorupdate[$key]['perpetrator_address'] 		= $val['perpetrator_address'];
