@@ -707,6 +707,7 @@
 				'perpetrator_id_number'			=> $this->input->post('perpetrator_id_number',true),
 				'perpetrator_date_of_birth' 	=> tgltodb($this->input->post('perpetrator_date_of_birth',true)),
 				'perpetrator_address'			=> $this->input->post('perpetrator_address',true),
+				'perpetrator_status'			=> $this->input->post('perpetrator_status',true),
 				'data_state' 					=> 0,
 				'created_id' 					=> $this->input->post('user_id',true),
 				'created_on' 					=> date('Y-m-d H:i:s'),
@@ -1416,7 +1417,7 @@
 								$dataperpetratorupdate[$key]['customer_name'] 				= $val['customer_name'];
 								$dataperpetratorupdate[$key]['customer_contact_person'] 	= $val['customer_contact_person'];
 								$dataperpetratorupdate[$key]['customer_mobile_phone'] 		= $val['customer_mobile_phone'];
-								$dataperpetratorupdate[$key]['created_on'] 					= simpledatetime($val['created_on']);
+								$dataperpetratorupdate[$key]['created_on'] 					= tgltoview($val['created_on']);
 							}
 						}
 						
