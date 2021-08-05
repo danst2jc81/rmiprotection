@@ -137,17 +137,14 @@
 		}
 
 		public function getDataPerpetratorChronology_Perpetrator($perpetrator_id){
-			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_id, data_perpetrator_chronology.province_id, core_province.province_name, data_perpetrator_chronology.city_id, core_city.city_name, data_perpetrator_chronology.customer_id, sales_customer.customer_name, data_perpetrator_chronology.perpetrator_id, data_perpetrator_chronology.perpetrator_chronology_date, data_perpetrator_chronology.perpetrator_chronology_description, data_perpetrator_chronology.created_on');
+			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_description');
 			$this->db->from('data_perpetrator_chronology');
-			$this->db->join('sales_customer', 'data_perpetrator_chronology.customer_id = sales_customer.customer_id');
-			$this->db->join('core_province', 'data_perpetrator_chronology.province_id = core_province.province_id');
-			$this->db->join('core_city', 'data_perpetrator_chronology.city_id = core_city.city_id');
 			$this->db->where('data_perpetrator_chronology.data_state', 0);
 			$this->db->where('data_perpetrator_chronology.perpetrator_id', $perpetrator_id);
 			$this->db->order_by('data_perpetrator_chronology.perpetrator_chronology_id', 'ASC');
 			$this->db->limit('1');
 			$result = $this->db->get()->row_array();
-			return $result;
+			return $result['perpetrator_chronology_description'];
 		}
 
 		public function getDataPerpetratorPhoto_Perpetrator($perpetrator_id){
