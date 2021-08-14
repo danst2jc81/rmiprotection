@@ -994,6 +994,12 @@
 			} else {
 				if($response["error"] == FALSE){
 					if ($this->AndroidRMIProtection_model->insertDataPerpetratorChronology($data)){
+						$data_update = array(
+							'perpetrator_id'		=> $data['perpetrator_id'],
+							'perpetrator_status'	=> $data['perpetrator_status'],
+						);
+
+						$this->AndroidRMIProtection_model->updateDataPerpetrator($data_update);
 						
 						$response['error'] 							= FALSE;
 						$response['error_msg_title'] 				= "Success";

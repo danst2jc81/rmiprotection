@@ -217,6 +217,16 @@
 			}
 		}
 
+		public function updateDataPerpetrator($data){
+			$this->db->where("data_perpetrator.perpetrator_id", $data['perpetrator_id']);
+			$query = $this->db->update('data_perpetrator', $data);
+			if($query){
+				return true;
+			}else{
+				return false;
+			}
+		}
+
 		public function getVendorCode($vendor_id){
 			$this->db->select('core_vendor.vendor_code');
 			$this->db->from('core_vendor');
@@ -316,7 +326,7 @@
 			}
 
 			if ($bundle_status == 0){
-				$this->db->order_by('data_perpetrator.perpetrator_id', 'DESC');
+				$this->db->order_by('data_perpetrator.perpetrator_name', 'ASC');
 			}
 
 			$result = $this->db->get()->result_array();
