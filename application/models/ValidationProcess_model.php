@@ -33,7 +33,7 @@
 		}
 		
 		function getLogout($data){
-			$hasil = $this->db->query("UPDATE system_user SET log_state = 0 WHERE customer_email = '$data[customer_email]' AND password='$data[customer_password]'");
+			$hasil = $this->db->query("UPDATE system_user SET log_state = 0 WHERE customer_email = '$data[customer_email]' AND customer_password= '$data[customer_password]'");
 			if($hasil){
 				return true;
 			}else{

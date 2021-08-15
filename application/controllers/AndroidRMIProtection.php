@@ -2148,6 +2148,78 @@
 				echo json_encode($response);
 			}
 
-
+			public function processUpdateSalesCustomerPassword(){
+				$data = array(
+					'salescustomerpassword'		=> $this->input->post('salescustomerpassword', true),
+					'user_id'					=> $this->input->post('user_id', true),
+					'user_level'				=> $this->input->post('user_level', true),
+				);
+	
+				/*print_r("data ");
+				print_r($data);
+				print_r("<BR> ");*/
+				
+			
+				$response = array(
+					'error'									=> FALSE,
+					'error_salescustomerpassword'			=> FALSE,
+					'error_msg_title_salescustomerpassword'	=> "",
+					'error_msg_salescustomerpassword'		=> "",
+				);
+				
+				if($response["error"] == FALSE){
+	
+	
+					## Sales Customer Password
+	
+					$data_salescustomerpassword = array();
+					$raw = json_decode($this->input->post('salescustomerpassword', true), true);
+					if(empty($raw)){
+						$response['error_salescustomerpassword'] 				= TRUE;
+						$response['error_msg_title_salescustomerpassword'] 		= "Kesalahan";
+						$response['error_msg_salescustomerpassword'] 			= "Anda harus memasukkan minimal 1 Customer";
+					}else{
+						foreach($raw as $k=>$v){					
+							$data_salescustomerpassword = array(
+								'customer_id'					=>	$v['customer_id'],
+								'customer_password'				=>	md5($v['customer_password']),
+								'customer_new_password'			=>	md5($v['customer_new_password']),
+							);	
+						}
+					}
+				}
+	
+				if($response["error_salescustomerpassword"] == FALSE){
+					if(!empty($data_salescustomerpassword)){
+						if ($this->AndroidRMIProtection_model->getCustomerPassword($data_salescustomerpassword)){
+	
+							$dataupdate = array(
+								'customer_id'				=>	$data_salescustomerpassword['customer_id'],
+								'customer_password'			=>	$data_salescustomerpassword['customer_new_password'],
+							);
+	
+							if ($this->AndroidRMIProtection_model->updateSalesCustomer($dataupdate)){
+	
+								$this->AndroidRMIProtection_model->updateSystemUser($dataupdate);
+	
+								$response['error'] 				= FALSE;
+								$response['error_msg_title'] 	= "Ganti Password Berhasil";
+								$response['error_msg'] 			= "Data Berhasil";		
+							} else {
+								$response['error'] 				= TRUE;
+								$response['error_msg_title'] 	= "Ganti Password Gagal";
+								$response['error_msg'] 			= "Data Gagal";		
+							}
+						} else {
+							$response['error'] 				= TRUE;
+							$response['error_msg_title'] 	= "Ganti Password Gagal";
+							$response['error_msg'] 			= "Password Pelanggan Salah";		
+						}
+					}
+	
+				} 
+				
+				echo json_encode($response);
+			}
 	}
 ?>

@@ -534,7 +534,19 @@
 			return $result['customer_email'];
 		}	
 
-		
+		public function getCustomerPassword($data){
+			$this->db->select('system_user.customer_id');
+			$this->db->from('system_user');
+			$this->db->where('system_user.data_state', 0);
+			$this->db->where('system_user.customer_id', $data['customer_id']);
+			$this->db->where('system_user.customer_password', $data['customer_password']);
+			$result = $this->db->get()->num_rows();
+			if ($result == 0){
+				return false;
+			} else {
+				return true;	
+			}
+		}		
 		
 	}
 ?>
