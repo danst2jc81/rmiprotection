@@ -829,7 +829,7 @@
 
 							$perpetrator_photo_name	= 'perpetrator_photo_'.date("YmdHis").'_'.$no.'.jpg';
 
-							file_put_contents(APPPATH .'../img/'.$vendor_code.'/'.$perpetrator_photo_name, $decodedData);
+							file_put_contents(APPPATH .'../img/V333372001/'.$perpetrator_photo_name, $decodedData);
 
 							$data_photo = array(
 								'perpetrator_id'			=> $data['perpetrator_id'],

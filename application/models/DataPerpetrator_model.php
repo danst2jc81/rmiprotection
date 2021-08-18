@@ -7,22 +7,20 @@
 			$this->CI = get_instance();
 		} 
 
-		public function getDataPerpetrator($vendor_id, $province_perpetrator_id, $city_perpetrator_id)
+		public function getDataPerpetrator($province_id_perpetrator, $city_id_perpetrator)
 		{
-			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.region_id, data_perpetrator.branch_id, data_perpetrator.vendor_id, core_vendor.vendor_name, data_perpetrator.province_id, data_perpetrator.city_id, data_perpetrator.province_perpetrator_id, core_province.province_name, data_perpetrator.city_perpetrator_id, core_city.city_name, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.perpetrator_status');
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.province_id, data_perpetrator.city_id, data_perpetrator.province_id_perpetrator, core_province.province_name, data_perpetrator.city_id_perpetrator, core_city.city_name, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.perpetrator_status');
 			$this->db->from('data_perpetrator');
-			$this->db->join('core_province', 'data_perpetrator.province_perpetrator_id = core_province.province_id');
-			$this->db->join('core_city', 'data_perpetrator.city_perpetrator_id = core_city.city_id');
-			$this->db->join('core_vendor', 'data_perpetrator.vendor_id = core_vendor.vendor_id');
+			$this->db->join('core_province', 'data_perpetrator.province_id_perpetrator = core_province.province_id');
+			$this->db->join('core_city', 'data_perpetrator.city_id_perpetrator = core_city.city_id');
 			$this->db->where('data_perpetrator.data_state', 0);
-			$this->db->where('data_perpetrator.vendor_id', $vendor_id);
 			
-			if ($province_perpetrator_id != ''){
-				$this->db->where('data_perpetrator.province_perpetrator_id', $province_perpetrator_id);
+			if ($province_id_perpetrator != ''){
+				$this->db->where('data_perpetrator.province_id_perpetrator', $province_id_perpetrator);
 			}
 
-			if ($city_perpetrator_id != ''){
-				$this->db->where('data_perpetrator.city_perpetrator_id', $city_perpetrator_id);
+			if ($city_id_perpetrator != ''){
+				$this->db->where('data_perpetrator.city_id_perpetrator', $city_id_perpetrator);
 			}
 
 			$result = $this->db->get()->result_array();
@@ -98,11 +96,11 @@
 		}
 
 		public function getDataPerpetrator_Detail($perpetrator_id){
-			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.vendor_id, core_vendor.vendor_name, core_vendor.vendor_code, core_vendor.province_id, core_vendor.city_id, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.province_perpetrator_id, core_province.province_name, data_perpetrator.city_perpetrator_id, core_city.city_name');
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.vendor_id, core_vendor.vendor_name, core_vendor.vendor_code, core_vendor.province_id, core_vendor.city_id, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.province_id_perpetrator, core_province.province_name, data_perpetrator.city_id_perpetrator, core_city.city_name');
 			$this->db->from('data_perpetrator');
 			$this->db->join('core_vendor', 'data_perpetrator.vendor_id = core_vendor.vendor_id');
-			$this->db->join('core_province', 'data_perpetrator.province_perpetrator_id = core_province.province_id');
-			$this->db->join('core_city', 'data_perpetrator.city_perpetrator_id = core_city.city_id');
+			$this->db->join('core_province', 'data_perpetrator.province_id_perpetrator = core_province.province_id');
+			$this->db->join('core_city', 'data_perpetrator.city_id_perpetrator = core_city.city_id');
 			$this->db->where('data_perpetrator.data_state', 0);
 			$this->db->where('data_perpetrator.perpetrator_id', $perpetrator_id);
 			$result = $this->db->get()->row_array();

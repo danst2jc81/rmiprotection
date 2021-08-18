@@ -26,15 +26,15 @@
 
 			if(!is_array($sesi)){
 				$sesi['vendor_id']					= $auth['vendor_id'];
-				$sesi['province_perpetrator_id']	= '';
-				$sesi['city_perpetrator_id']		= '';
+				$sesi['province_id_perpetrator']	= '';
+				$sesi['city_id_perpetrator']		= '';
 			}
 
 			$this->session->unset_userdata('addDataPerpetrator-'.$unique['unique']);
 			$this->session->unset_userdata('DataPerpetratorToken-'.$unique['unique']);
 			$this->session->unset_userdata('DataPerpetratorPhotoToken-'.$unique['unique']);
 
-			$data['main_view']['dataperpetrator']			= $this->DataPerpetrator_model->getDataPerpetrator($sesi['vendor_id'], $sesi['province_perpetrator_id'], $sesi['city_perpetrator_id']);
+			$data['main_view']['dataperpetrator']			= $this->DataPerpetrator_model->getDataPerpetrator($sesi['province_id_perpetrator'], $sesi['city_id_perpetrator']);
 
 			$data['main_view']['coreprovinceperpetrator']	= create_double($this->DataPerpetrator_model->getCoreProvince(), 'province_id', 'province_name');
 
@@ -51,8 +51,8 @@
 
 			$data = array (
 				'vendor_id'						=> $this->input->post('vendor_id'),
-				'province_perpetrator_id'		=> $this->input->post('province_perpetrator_id'),
-				'city_perpetrator_id'			=> $this->input->post('city_perpetrator_id'),
+				'province_id_perpetrator'		=> $this->input->post('province_id_perpetrator'),
+				'city_id_perpetrator'			=> $this->input->post('city_id_perpetrator'),
 			);
 			$this->session->set_userdata('filter-DataPerpetrator',$data);
 			redirect('perpetrator');
@@ -129,7 +129,7 @@
 			
 			if($fileSize > 0){
 				$parse			= explode('.',$fileName);
-				$image_types 	= array('jpg');
+				$image_types 	= array('jpg', 'jpeg');
 
 				if (!in_array($parse[count($parse)-1], $image_types)){
 					$message = "<div class='alert alert-danger alert-dismissable'>  
@@ -165,8 +165,8 @@
 				'city_id'							=> $corevendor['city_id'],
 				'perpetrator_name'					=> $this->input->post('perpetrator_name',true),
 				'perpetrator_address'				=> $this->input->post('perpetrator_address',true),
-				'province_perpetrator_id'			=> $this->input->post('province_perpetrator_id',true),
-				'city_perpetrator_id'				=> $this->input->post('city_perpetrator_id',true),
+				'province_id_perpetrator'			=> $this->input->post('province_id_perpetrator',true),
+				'city_id_perpetrator'				=> $this->input->post('city_id_perpetrator',true),
 				'perpetrator_mobile_phone'			=> $this->input->post('perpetrator_mobile_phone',true),
 				'perpetrator_id_number'				=> $this->input->post('perpetrator_id_number',true),
 				'perpetrator_date_of_birth'			=> tgltodb($this->input->post('perpetrator_date_of_birth',true)),
@@ -186,19 +186,19 @@
 			$this->form_validation->set_rules('perpetrator_name', 'Nama Pelaku', 'required');
 			$this->form_validation->set_rules('perpetrator_address', 'Alamat Pelaku', 'required');
 			$this->form_validation->set_rules('perpetrator_mobile_phone', 'Telepon Pelaku', 'required');
-			$this->form_validation->set_rules('province_perpetrator_id', 'Provinsi Pelaku', 'required');
-			$this->form_validation->set_rules('city_perpetrator_id', 'Kota Pelaku', 'required');
+			$this->form_validation->set_rules('province_id_perpetrator', 'Provinsi Pelaku', 'required');
+			$this->form_validation->set_rules('city_id_perpetrator', 'Kota Pelaku', 'required');
 			$this->form_validation->set_rules('perpetrator_date_of_birth', 'Tanggal Lahir Pelaku', 'required');
 			
 			$perpetrator_token 						= $this->DataPerpetrator_model->getPerpetratorToken($data['perpetrator_token']);
 			
 			if($this->form_validation->run()==true){
-				if ($daily_preaching_token == 0){
+				if ($perpetrator_token == 0){
 					if($fileSize > 0 || $fileError == 0){
 						try {
 							$newfilename 				= $_FILES['perpetrator_photo_name']['name'];
 							$config['upload_path'] 		= get_root_path()."/img/".$corevendor['vendor_code'];
-							$config['allowed_types'] 	= 'jpg';
+							$config['allowed_types'] 	= 'jpg'|'jpeg';
 							$config['overwrite'] 		= false;
 							$config['remove_spaces'] 	= true;
 							$config['file_name'] 		= $newfilename;		

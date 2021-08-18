@@ -326,7 +326,7 @@
 			}
 
 			if ($bundle_status == 0){
-				$this->db->order_by('data_perpetrator.perpetrator_name', 'ASC');
+				$this->db->order_by('data_perpetrator.perpetrator_id', 'DESC');
 			}
 
 			$result = $this->db->get()->result_array();
