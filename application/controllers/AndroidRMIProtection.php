@@ -2353,6 +2353,9 @@
 				'perpetrator_date_of_birth' 	=> tgltodb($this->input->post('perpetrator_date_of_birth',true)),
 				'perpetrator_address'			=> $this->input->post('perpetrator_address',true),
 				'perpetrator_status'			=> $this->input->post('perpetrator_status',true),
+				'data_state' 					=> 0,
+				'updated_id' 					=> $this->input->post('user_id',true),
+				'updated_on' 					=> date('Y-m-d H:i:s'),
 			);
 
 			if (empty($data)){
@@ -2375,6 +2378,48 @@
 						if ($this->AndroidRMIProtection_model->updateDataPerpetratorChronology($data_perpetratorchronology)){
 							
 						}
+
+						$dataperpetrator[0]['perpetrator_id']				= $data['perpetrator_id'];
+
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['dataperpetrator'] 		= $dataperpetrator;
+
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Error Query Data";
+					}
+				}
+			}
+
+			echo json_encode($response);
+		}
+
+
+		public function processDeleteDataPerpetrator(){
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'dataperpetrator'		=> "",
+			);
+			
+			$data = array(
+				'perpetrator_id'				=> $this->input->post('perpetrator_id',true),
+				'data_state' 					=> 2,
+				'deleted_id' 					=> $this->input->post('user_id',true),
+				'deleted_on' 					=> date('Y-m-d H:i:s'),
+			);
+
+			if (empty($data)){
+				$response['error'] 				= TRUE;
+				$response['error_msg_title'] 	= "No Data";
+				$response['error_msg'] 			= "Data Jemaat is Empty";
+			} else {
+				if($response["error"] == FALSE){
+					if ($this->AndroidRMIProtection_model->deleteDataPerpetrator($data)){
 
 						$dataperpetrator[0]['perpetrator_id']				= $data['perpetrator_id'];
 

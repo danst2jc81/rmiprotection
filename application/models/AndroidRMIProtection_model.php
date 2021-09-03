@@ -583,6 +583,16 @@
 				return false;
 			}
 		}
+
+		public function deleteDataPerpetrator($data){
+			$this->db->where('data_perpetrator.perpetrator_id', $data['perpetrator_id']);
+			$query = $this->db->update('data_perpetrator', $data);
+			if($query){
+				return true;
+			}else{
+				return false;
+			}
+		}
 		
 	}
 ?>
