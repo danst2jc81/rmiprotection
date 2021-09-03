@@ -322,6 +322,8 @@
 					$this->db->order_by('data_perpetrator.city_id', 'ASC');
 				} else if ($sort_status == 3){
 					$this->db->order_by('data_perpetrator.perpetrator_name', 'ASC');
+				} else if ($sort_status == 4){
+					$this->db->order_by('data_perpetrator.perpetrator_id', 'DESC');
 				}
 			}
 
@@ -357,7 +359,7 @@
 		}
 
 		public function getDataPerpetratorUpdateList(){
-			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.customer_id, sales_customer.customer_name, sales_customer.customer_contact_person, sales_customer.customer_mobile_phone, data_perpetrator.gender_id, core_gender.gender_name, data_perpetrator.province_id_perpetrator, core_province.province_name, data_perpetrator.city_id_perpetrator, core_city.city_name, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_status, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.created_on');
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.customer_id, sales_customer.customer_name, sales_customer.customer_contact_person, sales_customer.customer_mobile_phone, data_perpetrator.gender_id, core_gender.gender_name, data_perpetrator.province_id_perpetrator, core_province.province_name, data_perpetrator.city_id_perpetrator, core_city.city_name, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_status, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.province_id, data_perpetrator.city_id,  data_perpetrator.created_on');
 			$this->db->from('data_perpetrator');
 			$this->db->join('core_province', 'data_perpetrator.province_id_perpetrator = core_province.province_id');
 			$this->db->join('core_city', 'data_perpetrator.city_id_perpetrator = core_city.city_id');
@@ -547,6 +549,40 @@
 				return true;	
 			}
 		}		
+
+		public function getDataPerpetratorListList($customer_id){
+			$this->db->select('data_perpetrator.perpetrator_id, data_perpetrator.customer_id, sales_customer.customer_name, sales_customer.customer_contact_person, sales_customer.customer_mobile_phone, data_perpetrator.gender_id, core_gender.gender_name, data_perpetrator.province_id_perpetrator, core_province.province_name, data_perpetrator.city_id_perpetrator, core_city.city_name, data_perpetrator.perpetrator_name, data_perpetrator.perpetrator_status, data_perpetrator.perpetrator_address, data_perpetrator.perpetrator_mobile_phone, data_perpetrator.perpetrator_id_number, data_perpetrator.perpetrator_date_of_birth, data_perpetrator.created_on');
+			$this->db->from('data_perpetrator');
+			$this->db->join('core_province', 'data_perpetrator.province_id_perpetrator = core_province.province_id');
+			$this->db->join('core_city', 'data_perpetrator.city_id_perpetrator = core_city.city_id');
+			$this->db->join('sales_customer', 'data_perpetrator.customer_id = sales_customer.customer_id');
+			$this->db->join('core_gender', 'data_perpetrator.gender_id = core_gender.gender_id');
+			$this->db->where('data_perpetrator.data_state', 0);
+			$this->db->where('data_perpetrator.customer_id', $customer_id);
+			$this->db->order_by('data_perpetrator.perpetrator_id', 'DESC');
+			$result = $this->db->get()->result_array();
+			return $result;
+		}
+
+		public function	getPerpetratorChronologyID($perpetrator_id){
+			$this->db->select('data_perpetrator_chronology.perpetrator_chronology_id');
+			$this->db->from('data_perpetrator_chronology');
+			$this->db->where('data_perpetrator_chronology.perpetrator_id', $perpetrator_id);
+			$this->db->order_by('data_perpetrator_chronology.perpetrator_chronology_id', 'ASC');
+			$this->db->limit(1);
+			$result = $this->db->get()->row_array();
+			return $result['perpetrator_chronology_id'];
+		}
+
+		public function updateDataPerpetratorChronology($data){
+			$this->db->where('data_perpetrator_chronology.perpetrator_chronology_id', $data['perpetrator_chronology_id']);
+			$query = $this->db->update('data_perpetrator_chronology', $data);
+			if($query){
+				return true;
+			}else{
+				return false;
+			}
+		}
 		
 	}
 ?>

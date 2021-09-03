@@ -111,6 +111,7 @@ INSERT INTO SYSTEM_USER (user_group_id, customer_id, package_id, package_price_i
 	FROM migrasi_customer3
 	
 	
+<<<<<<< Updated upstream
 	
 MIGRASI CUSTOMER 4
 
@@ -146,3 +147,5 @@ INSERT INTO SYSTEM_USER (user_group_id, customer_id, package_id, package_price_i
 	province_id, city_id, customer_email, MD5("123456"), customer_name, customer_mobile_phone, 
 	1
 	FROM migrasi_customer4
+=======
+>>>>>>> Stashed changes

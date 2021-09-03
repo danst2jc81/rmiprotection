@@ -833,7 +833,7 @@
 
 							$data_photo = array(
 								'perpetrator_id'			=> $data['perpetrator_id'],
-								'perpetrator_photo_path'	=> $vendor_code,
+								'perpetrator_photo_path'	=> 'V333372001',
 								'perpetrator_photo_name'	=> $perpetrator_photo_name,
 								'created_on'				=> date("Y-m-d H:i:s"),
 							);
@@ -1387,6 +1387,16 @@
 
 								$diff 						= $perpetrator_date_of_birth->diff($today);		
 
+								$province_name				= $this->AndroidRMIProtection_model->getProvinceName($val['province_id']);
+
+								$city_name 					= $this->AndroidRMIProtection_model->getCityName($val['city_id']);
+
+								$city_name 					= str_replace("KOTA", "", $city_name);
+
+								$city_name 					= str_replace("KABUPATEN", "", $city_name);
+
+								$city_name				 	= ucwords(strtolower($city_name));
+
 								/* print_r("perpetrator_date_of_birth ");
 								print_r($perpetrator_date_of_birth);
 								print_r("<BR> ");
@@ -1418,6 +1428,10 @@
 								$dataperpetratorupdate[$key]['perpetrator_status'] 					= $val['perpetrator_status'];
 								$dataperpetratorupdate[$key]['perpetrator_status_name'] 			= $perpetrator_status_name;
 								$dataperpetratorupdate[$key]['perpetrator_address'] 				= $val['perpetrator_address'];
+								$dataperpetratorupdate[$key]['province_id'] 						= $val['province_id'];
+								$dataperpetratorupdate[$key]['province_name'] 						= $province_name;
+								$dataperpetratorupdate[$key]['city_id'] 							= $val['city_id'];
+								$dataperpetratorupdate[$key]['city_name'] 							= $city_name;
 								$dataperpetratorupdate[$key]['perpetrator_mobile_phone'] 			= $val['perpetrator_mobile_phone'];
 								$dataperpetratorupdate[$key]['province_id_perpetrator'] 			= $val['province_id_perpetrator'];
 								$dataperpetratorupdate[$key]['province_name_perpetrator'] 			= ucwords(strtolower($val['province_name']));
@@ -1858,368 +1872,526 @@
 
 		public function sendEmailFirst($customer_id, $customer_email, $customer_name, $customer_verification_code){
 			/*public function sendEmailFirst(){*/
-				$config['protocol'] = 'sendmail';
-				$config['mailpath'] = '/usr/sbin/sendmail';
-				$config['charset'] 	= 'iso-8859-1';
-				$config['wordwrap'] = TRUE;
-				$config['mailtype'] = 'html';
-	
-				/*$customer_email = "danst2jc@gmail.com";
-				$customer_name = "Daniel Setiawan";
-				$customer_verification_code = "123456";*/
-	
-				$this->email->initialize($config);
-				$this->email->from('no-reply@oasisindo.org', 'Loker Sukses');
-				$this->email->to($customer_email);
-				
-				$this->email->subject('Halo '.$customer_name.' Berikut Kode Verifikasi Anda');
-				$base_url = base_url();
-	
-				$body = "
-					<!DOCTYPE html>
-					<html>
-						<head>
-								<meta charset=\"utf-8\" />
-								<title>Loker Sukses</title>
-								<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
-						</head>
-						<body>
-							<div>
-								div align=\"center\" >
-									<img src=\"".$base_url."assets/img/logo_loker_sukses.png\" alt=\"\" width=\"50%\" height=\"50%\" alt=\"\">
-								</div>
-								<hr>
-								<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px\">Halo	".$customer_name.",
-								</p>
-								<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px\"> Berikut ini adalah kode verifikasi Anda </a> 
-								</p>
-								<div align=\"center\" >
-									<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 48px;line-height: 25px;Margin-bottom: 25px\"> ".$customer_verification_code." </a> 
-									</p>
-								</div>
-								<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px\">Jika Anda memiliki pertanyaan mengenai kode verifikasi, silakan mengirimkan surel ke <a href=\"mailto:info@oasisindo.org\">info@oasisindo.org</a>.
+			$config['protocol'] = 'sendmail';
+			$config['mailpath'] = '/usr/sbin/sendmail';
+			$config['charset'] 	= 'iso-8859-1';
+			$config['wordwrap'] = TRUE;
+			$config['mailtype'] = 'html';
+
+			/*$customer_email = "danst2jc@gmail.com";
+			$customer_name = "Daniel Setiawan";
+			$customer_verification_code = "123456";*/
+
+			$this->email->initialize($config);
+			$this->email->from('no-reply@oasisindo.org', 'Loker Sukses');
+			$this->email->to($customer_email);
+			
+			$this->email->subject('Halo '.$customer_name.' Berikut Kode Verifikasi Anda');
+			$base_url = base_url();
+
+			$body = "
+				<!DOCTYPE html>
+				<html>
+					<head>
+							<meta charset=\"utf-8\" />
+							<title>Loker Sukses</title>
+							<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+					</head>
+					<body>
+						<div>
+							div align=\"center\" >
+								<img src=\"".$base_url."assets/img/logo_loker_sukses.png\" alt=\"\" width=\"50%\" height=\"50%\" alt=\"\">
+							</div>
+							<hr>
+							<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px\">Halo	".$customer_name.",
+							</p>
+							<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px\"> Berikut ini adalah kode verifikasi Anda </a> 
+							</p>
+							<div align=\"center\" >
+								<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 48px;line-height: 25px;Margin-bottom: 25px\"> ".$customer_verification_code." </a> 
 								</p>
 							</div>
-						</body>
-					</html>
-				";
-	
-				$this->email->message($body);
-	
-	
-	
-				if ($this->email->send()){
-					return true;
-				} else {
-					return false;
-				}
-			}
+							<p style=\"Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px\">Jika Anda memiliki pertanyaan mengenai kode verifikasi, silakan mengirimkan surel ke <a href=\"mailto:info@oasisindo.org\">info@oasisindo.org</a>.
+							</p>
+						</div>
+					</body>
+				</html>
+			";
 
-			public function getCorePackage(){
-				$base_url = base_url();
-	
-				$response = array(
-					'error'					=> FALSE,
-					'error_msg'				=> "",
-					'error_msg_title'		=> "",
-					'corepackage'			=> "",
-				);
-	
-				if($response["error"] == FALSE){
-					$corepackagelist = $this->AndroidRMIProtection_model->getCorePackage();
-	
-					if(!$corepackagelist){
+			$this->email->message($body);
+
+
+
+			if ($this->email->send()){
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public function getCorePackage(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'corepackage'			=> "",
+			);
+
+			if($response["error"] == FALSE){
+				$corepackagelist = $this->AndroidRMIProtection_model->getCorePackage();
+
+				if(!$corepackagelist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($corepackagelist)){
 						$response['error'] 				= TRUE;
 						$response['error_msg_title'] 	= "No Data";
-						$response['error_msg'] 			= "Error Query Data";
-					}else{
-						if (empty($corepackagelist)){
-							$response['error'] 				= TRUE;
-							$response['error_msg_title'] 	= "No Data";
-							$response['error_msg'] 			= "Data Does Not Exist";
-						} else {
-							foreach ($corepackagelist as $key => $val) {
-								$corepackage[$key]['package_id']		= $val['package_id'];
-								$corepackage[$key]['package_name'] 		= $val['package_name'];
-								$corepackage[$key]['package_status'] 	= $val['package_status'];
-							}
-							
-							$response['error'] 					= FALSE;
-							$response['error_msg_title'] 		= "Success";
-							$response['error_msg'] 				= "Data Exist";
-							$response['corepackage'] 			= $corepackage;
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						foreach ($corepackagelist as $key => $val) {
+							$corepackage[$key]['package_id']		= $val['package_id'];
+							$corepackage[$key]['package_name'] 		= $val['package_name'];
+							$corepackage[$key]['package_status'] 	= $val['package_status'];
 						}
+						
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['corepackage'] 			= $corepackage;
 					}
 				}
-				echo json_encode($response);
 			}
-	
-	
-			public function getCorePackagePrice(){
-				$base_url = base_url();
-	
-				$response = array(
-					'error'					=> FALSE,
-					'error_msg'				=> "",
-					'error_msg_title'		=> "",
-					'corepackageprice'		=> "",
-				);
-	
-				$data = array(
-					'package_id'			=> $this->input->post('package_id',true),
-				);
-	
-				if($response["error"] == FALSE){
-					$corepackagepricelist = $this->AndroidRMIProtection_model->getCorePackagePrice($data['package_id']);
-	
-					if(!$corepackagepricelist){
+			echo json_encode($response);
+		}
+
+
+		public function getCorePackagePrice(){
+			$base_url = base_url();
+
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'corepackageprice'		=> "",
+			);
+
+			$data = array(
+				'package_id'			=> $this->input->post('package_id',true),
+			);
+
+			if($response["error"] == FALSE){
+				$corepackagepricelist = $this->AndroidRMIProtection_model->getCorePackagePrice($data['package_id']);
+
+				if(!$corepackagepricelist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($corepackagepricelist)){
 						$response['error'] 				= TRUE;
 						$response['error_msg_title'] 	= "No Data";
-						$response['error_msg'] 			= "Error Query Data";
-					}else{
-						if (empty($corepackagepricelist)){
-							$response['error'] 				= TRUE;
-							$response['error_msg_title'] 	= "No Data";
-							$response['error_msg'] 			= "Data Does Not Exist";
-						} else {
-							foreach ($corepackagepricelist as $key => $val) {
-								$corepackageprice[$key]['package_id']			= $val['package_id'];
-								$corepackageprice[$key]['package_price_id'] 	= $val['package_price_id'];
-								$corepackageprice[$key]['package_price_name']	= $val['package_price_name'];
-								$corepackageprice[$key]['package_price_amount']	= $val['package_price_amount'];
-								$corepackageprice[$key]['package_price_month']	= $val['package_price_month'];
-								$corepackageprice[$key]['package_price_status']	= $val['package_price_status'];
-							}
-							
-							$response['error'] 					= FALSE;
-							$response['error_msg_title'] 		= "Success";
-							$response['error_msg'] 				= "Data Exist";
-							$response['corepackageprice'] 		= $corepackageprice;
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						foreach ($corepackagepricelist as $key => $val) {
+							$corepackageprice[$key]['package_id']			= $val['package_id'];
+							$corepackageprice[$key]['package_price_id'] 	= $val['package_price_id'];
+							$corepackageprice[$key]['package_price_name']	= $val['package_price_name'];
+							$corepackageprice[$key]['package_price_amount']	= $val['package_price_amount'];
+							$corepackageprice[$key]['package_price_month']	= $val['package_price_month'];
+							$corepackageprice[$key]['package_price_status']	= $val['package_price_status'];
 						}
+						
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['corepackageprice'] 		= $corepackageprice;
 					}
 				}
-				echo json_encode($response);
 			}
-		
+			echo json_encode($response);
+		}
+	
 
-			public function getCustomerPackage(){
-				$base_url = base_url();
-	
-				$response = array(
-					'error'					=> FALSE,
-					'error_msg'				=> "",
-					'error_msg_title'		=> "",
-					'customerpackage'		=> "",
-				);
-	
-				$data = array(
-					'customer_id'			=> $this->input->post('customer_id',true),
-				);
+		public function getCustomerPackage(){
+			$base_url = base_url();
 
-				/* $data = array(
-					'customer_id'			=> 12,
-				); */
-	
-				if($response["error"] == FALSE){
-					$customerpackagelist = $this->AndroidRMIProtection_model->getCustomerPackage($data['customer_id']);
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'customerpackage'		=> "",
+			);
 
-					/* print_r("customerpackagelist ");
-					print_r($customerpackagelist);
-					print_r("<BR> ");
-					print_r("<BR> "); */
-	
-					if(!$customerpackagelist){
+			$data = array(
+				'customer_id'			=> $this->input->post('customer_id',true),
+			);
+
+			/* $data = array(
+				'customer_id'			=> 12,
+			); */
+
+			if($response["error"] == FALSE){
+				$customerpackagelist = $this->AndroidRMIProtection_model->getCustomerPackage($data['customer_id']);
+
+				/* print_r("customerpackagelist ");
+				print_r($customerpackagelist);
+				print_r("<BR> ");
+				print_r("<BR> "); */
+
+				if(!$customerpackagelist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($customerpackagelist)){
 						$response['error'] 				= TRUE;
 						$response['error_msg_title'] 	= "No Data";
-						$response['error_msg'] 			= "Error Query Data";
-					}else{
-						if (empty($customerpackagelist)){
-							$response['error'] 				= TRUE;
-							$response['error_msg_title'] 	= "No Data";
-							$response['error_msg'] 			= "Data Does Not Exist";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						$today 								= date("Y-m-d");
+						$package_status 					= $customerpackagelist['package_status'];
+						$customer_last_date					= $customerpackagelist['customer_last_date'];
+						$customer_package_search_balance	= $customerpackagelist['customer_package_search_balance'];
+						$customer_package_add_balance		= $customerpackagelist['customer_package_add_balance'];
+
+						/* print_r("package_status ");
+						print_r($package_status);
+						print_r("<BR> ");
+						print_r("<BR> ");
+
+						print_r("customer_last_date ");
+						print_r($customer_last_date);
+						print_r("<BR> ");
+						print_r("<BR> "); */
+
+						if ($package_status == 1){
+							if ($customer_last_date < $today){
+								$customer_package_search_status 	= 0;
+								$customer_package_add_status 		= 0;
+							} else {
+								$customer_package_search_status 	= 1;
+								$customer_package_add_status 		= 1;
+							}
 						} else {
-							$today 								= date("Y-m-d");
-							$package_status 					= $customerpackagelist['package_status'];
-							$customer_last_date					= $customerpackagelist['customer_last_date'];
-							$customer_package_search_balance	= $customerpackagelist['customer_package_search_balance'];
-							$customer_package_add_balance		= $customerpackagelist['customer_package_add_balance'];
-
-							/* print_r("package_status ");
-							print_r($package_status);
-							print_r("<BR> ");
-							print_r("<BR> ");
-
-							print_r("customer_last_date ");
-							print_r($customer_last_date);
-							print_r("<BR> ");
-							print_r("<BR> "); */
-
-							if ($package_status == 1){
-								if ($customer_last_date < $today){
+							if ($customer_last_date < $today){
+								$customer_package_search_status 	= 0;
+								$customer_package_add_status 		= 0;
+							} else {
+								if($customer_package_search_balance <= 0 && $customer_package_add_balance > 0){
 									$customer_package_search_status 	= 0;
+									$customer_package_add_status 		= 1;
+								} else if($customer_package_search_balance > 0 && $customer_package_add_balance <= 0){
+									$customer_package_search_status 	= 1;
 									$customer_package_add_status 		= 0;
-								} else {
+								} else if($customer_package_search_balance > 0 && $customer_package_add_balance > 0){
 									$customer_package_search_status 	= 1;
 									$customer_package_add_status 		= 1;
 								}
-							} else {
-								if ($customer_last_date < $today){
-									$customer_package_search_status 	= 0;
-									$customer_package_add_status 		= 0;
-								} else {
-									if($customer_package_search_balance <= 0 && $customer_package_add_balance > 0){
-										$customer_package_search_status 	= 0;
-										$customer_package_add_status 		= 1;
-									} else if($customer_package_search_balance > 0 && $customer_package_add_balance <= 0){
-										$customer_package_search_status 	= 1;
-										$customer_package_add_status 		= 0;
-									} else if($customer_package_search_balance > 0 && $customer_package_add_balance > 0){
-										$customer_package_search_status 	= 1;
-										$customer_package_add_status 		= 1;
-									}
-								} 
-							}
-							
-							$customerpackage[0]['customer_id']						= $customerpackagelist['customer_id'];
-							$customerpackage[0]['package_id']						= $customerpackagelist['package_id'];
-							$customerpackage[0]['package_price_id']					= $customerpackagelist['package_price_id'];
-							$customerpackage[0]['customer_last_date'] 				= $customerpackagelist['customer_last_date'];
-							$customerpackage[0]['customer_package_search_balance']	= $customer_package_search_balance;
-							$customerpackage[0]['customer_package_add_balance']		= $customer_package_add_balance;
-							$customerpackage[0]['package_status']					= $customerpackagelist['package_status'];
-							$customerpackage[0]['customer_package_search_status']	= $customer_package_search_status;
-							$customerpackage[0]['customer_package_add_status']		= $customer_package_add_status;
-
-							$response['error'] 					= FALSE;
-							$response['error_msg_title'] 		= "Success";
-							$response['error_msg'] 				= "Data Exist";
-							$response['customerpackage'] 		= $customerpackage;
+							} 
 						}
+						
+						$customerpackage[0]['customer_id']						= $customerpackagelist['customer_id'];
+						$customerpackage[0]['package_id']						= $customerpackagelist['package_id'];
+						$customerpackage[0]['package_price_id']					= $customerpackagelist['package_price_id'];
+						$customerpackage[0]['customer_last_date'] 				= $customerpackagelist['customer_last_date'];
+						$customerpackage[0]['customer_package_search_balance']	= $customer_package_search_balance;
+						$customerpackage[0]['customer_package_add_balance']		= $customer_package_add_balance;
+						$customerpackage[0]['package_status']					= $customerpackagelist['package_status'];
+						$customerpackage[0]['customer_package_search_status']	= $customer_package_search_status;
+						$customerpackage[0]['customer_package_add_status']		= $customer_package_add_status;
+
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['customerpackage'] 		= $customerpackage;
 					}
 				}
-				echo json_encode($response);
 			}
+			echo json_encode($response);
+		}
 
 
-			/*SALES CUSTOMER*/
-			public function processAddSalesCustomerPackage(){
-				$response = array(
-					'error'					=> FALSE,
-					'error_msg'				=> "",
-					'error_msg_title'		=> "",
-					'data_salescustomer'	=> "",
-				);
+		/*SALES CUSTOMER*/
+		public function processAddSalesCustomerPackage(){
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'data_salescustomer'	=> "",
+			);
 
-				$unique 					= $this->session->userdata('unique');
-				$auth						= $this->session->userdata('auth');	
+			$unique 					= $this->session->userdata('unique');
+			$auth						= $this->session->userdata('auth');	
 
-				$data = array(
-					'customer_id'						=> $this->input->post('customer_id',true),
-					'package_id'						=> $this->input->post('package_id',true),
-					'package_price_id'					=> $this->input->post('package_price_id',true),
-					'customer_package_date'				=> date("Y-m-d"),
-					'package_status'					=> $this->input->post('package_status',true),
-					'package_price_month'				=> $this->input->post('package_price_month',true),
-					'package_price_amount'				=> $this->input->post('package_price_amount',true),
-					'package_price_status'				=> $this->input->post('package_price_status',true),
-					'data_state' 						=> 0,
-					'created_id' 						=> date("YmdHis"),
-					'created_on' 						=> date('Y-m-d H:i:s'),
-				);
+			$data = array(
+				'customer_id'						=> $this->input->post('customer_id',true),
+				'package_id'						=> $this->input->post('package_id',true),
+				'package_price_id'					=> $this->input->post('package_price_id',true),
+				'customer_package_date'				=> date("Y-m-d"),
+				'package_status'					=> $this->input->post('package_status',true),
+				'package_price_month'				=> $this->input->post('package_price_month',true),
+				'package_price_amount'				=> $this->input->post('package_price_amount',true),
+				'package_price_status'				=> $this->input->post('package_price_status',true),
+				'data_state' 						=> 0,
+				'created_id' 						=> date("YmdHis"),
+				'created_on' 						=> date('Y-m-d H:i:s'),
+			);
 
-				if (empty($data)){
-					$response['error'] 				= TRUE;
-					$response['error_msg_title'] 	= "No Data";
-					$response['error_msg'] 			= "Data Pelanggan is Empty";
-				} else {
-					if($response["error"] == FALSE){
-						if ($this->AndroidRMIProtection_model->insertSalesCustomerPackage($data)){
-							$response['error'] 					= FALSE;
-							$response['error_msg_title'] 		= "Success";
-							$response['error_msg'] 				= "Top Up Berhasil";
-						} else {
-							$response['error'] 				= TRUE;
-							$response['error_msg_title'] 	= "No Data";
-							$response['error_msg'] 			= "Error Query Data";
-						}
-					}
-				}
-
-				echo json_encode($response);
-			}
-
-			public function processUpdateSalesCustomerPassword(){
-				$data = array(
-					'salescustomerpassword'		=> $this->input->post('salescustomerpassword', true),
-					'user_id'					=> $this->input->post('user_id', true),
-					'user_level'				=> $this->input->post('user_level', true),
-				);
-	
-				/*print_r("data ");
-				print_r($data);
-				print_r("<BR> ");*/
-				
-			
-				$response = array(
-					'error'									=> FALSE,
-					'error_salescustomerpassword'			=> FALSE,
-					'error_msg_title_salescustomerpassword'	=> "",
-					'error_msg_salescustomerpassword'		=> "",
-				);
-				
+			if (empty($data)){
+				$response['error'] 				= TRUE;
+				$response['error_msg_title'] 	= "No Data";
+				$response['error_msg'] 			= "Data Pelanggan is Empty";
+			} else {
 				if($response["error"] == FALSE){
-	
-	
-					## Sales Customer Password
-	
-					$data_salescustomerpassword = array();
-					$raw = json_decode($this->input->post('salescustomerpassword', true), true);
-					if(empty($raw)){
-						$response['error_salescustomerpassword'] 				= TRUE;
-						$response['error_msg_title_salescustomerpassword'] 		= "Kesalahan";
-						$response['error_msg_salescustomerpassword'] 			= "Anda harus memasukkan minimal 1 Customer";
-					}else{
-						foreach($raw as $k=>$v){					
-							$data_salescustomerpassword = array(
-								'customer_id'					=>	$v['customer_id'],
-								'customer_password'				=>	md5($v['customer_password']),
-								'customer_new_password'			=>	md5($v['customer_new_password']),
-							);	
-						}
+					if ($this->AndroidRMIProtection_model->insertSalesCustomerPackage($data)){
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Top Up Berhasil";
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Error Query Data";
 					}
 				}
-	
-				if($response["error_salescustomerpassword"] == FALSE){
-					if(!empty($data_salescustomerpassword)){
-						if ($this->AndroidRMIProtection_model->getCustomerPassword($data_salescustomerpassword)){
-	
-							$dataupdate = array(
-								'customer_id'				=>	$data_salescustomerpassword['customer_id'],
-								'customer_password'			=>	$data_salescustomerpassword['customer_new_password'],
-							);
-	
-							if ($this->AndroidRMIProtection_model->updateSalesCustomer($dataupdate)){
-	
-								$this->AndroidRMIProtection_model->updateSystemUser($dataupdate);
-	
-								$response['error'] 				= FALSE;
-								$response['error_msg_title'] 	= "Ganti Password Berhasil";
-								$response['error_msg'] 			= "Data Berhasil";		
-							} else {
-								$response['error'] 				= TRUE;
-								$response['error_msg_title'] 	= "Ganti Password Gagal";
-								$response['error_msg'] 			= "Data Gagal";		
-							}
+			}
+
+			echo json_encode($response);
+		}
+
+		public function processUpdateSalesCustomerPassword(){
+			$data = array(
+				'salescustomerpassword'		=> $this->input->post('salescustomerpassword', true),
+				'user_id'					=> $this->input->post('user_id', true),
+				'user_level'				=> $this->input->post('user_level', true),
+			);
+
+			/*print_r("data ");
+			print_r($data);
+			print_r("<BR> ");*/
+			
+		
+			$response = array(
+				'error'									=> FALSE,
+				'error_salescustomerpassword'			=> FALSE,
+				'error_msg_title_salescustomerpassword'	=> "",
+				'error_msg_salescustomerpassword'		=> "",
+			);
+			
+			if($response["error"] == FALSE){
+
+
+				## Sales Customer Password
+
+				$data_salescustomerpassword = array();
+				$raw = json_decode($this->input->post('salescustomerpassword', true), true);
+				if(empty($raw)){
+					$response['error_salescustomerpassword'] 				= TRUE;
+					$response['error_msg_title_salescustomerpassword'] 		= "Kesalahan";
+					$response['error_msg_salescustomerpassword'] 			= "Anda harus memasukkan minimal 1 Customer";
+				}else{
+					foreach($raw as $k=>$v){					
+						$data_salescustomerpassword = array(
+							'customer_id'					=>	$v['customer_id'],
+							'customer_password'				=>	md5($v['customer_password']),
+							'customer_new_password'			=>	md5($v['customer_new_password']),
+						);	
+					}
+				}
+			}
+
+			if($response["error_salescustomerpassword"] == FALSE){
+				if(!empty($data_salescustomerpassword)){
+					if ($this->AndroidRMIProtection_model->getCustomerPassword($data_salescustomerpassword)){
+
+						$dataupdate = array(
+							'customer_id'				=>	$data_salescustomerpassword['customer_id'],
+							'customer_password'			=>	$data_salescustomerpassword['customer_new_password'],
+						);
+
+						if ($this->AndroidRMIProtection_model->updateSalesCustomer($dataupdate)){
+
+							$this->AndroidRMIProtection_model->updateSystemUser($dataupdate);
+
+							$response['error'] 				= FALSE;
+							$response['error_msg_title'] 	= "Ganti Password Berhasil";
+							$response['error_msg'] 			= "Data Berhasil";		
 						} else {
 							$response['error'] 				= TRUE;
 							$response['error_msg_title'] 	= "Ganti Password Gagal";
-							$response['error_msg'] 			= "Password Pelanggan Salah";		
+							$response['error_msg'] 			= "Data Gagal";		
 						}
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "Ganti Password Gagal";
+						$response['error_msg'] 			= "Password Pelanggan Salah";		
 					}
-	
-				} 
-				
-				echo json_encode($response);
+				}
+
+			} 
+			
+			echo json_encode($response);
+		}
+
+		public function getDataPerpetratorList(){
+			$base_url = base_url();
+
+			$data = array(
+				'customer_id'					=> $this->input->post('customer_id', true),
+			);
+
+			$response = array(
+				'error'							=> FALSE,
+				'error_msg'						=> "",
+				'error_msg_title'				=> "",
+				'dataperpetratorlist'			=> "",
+			);
+
+			if($response["error"] == FALSE){
+				$dataperpetratorupdatelist 	= $this->AndroidRMIProtection_model->getDataPerpetratorListList($data['customer_id']);
+
+				if(!$dataperpetratorupdatelist){
+					$response['error'] 				= TRUE;
+					$response['error_msg_title'] 	= "No Data";
+					$response['error_msg'] 			= "Error Query Data";
+				}else{
+					if (empty($dataperpetratorupdatelist)){
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Data Does Not Exist";
+					} else {
+						if (!empty($dataperpetratorupdatelist)){
+							foreach ($dataperpetratorupdatelist as $key => $val) {
+								$city_name_perpetrator 	= $val['city_name'];
+
+								$city_name_perpetrator 	= str_replace("KOTA", "", $city_name_perpetrator);
+
+								$city_name_perpetrator 	= str_replace("KABUPATEN", "", $city_name_perpetrator);
+
+								$city_name_perpetrator 	= ucwords(strtolower($city_name_perpetrator));
+
+								$len_perpetrator_name	= strlen($val['perpetrator_name']);
+
+								if ($len_perpetrator_name > 18){
+									$perpetrator_name_list 	= substr(trim($val['perpetrator_name']), 0, 15).'...';
+								} else {
+									$perpetrator_name_list 	= substr(trim($val['perpetrator_name']), 0, 18);
+								}
+
+
+								$perpetratorstatus 			= $this->configuration->PerpetratorStatus();
+
+								$perpetrator_status_name	= $perpetratorstatus[$val['perpetrator_status']];
+
+								$perpetrator_date_of_birth 	= new DateTime($val['perpetrator_date_of_birth']);
+
+								$today 		 				= new DateTime(date("Y-m-d"));
+
+								$diff 						= $perpetrator_date_of_birth->diff($today);
+
+								$perpetrator_age			= $diff->y;
+
+
+								$perpetrator_chronology_description = $this->AndroidRMIProtection_model->getDataPerpetratorChronology_Perpetrator($val['perpetrator_id']);
+
+								
+								$dataperpetratorlist[$key]['perpetrator_id'] 						= $val['perpetrator_id'];
+								$dataperpetratorlist[$key]['perpetrator_name'] 						= $val['perpetrator_name'];
+								$dataperpetratorlist[$key]['perpetrator_name_list'] 				= $val['perpetrator_name'];
+								$dataperpetratorlist[$key]['perpetrator_status'] 					= $val['perpetrator_status'];
+								$dataperpetratorlist[$key]['perpetrator_status_name'] 				= $perpetrator_status_name;
+								$dataperpetratorlist[$key]['perpetrator_address'] 					= $val['perpetrator_address'];
+								$dataperpetratorlist[$key]['perpetrator_mobile_phone'] 				= $val['perpetrator_mobile_phone'];
+								$dataperpetratorlist[$key]['province_id_perpetrator'] 				= $val['province_id_perpetrator'];
+								$dataperpetratorlist[$key]['province_name_perpetrator'] 			= ucwords(strtolower($val['province_name']));
+								$dataperpetratorlist[$key]['city_id_perpetrator'] 					= $val['city_id_perpetrator'];
+								$dataperpetratorlist[$key]['city_name_perpetrator'] 				= $city_name_perpetrator;
+								$dataperpetratorlist[$key]['perpetrator_id_number'] 				= $val['perpetrator_id_number'];
+								$dataperpetratorlist[$key]['perpetrator_date_of_birth'] 			= tgltoview($val['perpetrator_date_of_birth']);
+								$dataperpetratorlist[$key]['perpetrator_age'] 						= $perpetrator_age;
+								$dataperpetratorlist[$key]['gender_id'] 							= $val['gender_id'];
+								$dataperpetratorlist[$key]['perpetrator_gender'] 					= $val['gender_name'];
+								$dataperpetratorlist[$key]['customer_name'] 						= $val['customer_name'];
+								$dataperpetratorlist[$key]['customer_contact_person'] 				= $val['customer_contact_person'];
+								$dataperpetratorlist[$key]['customer_mobile_phone'] 				= $val['customer_mobile_phone'];
+								$dataperpetratorlist[$key]['created_on'] 							= tgltoview($val['created_on']);
+								$dataperpetratorlist[$key]['perpetrator_chronology_description']	= $perpetrator_chronology_description;
+							}
+						}
+						
+						$response['error'] 							= FALSE;
+						$response['error_msg_title'] 				= "Success";
+						$response['error_msg'] 						= "Data Exist";
+						$response['dataperpetratorlist'] 			= $dataperpetratorlist;
+					}
+				}
 			}
+			echo json_encode($response);
+		}
+
+		public function processUpdateDataPerpetrator(){
+			$response = array(
+				'error'					=> FALSE,
+				'error_msg'				=> "",
+				'error_msg_title'		=> "",
+				'dataperpetrator'		=> "",
+			);
+
+			$perpetrator_chronology_description	= $this->input->post('perpetrator_chronology_description',true);
+			
+			$data = array(
+				'perpetrator_id'				=> $this->input->post('perpetrator_id',true),
+				'province_id_perpetrator'		=> $this->input->post('province_id_perpetrator',true),
+				'city_id_perpetrator'			=> $this->input->post('city_id_perpetrator',true),
+				'gender_id'						=> $this->input->post('gender_id',true),
+				'perpetrator_name'				=> $this->input->post('perpetrator_name',true),
+				'perpetrator_mobile_phone'		=> $this->input->post('perpetrator_mobile_phone',true),
+				'perpetrator_id_number'			=> $this->input->post('perpetrator_id_number',true),
+				'perpetrator_date_of_birth' 	=> tgltodb($this->input->post('perpetrator_date_of_birth',true)),
+				'perpetrator_address'			=> $this->input->post('perpetrator_address',true),
+				'perpetrator_status'			=> $this->input->post('perpetrator_status',true),
+			);
+
+			if (empty($data)){
+				$response['error'] 				= TRUE;
+				$response['error_msg_title'] 	= "No Data";
+				$response['error_msg'] 			= "Data Jemaat is Empty";
+			} else {
+				if($response["error"] == FALSE){
+					if ($this->AndroidRMIProtection_model->updateDataPerpetrator($data)){
+
+						$perpetrator_chronology_id = $this->AndroidRMIProtection_model->getPerpetratorChronologyID($data['perpetrator_id']);
+
+						$data_perpetratorchronology = array (
+							'perpetrator_chronology_id'				=> $perpetrator_chronology_id,
+							'perpetrator_id'						=> $data['perpetrator_id'],
+							'perpetrator_status'					=> $data['perpetrator_status'],
+							'perpetrator_chronology_description' 	=> $perpetrator_chronology_description,
+						);
+
+						if ($this->AndroidRMIProtection_model->updateDataPerpetratorChronology($data_perpetratorchronology)){
+							
+						}
+
+						$dataperpetrator[0]['perpetrator_id']				= $data['perpetrator_id'];
+
+						$response['error'] 					= FALSE;
+						$response['error_msg_title'] 		= "Success";
+						$response['error_msg'] 				= "Data Exist";
+						$response['dataperpetrator'] 		= $dataperpetrator;
+
+					} else {
+						$response['error'] 				= TRUE;
+						$response['error_msg_title'] 	= "No Data";
+						$response['error_msg'] 			= "Error Query Data";
+					}
+				}
+			}
+
+			echo json_encode($response);
+		}
 	}
 ?>
