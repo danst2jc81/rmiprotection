@@ -93,7 +93,7 @@ INSERT INTO sales_customer (province_id, city_id, package_id, package_price_id,
 	CURDATE(), 1, 2, '2021-09-17', 1,
 	CURDATE(), 100, 100, 
 	1
-	FROM migrasi_customer3
+	FROM migrasi_customer2
 	
 UPDATE migrasi_customer3, sales_customer SET migrasi_customer3.customer_id = sales_customer.customer_id
 	WHERE migrasi_customer3.customer_email = sales_customer.customer_email
@@ -111,30 +111,43 @@ INSERT INTO SYSTEM_USER (user_group_id, customer_id, package_id, package_price_i
 	FROM migrasi_customer3
 	
 	
-<<<<<<< Updated upstream
-	
-MIGRASI CUSTOMER 4
+SELECT * FROM data_perpetrator_chronology
 
-UPDATE migrasi_customer4, core_city SET migrasi_customer4.province_id = core_city.province_id,
-					migrasi_customer4.city_id = core_city.city_id
-					WHERE migrasi_customer4.city_name = core_city.city_name;
-					
-select * from migrasi_customer4
-					
+SELECT * FROM data_perpetrator_photo
+
+
+SELECT * FROM migrasi_customer6
+DIY		14
+JATENG		13	
+DKI JAKARTA	11
+
+SELECT * FROM core_city
+	WHERE province_id IN (11, 13, 14, 16)
+	
+surakarta	218
+yogyakarta	227
+jaksel		156
+kebumen		192
+jakpus		158
+jak		158
+tange		270
+jaktim		157
+
+
 INSERT INTO sales_customer (province_id, city_id, package_id, package_price_id, 
-	customer_name, customer_contact_person, customer_email, customer_mobile_phone, customer_mobile_phone1, customer_unit, 
+	customer_name, customer_email, customer_mobile_phone, customer_mobile_phone1, customer_unit, 
 	customer_registration_date, customer_status, package_status, customer_last_date, customer_package_status,
 	customer_package_date, customer_package_search_balance, customer_package_add_balance, 
 	customer_package_balance_status)
 	SELECT province_id, city_id, 1, 1, 
-	customer_name, customer_contact_person, customer_email, customer_mobile_phone, customer_mobile_phone1, customer_unit, 
+	customer_name, customer_email, customer_mobile_phone, customer_mobile_phone1, customer_unit, 
 	CURDATE(), 1, 2, '2021-09-17', 1,
 	CURDATE(), 100, 100, 
 	1
-	FROM migrasi_customer4
+	FROM migrasi_customer6
 	
-UPDATE migrasi_customer4, sales_customer SET migrasi_customer4.customer_id = sales_customer.customer_id
-	WHERE migrasi_customer4.customer_email = sales_customer.customer_email
+UPDATE migrasi_customer6, sales_customer SET migrasi_customer6.customer_id = sales_customer.customer_id
+	WHERE migrasi_customer6.customer_email = sales_customer.customer_email
 	
 SELECT * FROM migrasi_customer2
 
@@ -146,6 +159,8 @@ INSERT INTO SYSTEM_USER (user_group_id, customer_id, package_id, package_price_i
 	SELECT 2, customer_id, 1, 1, 
 	province_id, city_id, customer_email, MD5("123456"), customer_name, customer_mobile_phone, 
 	1
-	FROM migrasi_customer4
-=======
->>>>>>> Stashed changes
+	FROM migrasi_customer6
+	
+SELECT * FROM sales_customer
+
+SELECT * FROM SYSTEM_USER

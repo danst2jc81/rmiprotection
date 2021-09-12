@@ -79,12 +79,7 @@ $route['branch/process-add'] 	            = 'CoreBranch/processAddCoreBranch';
 $route['branch/process-edit'] 	            = 'CoreBranch/processEditCoreBranch';
 $route['branch/get-city']   	            = 'CoreBranch/getCoreCity';
 
-/* REGISTRATION TENANT */
-$route['registrasi/baru/(:num)']    	                = 'RegistrationTenant/AddRegistrationTenant/$1';
-$route['registrasi/process-add'] 	                    = 'RegistrationTenant/processAddRegistrationTenant';
-$route['registrasi/notif/(:num)/(:num)/(:num)/(:num)'] 	= 'RegistrationTenant/sendRegistrationTenantNotification/$1/$1/$1/$1';
-$route['registrasi/baru/(:num)']    	                = 'RegistrationTenant/AddRegistrationTenant/$1';
-$route['registrasi/process-add'] 	                    = 'RegistrationTenant/processAddRegistrationTenant';
+
 
 /* CORE VENDOR */
 $route['vendor'] 				        = 'CoreVendor';
@@ -221,3 +216,11 @@ $route['customer-package/reset-search'] 			        = 'SalesCustomerPackage/reset
 $route['customer-package/customer-package-unpaid'] 			        = 'SalesCustomerPackage/getSalesCustomerPackageUnPaid';
 $route['customer-package/collection/(:num)']	    = 'SalesCustomerPackage/getSalesCustomerPackageUnPaid_Detail/$1';
 $route['customer-package/process-edit']	    = 'SalesCustomerPackage/processUpdateSalesCustomerPackage_Collection';
+
+
+/* REGISTRATION CONGREGATION */
+$route['registrasi']    	                            = 'RegistrationCustomer/addRegistrationCustomer';
+$route['registrasi/get-city'] 	                    = 'RegistrationCustomer/getCoreCity';
+$route['registrasi/process-add'] 	                    = 'RegistrationCustomer/processAddRegistrationCustomer';
+$route['registrasi/reset-add']  	    = 'RegistrationCustomer/reset_add';
+$route['registrasi/elements-add']  	    = 'RegistrationCustomer/function_elements_add';
